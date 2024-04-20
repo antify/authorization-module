@@ -1,7 +1,7 @@
 import {createError, defineEventHandler, readBody, useRuntimeConfig} from '#imports';
 import {isLoggedInHandler} from '../../../handlers';
 import {PermissionId} from '../../../../glue/permissions';
-import {type DatabaseHandler} from '../../../database-handler';
+import {type DatabaseHandler} from '../../../databaseHandler';
 import defineDatabaseHandler from '#authorization-module-database-handler';
 import {isMongoDbObjectIdRule, isOneOfRule, useValidator} from '@antify/validate';
 import type {ChangeBanStatusRequestBody} from '~/src/runtime/glue/components/ban-authorization-button/types';
