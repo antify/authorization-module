@@ -57,7 +57,6 @@ following hierarchy is used:
 
 ## TODO::
 
-- [ ] Rename auths to authorizations
 - [ ] Make sure that a ProviderAccess providerId and tenantId is the same as the roles providerId and tenantId
 - [ ] Add refresh token process
 - [ ] Add access token process
@@ -65,7 +64,6 @@ following hierarchy is used:
 - [ ] Select multiple Roles components
 - [ ] Add roles CRUD
 - [ ] Composable to reach all permissions in system
-- [ ] Eine Ban-Page bauen (Thomas's idee, dass nach einem Login eines gebannten Nutzers er auf die Ban-page kommt)
 - [ ] Fix and add tests
 - [ ] Force logout or refresh token function to logout/ban all devices fast
 
