@@ -105,9 +105,9 @@ It does:
 - Does not allow a user to ban / unban himself
 - Check if the user has the expected permission to ban / unban (`CAN_BAN_AUTHORIZATION` | `CAN_UNBAN_AUTHORIZATION` | is an admin | is an super admin)
 
-### AuthorizationModuleBanProviderAccessButton
+### AuthorizationModuleBanAppAccessButton
 
-Button to ban and unban a user from a tenant.
+Button to ban and unban a user from an app instance.
 
 It does:
 - Switch between ban and unban
