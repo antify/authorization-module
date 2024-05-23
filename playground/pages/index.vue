@@ -1,23 +1,24 @@
 <script lang="ts" setup>
-import {ref} from 'vue';
 import {PermissionId} from '~/glue/permissions';
 import {
+	ref,
 	useUi,
 	useGuard,
-	useAuthResponseErrorHandler,
 	useFetch,
-	useNuxtApp
+	onMounted,
+	useNuxtApp,
+	useAppContext,
+	useAuthResponseErrorHandler
 } from '#imports';
 
-const {$databaseModule} = useNuxtApp();
-const PROVIDER = 'core';
+const APP = 'core';
 const {ColorType} = useUi();
 const guard = ref(useGuard());
 const statusCode = ref<null | number>(null);
 const handleResponseErrors = ref(false);
+const appContext = useAppContext();
 const {execute, data} = useFetch('/api/pages/get-secret-data', {
 	immediate: false,
-	headers: $databaseModule.getContextHeaders(PROVIDER),
 	onResponse({response}) {
 		statusCode.value = response.status
 
@@ -26,6 +27,10 @@ const {execute, data} = useFetch('/api/pages/get-secret-data', {
 		}
 	}
 });
+
+onMounted(() => {
+	appContext.value.setContext(APP)
+});
 </script>
 
 <template>
@@ -33,7 +38,7 @@ const {execute, data} = useFetch('/api/pages/get-secret-data', {
     <div class="text-3xl">Authorization module playground</div>
     <div>
       With this page, you can test if the guard work client- and server side correctly. <br>
-      Everything is associated to <strong>{{ PROVIDER }}</strong> provider.
+      Everything is associated to <strong>{{ APP }}</strong> app.
     </div>
 
     <div class="flex gap-2.5 w-full">
@@ -46,11 +51,11 @@ const {execute, data} = useFetch('/api/pages/get-secret-data', {
           </AntTag>
         </AntField>
 
-        <AntField :label="`Has permission to do ${PermissionId.CAN_READ_SECRET_DATA} on ${PROVIDER} provider`">
+        <AntField :label="`Has permission to do ${PermissionId.CAN_READ_SECRET_DATA} in ${APP} app`">
           <AntTag
-            :color-type="guard.hasPermissionTo(PermissionId.CAN_READ_SECRET_DATA, PROVIDER) ? ColorType.success : ColorType.danger"
+            :color-type="guard.hasPermissionTo(PermissionId.CAN_READ_SECRET_DATA, APP) ? ColorType.success : ColorType.danger"
           >
-            {{ guard.hasPermissionTo(PermissionId.CAN_READ_SECRET_DATA, PROVIDER) }}
+            {{ guard.hasPermissionTo(PermissionId.CAN_READ_SECRET_DATA, APP) }}
           </AntTag>
         </AntField>
 

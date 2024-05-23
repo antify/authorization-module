@@ -6,7 +6,7 @@ export const generateAuthorizations = (count: number = 100, data: Partial<Author
 		_id: new mongoose.Types.ObjectId().toString(),
 		isSuperAdmin: false,
 		isBanned: false,
-		providerAccesses: [],
+		appAccesses: [],
 		...data
 	}));
 }

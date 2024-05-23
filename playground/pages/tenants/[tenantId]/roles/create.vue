@@ -13,8 +13,8 @@ const getDetailRoute = (roleId) => ({
 </script>
 
 <template>
-  <AntAuthCreateRolePage
-    provider="tenant"
+  <AuthorizationModuleCreateRolePage
+    app="tenant"
     :tenant-id="tenantId"
     :get-listing-route="getListingRoute"
     :get-detail-route="getDetailRoute"

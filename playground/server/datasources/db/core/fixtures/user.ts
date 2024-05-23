@@ -3,7 +3,7 @@ import {type User} from '../schemas/user';
 import {defineFixture} from '@antify/database';
 import {TEST_TENANT_ID} from '../fixture-utils/tenant';
 import {generateAuthorizations} from '../../../../../../src/cli/fixture-utils/authorization';
-import {generateProviderAccesses} from '../../../../../../src/cli/fixture-utils/providerAccess';
+import {generateAppAccesses} from '../../../../../../src/cli/fixture-utils/appAccess';
 import {
 	TENANT_ADMIN_ROLE_ID,
 	TENANT_USER_ROLE_ID,
@@ -39,8 +39,8 @@ export default defineFixture({
 				_id: CORE_ADMIN_USER_ID,
 				name: 'Core admin user',
 				authorization: generateAuthorizations(1, {
-					providerAccesses: generateProviderAccesses(1, {
-						providerId: 'core',
+					appAccesses: generateAppAccesses(1, {
+						appId: 'core',
 						roles: [CORE_ADMIN_ROLE_ID],
 					})
 				})[0]
@@ -49,8 +49,8 @@ export default defineFixture({
 				_id: TENANT_ADMIN_USER_ID,
 				name: 'Tenant admin user',
 				authorization: generateAuthorizations(1, {
-					providerAccesses: generateProviderAccesses(1, {
-						providerId: 'tenant',
+					appAccesses: generateAppAccesses(1, {
+						appId: 'tenant',
 						tenantId: TEST_TENANT_ID,
 						roles: [TENANT_ADMIN_ROLE_ID],
 					})
@@ -60,8 +60,8 @@ export default defineFixture({
 				_id: TENANT_USER_ID,
 				name: 'Tenant user',
 				authorization: generateAuthorizations(1, {
-					providerAccesses: generateProviderAccesses(1, {
-						providerId: 'tenant',
+					appAccesses: generateAppAccesses(1, {
+						appId: 'tenant',
 						tenantId: TEST_TENANT_ID,
 						roles: [TENANT_USER_ROLE_ID],
 					})
@@ -70,14 +70,14 @@ export default defineFixture({
 			generateUsers(1, {
 				name: 'Tenant and core user',
 				authorization: generateAuthorizations(1, {
-					providerAccesses: [
-						generateProviderAccesses(1, {
-							providerId: 'tenant',
+					appAccesses: [
+						generateAppAccesses(1, {
+							appId: 'tenant',
 							tenantId: TEST_TENANT_ID,
 							roles: [TENANT_USER_ROLE_ID],
 						})[0],
-						generateProviderAccesses(1, {
-							providerId: 'core',
+						generateAppAccesses(1, {
+							appId: 'core',
 							roles: [CORE_USER_ROLE_ID],
 						})[0],
 					],

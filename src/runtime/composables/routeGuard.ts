@@ -1,10 +1,11 @@
 import {
-	useRuntimeConfig,
-	abortNavigation,
-	navigateTo,
+	useGuard,
 	useNuxtApp,
-	useGuard
+	navigateTo,
+	abortNavigation,
+	appHandlerFactory,
 } from '#imports';
+import type {AppContext} from '#app-context-module/types';
 
 /**
  * Middleware helper function to protect a page from authentications which are
@@ -21,29 +22,27 @@ import {
  * });
  * ```
  *
- * @param providerId => The provider context which should be protected
- * @param tenantId => The tenant context which should be protected if the provider is multi-tenant
+ * @param appContext => The app context which should be protected
  * @param permissions => Permissions required to access the page
  */
 export const useRouteGuard = (
-	providerId: string,
-	tenantId: string | null = null,
+	appContext: AppContext,
 	permissions?: string[] | string
 ) => {
-	const {
-		loginPageRoute,
-		jailPageRoute,
-		providerJailPageRoute
-	} = useRuntimeConfig().public.authorizationModule;
 	const {$uiModule} = useNuxtApp();
 	const unauthorizedMessage = 'Unauthorized - Configure a loginPageRoute in nuxt config \nto automatically redirect unauthorized users to login page.';
 	const jailMessage = 'Banned - Configure a jailPageRoute in nuxt config \nto automatically redirect banned users to jail page.';
 	const invalidPermissionsMessage = 'Unauthorized - You do not have the required permissions to access this page.\nPlease contact your administrator.';
+	const appHandler = appHandlerFactory(appContext.appId, appContext.tenantId);
 
 	// Check if is authorized
 	if (!useGuard().isLoggedIn()) {
-		if (loginPageRoute) {
-			return navigateTo(loginPageRoute);
+		if (appHandler?.onUnauthorized) {
+			return appHandler.onUnauthorized();
+		}
+
+		if (appHandler?.loginPageRoute) {
+			return navigateTo(appHandler.loginPageRoute);
 		}
 
 		// On route change
@@ -52,14 +51,18 @@ export const useRouteGuard = (
 		// On initial page load
 		return abortNavigation({
 			statusCode: 401,
-			statusMessage: unauthorizedMessage
+			message: unauthorizedMessage
 		});
 	}
 
 	// Check if authorization is banned system-wide
 	if (useGuard().token.value?.isBanned === true) {
-		if (jailPageRoute) {
-			return navigateTo(jailPageRoute);
+		if (appHandler?.onBannedSystemWide) {
+			return appHandler.onBannedSystemWide();
+		}
+
+		if (appHandler?.jailPageRoute) {
+			return navigateTo(appHandler.jailPageRoute);
 		}
 
 		// On route change
@@ -68,15 +71,19 @@ export const useRouteGuard = (
 		// On initial page load
 		return abortNavigation({
 			statusCode: 403,
-			statusMessage: jailMessage
+			message: jailMessage
 		});
 	}
 
-	// Check if authorization is banned in provider context
-	if (useGuard().token.value?.providers?.some(provider =>
-		provider.providerId === providerId && provider.tenantId === tenantId && provider.isBanned === true)) {
-		if (providerJailPageRoute) {
-			return navigateTo(providerJailPageRoute);
+	// Check if authorization is banned in app context
+	if (useGuard().token.value?.apps?.some(app =>
+		app.appId === appContext.appId && app.tenantId === appContext.tenantId && app.isBanned === true)) {
+		if (appHandler?.onBannedInApp) {
+			return appHandler.onBannedInApp();
+		}
+
+		if (appHandler?.appJailPageRoute) {
+			return navigateTo(appHandler.appJailPageRoute);
 		}
 
 		// On route change
@@ -85,19 +92,34 @@ export const useRouteGuard = (
 		// On initial page load
 		return abortNavigation({
 			statusCode: 403,
-			statusMessage: jailMessage
+			message: jailMessage
 		});
 	}
 
 	// Check permissions if provided
-	if (permissions && !useGuard().hasPermissionTo(permissions, providerId, tenantId)) {
+	if (permissions && !useGuard().hasPermissionTo(permissions, appContext.appId, appContext.tenantId)) {
 		// On route change
 		$uiModule.toaster.toastError(invalidPermissionsMessage);
 
 		// On initial page load
 		return abortNavigation({
 			statusCode: 403,
-			statusMessage: invalidPermissionsMessage
+			message: invalidPermissionsMessage
 		});
 	}
+}
+
+/**
+ * Middleware like useRouteGuard but with the app context from the appContext composable.
+ *
+ * @param permissions => Permissions required to access the page
+ */
+export const useAppContextRouteGuard = (permissions?: string[] | string) => {
+	const {context} = useNuxtApp().$appContextModule;
+
+	if (!context) {
+		throw new Error('App context is not available. Make sure an appContext is set before calling useAppContextRouteGuard.');
+	}
+
+	return useRouteGuard(context, permissions);
 }

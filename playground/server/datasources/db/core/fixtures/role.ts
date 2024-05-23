@@ -16,7 +16,7 @@ export default defineFixture({
 				_id: TENANT_ADMIN_ROLE_ID,
 				name: 'Admin',
 				isAdmin: true,
-				providerId: 'tenant',
+				appId: 'tenant',
 				tenantId: TEST_TENANT_ID
 			})[0],
 			generateRoles(1, {
@@ -24,24 +24,24 @@ export default defineFixture({
 				name: 'Employee',
 				isAdmin: false,
 				permissions: Object.values(PermissionId),
-				providerId: 'tenant',
+				appId: 'tenant',
 				tenantId: TEST_TENANT_ID
 			})[0],
 			generateRoles(1, {
 				_id: CORE_ADMIN_ROLE_ID,
 				name: 'Admin',
 				isAdmin: true,
-				providerId: 'core'
+				appId: 'core'
 			})[0],
 			generateRoles(1, {
 				_id: CORE_USER_ROLE_ID,
 				name: 'Employee',
 				isAdmin: false,
 				permissions: Object.values(PermissionId),
-				providerId: 'core'
+				appId: 'core'
 			})[0],
 			...generateRoles(96, {
-				providerId: 'tenant',
+				appId: 'tenant',
 				tenantId: TEST_TENANT_ID
 			})
 		])

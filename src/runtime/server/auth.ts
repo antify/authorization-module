@@ -20,12 +20,12 @@ const authorizationToJwt = (authorization: Authorization): JsonWebToken => {
 		id: authorization._id,
 		isSuperAdmin: authorization.isSuperAdmin,
 		isBanned: authorization.isBanned,
-		providers: authorization.providerAccesses.map(providerAccess => ({
-			providerId: providerAccess.providerId,
-			tenantId: providerAccess.tenantId,
-			isAdmin: emitValuesFromRoles(providerAccess.roles).isAdmin,
-			isBanned: providerAccess.isBanned,
-			permissions: emitValuesFromRoles(providerAccess.roles).permissions
+		apps: authorization.appAccesses.map(appAccess => ({
+			appId: appAccess.appId,
+			tenantId: appAccess.tenantId,
+			isAdmin: emitValuesFromRoles(appAccess.roles).isAdmin,
+			isBanned: appAccess.isBanned,
+			permissions: emitValuesFromRoles(appAccess.roles).permissions
 		}))
 	};
 }
@@ -39,9 +39,9 @@ export const useAuth = () => {
 
 	return {
 		async login(event: H3Event, authorization: Authorization) {
-			if (authorization.providerAccesses[0]?.roles[0] &&
-				!authorization.providerAccesses[0].roles[0]?.providerId) {
-				throw new Error('The authorization.providerAccesses.roles is not populated. To make the login work, provide a populated authorization object.');
+			if (authorization.appAccesses[0]?.roles[0] &&
+				!authorization.appAccesses[0].roles[0]?.appId) {
+				throw new Error('The authorization.appAccesses.roles is not populated. To make the login work, provide a populated authorization object.');
 			}
 
 			const token = authorizationToJwt(authorization);

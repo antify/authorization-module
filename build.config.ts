@@ -12,9 +12,19 @@ export default defineBuildConfig({
 	],
 	externals: [
 		// TODO:: doublecheck with code
-		'mongoose',
-		'jose',
+		'@antify/database',
+		'@antify/ui-module',
+		'@antify/database-module',
+		'@antify/validate',
+		'@fortawesome/free-solid-svg-icons',
 		'crypto',
+		'date-fns',
+		'h3',
+		'jose',
+		'mongoose',
+		'ofetch',
 		'pathe',
+		'pinia',
+		'#vue-router'
 	]
 });

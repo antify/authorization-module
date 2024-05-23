@@ -12,9 +12,9 @@ const getListingRoute = () => ({ name: 'roles' })
 </script>
 
 <template>
-  <AntAuthRoleDetailPage
+  <AuthorizationModuleRoleDetailPage
     :role-id="$route.params.roleId"
-    provider="core"
+    app="core"
     :get-detail-route="getDetailRoute"
     :get-listing-route="getListingRoute"
   />

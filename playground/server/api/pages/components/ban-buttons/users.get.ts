@@ -1,14 +1,14 @@
 import type {H3Event} from 'h3';
-import {useDatabaseClient} from '#database-module';
 import {defineEventHandler} from '#imports';
 import {User} from '~/server/datasources/db/core/schemas/user';
+import databaseHandler from '~/server/datasources/db/core/databaseHandler';
 
 export default defineEventHandler(async (event: H3Event) => {
-	const client = await useDatabaseClient(event)
+	const client = await databaseHandler.getMainDatabaseClient();
 
 	return await client.getModel<User>('users').find({})
 		.populate({
-			path: 'authorization.providerAccesses.roles',
+			path: 'authorization.appAccesses.roles',
 			model: client.getModel('authorization_roles')
 		})
 		.sort('name');

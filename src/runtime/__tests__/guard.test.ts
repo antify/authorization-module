@@ -8,23 +8,23 @@ describe('Guard tests', async () => {
 	const superAdminToken = {
 		'id': 'test-id',
 		'isSuperAdmin': true,
-		'providers': [
+		'apps': [
 			{
-				'providerId': 'core',
+				'appId': 'core',
 				'tenantId': '',
 				'permissions': [
 					'CAN_TEST'
 				]
 			},
 			{
-				'providerId': 'tenant',
+				'appId': 'tenant',
 				'tenantId': 'one',
 				'permissions': [
 					'CAN_TEST'
 				]
 			},
 			{
-				'providerId': 'tenant',
+				'appId': 'tenant',
 				'tenantId': 'two',
 				'permissions': [
 					'CAN_TEST'
@@ -37,10 +37,10 @@ describe('Guard tests', async () => {
 	const adminToken = {
 		'id': 'test-id',
 		'isSuperAdmin': false,
-		'providers': [
+		'apps': [
 			{
 				'isAdmin': true,
-				'providerId': 'core',
+				'appId': 'core',
 				'tenantId': '',
 				'permissions': [
 					'CAN_TEST'
@@ -48,7 +48,7 @@ describe('Guard tests', async () => {
 			},
 			{
 				'isAdmin': true,
-				'providerId': 'tenant',
+				'appId': 'tenant',
 				'tenantId': 'one',
 				'permissions': [
 					'CAN_TEST'
@@ -56,7 +56,7 @@ describe('Guard tests', async () => {
 			},
 			{
 				'isAdmin': true,
-				'providerId': 'tenant',
+				'appId': 'tenant',
 				'tenantId': 'two',
 				'permissions': [
 					'CAN_TEST'
@@ -69,10 +69,10 @@ describe('Guard tests', async () => {
 	const normalToken = {
 		'id': 'test-id',
 		'isSuperAdmin': false,
-		'providers': [
+		'apps': [
 			{
 				'isAdmin': false,
-				'providerId': 'core',
+				'appId': 'core',
 				'tenantId': '',
 				'permissions': [
 					'CAN_TEST'
@@ -80,7 +80,7 @@ describe('Guard tests', async () => {
 			},
 			{
 				'isAdmin': false,
-				'providerId': 'tenant',
+				'appId': 'tenant',
 				'tenantId': 'one',
 				'permissions': [
 					'CAN_TEST'
@@ -88,7 +88,7 @@ describe('Guard tests', async () => {
 			},
 			{
 				'isAdmin': false,
-				'providerId': 'tenant',
+				'appId': 'tenant',
 				'tenantId': 'two',
 				'permissions': [
 					'CAN_TEST'
@@ -102,11 +102,11 @@ describe('Guard tests', async () => {
 		'id': 'test-id',
 		'isSuperAdmin': false,
 		'isBanned': true,
-		'providers': [
+		'apps': [
 			{
 				'isAdmin': false,
 				'isBanned': true,
-				'providerId': 'core',
+				'appId': 'core',
 				'tenantId': '',
 				'permissions': [
 					'CAN_TEST'
@@ -116,15 +116,15 @@ describe('Guard tests', async () => {
 		'exp': 32524370248,
 		'iat': 1693214248
 	};
-	const bannedProviderToken = {
+	const bannedAppToken = {
 		'id': 'test-id',
 		'isSuperAdmin': false,
 		'isBanned': true,
-		'providers': [
+		'apps': [
 			{
 				'isAdmin': false,
 				'isBanned': true,
-				'providerId': 'core',
+				'appId': 'core',
 				'tenantId': '',
 				'permissions': [
 					'CAN_TEST'
@@ -219,8 +219,8 @@ describe('Guard tests', async () => {
 		expect(guard.hasPermissionTo('CAN_TEST', 'core')).toBe(false);
 	});
 
-	test('should not give access to a user which is banned for a provider', async () => {
-		const guard = new Guard(bannedProviderToken);
+	test('should not give access to a user which is banned for a app', async () => {
+		const guard = new Guard(bannedAppToken);
 
 		expect(guard.hasPermissionTo('CAN_TEST', 'core')).toBe(false);
 	});

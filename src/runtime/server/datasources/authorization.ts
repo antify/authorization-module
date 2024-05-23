@@ -1,17 +1,17 @@
 import {type Document, type SchemaDefinition} from 'mongoose';
-import {type ProviderAccess, providerAccessSchemaDefinition} from './providerAccess';
+import {type AppAccess, appAccessSchemaDefinition} from './appAccess';
 
 export interface Authorization {
 	_id: string;
 	isSuperAdmin: boolean;
 	isBanned: boolean;
-	providerAccesses: ProviderAccess[];
+	appAccesses: AppAccess[];
 }
 export type AuthorizationDocument = Document<string, undefined, Authorization>
 
 export const authorizationSchemaDefinition: SchemaDefinition = {
-	providerAccesses: {
-		type: [providerAccessSchemaDefinition],
+	appAccesses: {
+		type: [appAccessSchemaDefinition],
 		required: true,
 		default: []
 	},

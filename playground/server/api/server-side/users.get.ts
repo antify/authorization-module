@@ -1,10 +1,10 @@
-import type {H3Event} from 'h3';
-import {useDatabaseClient} from '#database-module';
 import {defineEventHandler} from '#imports';
 import {User} from '~/server/datasources/db/core/schemas/user';
+import databaseHandler from '../../datasources/db/core/databaseHandler';
 
-export default defineEventHandler(async (event: H3Event) => {
-	const userModel = (await useDatabaseClient(event)).getModel<User>('users');
+export default defineEventHandler(async () => {
+	const userModel = (await databaseHandler.getMainDatabaseClient())
+		.getModel<User>('users');
 
 	return await userModel.find({}).sort('name');
 });

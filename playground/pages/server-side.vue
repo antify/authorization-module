@@ -1,21 +1,21 @@
 <script lang="ts" setup>
 import {
 	useUi,
+	useGuard,
 	useFetch,
 	useNuxtApp,
-	useUiClient,
-	refreshTokenCookie
+	useUiClient
 } from '#imports';
 import {ref, computed} from 'vue';
 
-const PROVIDER = 'core'
+const guard = useGuard();
+const APP = 'core'
 const {Grouped} = useUi();
-const {$databaseModule, $uiModule} = useNuxtApp();
+const {$uiModule} = useNuxtApp();
 const {
 	data: users,
 	pending: pendingGetUsers
 } = useFetch('/api/server-side/users', {
-	headers: $databaseModule.getContextHeaders(PROVIDER),
 	onResponse({response}) {
 		if (response.status === 200) {
 			selectedUserId.value = response._data[0]._id
@@ -33,7 +33,6 @@ const {
 	execute,
 	status: loginStatus,
 } = useFetch('/api/server-side/login', {
-	headers: $databaseModule.getContextHeaders(PROVIDER),
 	body: {
 		userId: selectedUserId
 	},
@@ -45,7 +44,7 @@ const {
 			$uiModule.toaster.toastSuccess('Logged in successfully');
 
 			// Give all watchers, which have an eye on the cookie, the chance to react
-			refreshTokenCookie();
+			guard.refresh();
 		}
 	}
 });

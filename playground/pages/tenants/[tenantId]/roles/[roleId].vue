@@ -14,9 +14,9 @@ const getListingRoute = () => ({
 
 <template>
   <div>
-    <AntAuthRoleDetailPage
+    <AuthorizationModuleRoleDetailPage
       :role-id="$route.params.roleId"
-      provider="tenant"
+      app="tenant"
       :tenant-id="tenantId"
       :get-detail-route="getDetailRoute"
       :get-listing-route="getListingRoute"

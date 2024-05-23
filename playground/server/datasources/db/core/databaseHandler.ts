@@ -2,19 +2,18 @@ import {defineDatabaseHandler, type Role} from '#authorization-module';
 import {type SingleConnectionClient, getDatabaseClient as _getDatabaseClient} from '@antify/database';
 import {type User} from './schemas/user';
 
-async function getDatabaseClient() {
-	return (await _getDatabaseClient('core') as SingleConnectionClient).connect();
-}
-
 export default defineDatabaseHandler({
-	findOneAuthorization: async (id: string) => {
-		const client = await getDatabaseClient();
+	async getMainDatabaseClient() {
+		return (await _getDatabaseClient('core') as SingleConnectionClient).connect()
+	},
+	async findOneAuthorization(id: string) {
+		const client = await this.getMainDatabaseClient();
 		const user = await client.getModel<User>('users')
 			.findOne({
 				'authorization._id': id
 			})
 			.populate({
-				path: 'authorization.providerAccesses.roles',
+				path: 'authorization.appAccesses.roles',
 				model: client.getModel<Role>('authorization_roles')
 			});
 
@@ -24,8 +23,8 @@ export default defineDatabaseHandler({
 
 		return user.authorization;
 	},
-	updateAuthorization: async (authorization) => {
-		const client = await getDatabaseClient();
+	async updateAuthorization(authorization) {
+		const client = await this.getMainDatabaseClient();
 		const user = await client.getModel<User>('users')
 			.findOne({
 				'authorization._id': authorization._id

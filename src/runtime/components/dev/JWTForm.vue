@@ -1,6 +1,6 @@
 <script lang='ts' setup>
-import type {JsonWebToken} from '../../types';
-import ProviderBox from './ProviderBox.vue';
+import type {JsonWebToken, JsonWebTokenApp} from '../../types';
+import AppBox from './AppBox.vue';
 import {format, getUnixTime} from 'date-fns';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
 import {ref, computed, watch, onMounted} from 'vue';
@@ -8,9 +8,9 @@ import {useGuard, useFetch, useUiClient} from '#imports';
 
 const props = withDefaults(defineProps<{
 	open: boolean
-	defaultToken?: JsonWebToken
+	defaultToken?: Partial<JsonWebToken>
 }>(), {
-	defaultToken: null
+	defaultToken: () => ({})
 });
 const emit = defineEmits(['update:open']);
 const guard = useGuard();
@@ -26,15 +26,15 @@ const {status, execute} = useFetch(
 	}
 );
 const {
-	status: statusGetAllPermissions,
-	data: allPermissionsData
-} = useFetch('/api/authorization-module/dev/jwt-form/all-permissions', {
+	status: statusGetAppData,
+	data: appData
+} = useFetch('/api/authorization-module/dev/jwt-form/app-data', {
 	method: 'get'
 });
 const allPermissions = computed(() => {
-	return allPermissionsData.value || [];
+	return appData.value?.permissions || [];
 });
-const skeleton = useUiClient().utils.createSkeleton(statusGetAllPermissions);
+const skeleton = useUiClient().utils.createSkeleton(statusGetAppData);
 const _open = computed({
 	get() {
 		return props.open;
@@ -86,46 +86,43 @@ function setTokenValue() {
 }
 
 function setDefaultData() {
-	token.value = props.defaultToken || createToken({
-		providers: [
-			createEmptyProvider({'providerId': 'core'}),
-			createEmptyProvider({'providerId': 'tenant'})
-		]
-	});
+	token.value = createToken(props.defaultToken);
 }
 
-function createToken(data: JsonWebToken = {}): JsonWebToken {
-	return {
+function createToken(data: Partial<JsonWebToken> = {}): JsonWebToken {
+	const _data = {
 		...{
 			id: '',
 			isSuperAdmin: false,
 			isBanned: false,
-			providers: [
-				createEmptyProvider()
-			]
+			apps: []
 		},
 		...data
 	};
+
+	_data.apps = _data.apps.map((app) => createApp(app));
+
+	return _data;
 }
 
-function createEmptyProvider(data = {}) {
+function createApp(data: Partial<JsonWebTokenApp> = {}) {
 	return {
 		...{
 			isAdmin: false,
 			isBanned: false,
-			providerId: '',
+			appId: '',
 			tenantId: '',
 			permissions: []
 		}, ...data
 	};
 }
 
-function addProvider(data = {}) {
-	token.value.providers.push(createEmptyProvider(data));
+function addApp(data = {}) {
+	token.value.apps.push(createApp(data));
 }
 
-function removeProvider(index) {
-	token.value.providers.splice(index, 1);
+function removeApp(index) {
+	token.value.apps.splice(index, 1);
 }
 
 watch(() => props.open, (val) => {
@@ -162,27 +159,28 @@ onMounted(() => setTokenValue())
           />
         </AntFormGroup>
 
-        <div>Providers</div>
+        <AntFormGroupLabel>Apps</AntFormGroupLabel>
 
         <div class="flex flex-wrap">
-          <ProviderBox
-            v-for="(provider, index) of token.providers"
+          <AppBox
+            v-for="(app, index) of token.apps"
             :key="index"
-            v-model:is-admin="provider.isAdmin"
-            v-model:is-banned="provider.isBanned"
-            v-model:provider-id="provider.providerId"
-            v-model:tenant-id="provider.tenantId"
-            v-model:permissions="provider.permissions"
+            v-model:is-admin="app.isAdmin"
+            v-model:is-banned="app.isBanned"
+            v-model:app-id="app.appId"
+            v-model:tenant-id="app.tenantId"
+            v-model:permissions="app.permissions"
             :all-permissions="allPermissions"
+            :all-apps="appData.apps || []"
             :skeleton="skeleton"
             class="mb-4 mr-4"
-            @remove="() => removeProvider(index)"
+            @remove="() => removeApp(index)"
           />
 
           <div class="flex items-center mb-4">
             <AntButton
               :icon-left="faPlus"
-              @click="addProvider"
+              @click="addApp"
             />
           </div>
         </div>

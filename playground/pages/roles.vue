@@ -8,8 +8,8 @@ const getCreateRoute = () => ({ name: 'roles-create' });
 
 <template>
   <div>
-    <AntAuthRoleListingPage
-      provider="core"
+    <AuthorizationModuleRoleListingPage
+      app="core"
       :table-full-width="$route.name === 'authorization_roles'"
       :get-detail-route="getDetailRoute"
       :get-create-route="getCreateRoute"

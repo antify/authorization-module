@@ -1,8 +1,8 @@
 import type {H3Event} from 'h3';
-import {useDatabaseClient} from '#database-module';
 import {defineEventHandler, readBody} from '#imports';
-import {type User} from '~/server/datasources/db/core/schemas/user';
 import {useAuth, type Role} from '#authorization-module';
+import {type User} from '~/server/datasources/db/core/schemas/user';
+import databaseHandler from '../../datasources/db/core/databaseHandler';
 
 export default defineEventHandler(async (event: H3Event) => {
 	const userId = (await readBody(event)).userId;
@@ -11,11 +11,11 @@ export default defineEventHandler(async (event: H3Event) => {
 		throw new Error('Missing userId');
 	}
 
-	const client = await useDatabaseClient(event);
+	const client = await databaseHandler.getMainDatabaseClient();
 	const user = await client.getModel<User>('users')
 		.findOne({_id: userId})
 		.populate({
-			path: 'authorization.providerAccesses.roles',
+			path: 'authorization.appAccesses.roles',
 			model: client.getModel<Role>('authorization_roles')
 		});
 

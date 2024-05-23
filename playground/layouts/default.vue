@@ -15,11 +15,11 @@ const navItems = [
 		label: 'Protected area',
 		children: [
 			{
-				label: 'Core provider',
+				label: 'Core app',
 				to: {name: 'protected-area-core'}
 			},
 			{
-				label: 'Tenant provider',
+				label: 'Tenant app',
 				to: {name: 'protected-area-tenantId', params: {tenantId: TEST_TENANT_ID}}
 			}
 		]
@@ -59,9 +59,11 @@ const navItems = [
 
 <template>
   <AntNavLeftLayout :navbar-items="navItems">
-    <slot />
+    <AntContent class="h-full">
+      <slot />
+    </AntContent>
 
-    <AntAuthJWTHelper
+    <AuthorizationModuleJWTHelper
       :default-token="defaultToken"
     />
     <AntToaster />

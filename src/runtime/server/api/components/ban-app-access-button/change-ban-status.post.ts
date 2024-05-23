@@ -6,15 +6,15 @@ import defineDatabaseHandler from '#authorization-module-database-handler';
 import {isMongoDbObjectIdRule, isOneOfRule, useValidator} from '@antify/validate';
 import type {
 	ChangeBanStatusRequestBody,
-	ProviderAccess
-} from '~/src/runtime/glue/components/ban-provider-access-button/types';
-import {type ProviderAccess as ProviderAccessDoc} from '../../../datasources/providerAccess';
+	AppAccess
+} from '~/src/runtime/glue/components/ban-app-access-button/types';
+import {type AppAccess as AppAccessDoc} from '../../../datasources/appAccess';
 
 export const validator = useValidator<ChangeBanStatusRequestBody>({
 	authorizationId: {
 		rules: isMongoDbObjectIdRule
 	},
-	providerAccessId: {
+	appAccessId: {
 		rules: isMongoDbObjectIdRule
 	},
 	action: {
@@ -22,7 +22,7 @@ export const validator = useValidator<ChangeBanStatusRequestBody>({
 	}
 });
 
-export default defineEventHandler<ProviderAccess>(async (event) => {
+export default defineEventHandler<AppAccess>(async (event) => {
 	const guard = await isLoggedInHandler(event);
 	const body = validator.validate(await readBody(event));
 
@@ -37,41 +37,41 @@ export default defineEventHandler<ProviderAccess>(async (event) => {
 	const databaseHandler = (defineDatabaseHandler as DatabaseHandler)
 	const authorization = await databaseHandler
 		.findOneAuthorization(body.authorizationId);
-	const providerAccessIndex = authorization?.providerAccesses
-		.findIndex((providerAccess) => providerAccess._id.toString() === body.providerAccessId);
+	const appAccessIndex = authorization?.appAccesses
+		.findIndex((appAccess) => appAccess._id.toString() === body.appAccessId);
 
-	if (!authorization || providerAccessIndex === -1 || providerAccessIndex === undefined) {
+	if (!authorization || appAccessIndex === -1 || appAccessIndex === undefined) {
 		return {
 			notFound: true
 		}
 	}
 
-	const providerAccess = authorization.providerAccesses[providerAccessIndex];
+	const appAccess = authorization.appAccesses[appAccessIndex];
 
 	/**
-	 * Keep in mind, the ProviderId and tenantId given
+	 * Keep in mind, the AppId and tenantId given
 	 * in request headers emits, where the data is stored in the database.
 	 *
-	 * But to make sure, the user has the permission to ban / unban the provider access,
-	 * the ProviderAccess.providerId and ProviderAccess.tenantId must be compared with
+	 * But to make sure, the user has the permission to ban / unban the app access,
+	 * the AppAccess.appId and AppAccess.tenantId must be compared with
 	 * the token.
 	 */
 	if (
 		!guard.hasPermissionTo(
 			body.action === 'ban' ?
-				PermissionId.CAN_BAN_PROVIDER_ACCESS :
-				PermissionId.CAN_UNBAN_PROVIDER_ACCESS,
-			providerAccess.providerId,
-			providerAccess.tenantId) ||
+				PermissionId.CAN_BAN_APP_ACCESS :
+				PermissionId.CAN_UNBAN_APP_ACCESS,
+			appAccess.appId,
+			appAccess.tenantId) ||
 		// Make sure, the user has permissions to ban an admin user
 		(
-			isAdmin(providerAccess) &&
+			isAdmin(appAccess) &&
 			!guard.hasPermissionTo(
 				body.action === 'ban' ?
-					PermissionId.CAN_BAN_ADMIN_PROVIDER_ACCESS :
-					PermissionId.CAN_UNBAN_ADMIN_PROVIDER_ACCESS,
-				providerAccess.providerId,
-				providerAccess.tenantId)
+					PermissionId.CAN_BAN_ADMIN_APP_ACCESS :
+					PermissionId.CAN_UNBAN_ADMIN_APP_ACCESS,
+				appAccess.appId,
+				appAccess.tenantId)
 		)
 	) {
 		throw createError({
@@ -80,21 +80,21 @@ export default defineEventHandler<ProviderAccess>(async (event) => {
 		});
 	}
 
-	authorization.providerAccesses[providerAccessIndex].isBanned = body.action === 'ban';
+	authorization.appAccesses[appAccessIndex].isBanned = body.action === 'ban';
 
 	await databaseHandler.updateAuthorization(authorization);
 
 	return {
-		_id: providerAccess._id,
-		isBanned: providerAccess.isBanned,
-		providerId: providerAccess.providerId,
-		tenantId: providerAccess.tenantId,
-		roles: providerAccess.roles.map(role => ({
+		_id: appAccess._id,
+		isBanned: appAccess.isBanned,
+		appId: appAccess.appId,
+		tenantId: appAccess.tenantId,
+		roles: appAccess.roles.map(role => ({
 			isAdmin: role.isAdmin
 		}))
 	}
 });
 
-function isAdmin(providerAccess: ProviderAccessDoc) {
-	return providerAccess.roles.some(role => role.isAdmin);
+function isAdmin(appAccess: AppAccessDoc) {
+	return appAccess.roles.some(role => role.isAdmin);
 }

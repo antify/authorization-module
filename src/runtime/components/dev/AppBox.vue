@@ -1,10 +1,11 @@
 <script lang='ts' setup>
-import {type Permission} from '../../types';
+import {type App, type Permission} from '../../types';
 import {faMultiply} from '@fortawesome/free-solid-svg-icons';
 import {withDefaults, computed} from 'vue';
+import {onMounted} from '#imports';
 
 const emit = defineEmits([
-	'update:providerId',
+	'update:appId',
 	'update:tenantId',
 	'update:permissions',
 	'update:isAdmin',
@@ -15,21 +16,27 @@ const props = withDefaults(defineProps<{
 	isAdmin: boolean
 	isBanned: boolean
 	permissions: string[]
-	providerId: string
-	tenantId?: string
+	appId: string
+	tenantId: string | null
 	skeleton: boolean
 	allPermissions: Permission[]
+	allApps: App[]
 }>(), {
 	permissions: () => [],
-	tenantId: '',
 	skeleton: false
 });
 
-const allPermissions = computed(() => {
-	return props.allPermissions.map((item: Permission) => ({
-		value: item.id,
-		label: item.name
-	})) || [];
+function getAppsPermissions(appId: string) {
+	return props.allPermissions
+		.filter(permission => permission.appIds === undefined || permission.appIds.some(_appId => _appId === appId));
+}
+
+const appsPermissionsCheckboxes = computed(() => {
+	return getAppsPermissions(props.appId)
+		.map((item: Permission) => ({
+			value: item.id,
+			label: item.name
+		}));
 });
 const _permissions = computed({
 	get() {
@@ -39,12 +46,22 @@ const _permissions = computed({
 		emit('update:permissions', val);
 	}
 });
-const _providerId = computed({
+const _appId = computed({
 	get() {
-		return props.providerId;
+		return props.appId;
 	},
 	set(val) {
-		emit('update:providerId', val);
+		// Unselect all permissions, the new app is not allowed to have.
+		const appsPermissions = getAppsPermissions(val);
+
+		emit('update:permissions', props.permissions.filter(permission => appsPermissions.some(_permission => _permission.id === permission)));
+
+		// Empty tenant id if the new app is not multi tenant.
+		if (!props.allApps.find(app => app.id === val)?.isMultiTenant) {
+			_tenantId.value = null;
+		}
+
+		emit('update:appId', val);
 	}
 });
 const _tenantId = computed({
@@ -71,14 +88,28 @@ const _isBanned = computed({
 		emit('update:isBanned', val);
 	}
 });
+const allAppsOptions = computed(() => {
+	return props.allApps.map((app) => ({
+		value: app.id,
+		label: app.id
+	}));
+});
+const isMultiTenant = computed(() => props.allApps.find(app => app.id === props.appId)?.isMultiTenant || false);
 
 function selectAll() {
-	emit('update:permissions', allPermissions.value.map((permission) => permission.value));
+	emit('update:permissions', appsPermissionsCheckboxes.value.map((permission) => permission.value));
 }
 
 function unselectAll() {
 	emit('update:permissions', []);
 }
+
+onMounted(() => {
+	// Make sure one valid app is selected per default.
+	if (!props.allApps.some(app => app.id === props.appId) && props.allApps[0]) {
+		_appId.value = props.allApps[0].id;
+	}
+});
 </script>
 
 <template>
@@ -93,30 +124,35 @@ function unselectAll() {
       />
     </div>
 
-    <AntSwitch
-      v-model="_isAdmin"
+    <AntSelect
+      v-model="_appId"
+      :options="allAppsOptions"
       :skeleton="skeleton"
-      label="Admin"
-    />
-
-    <AntSwitch
-      v-model="_isBanned"
-      :skeleton="skeleton"
-      label="Banned"
-    />
-
-    <AntTextInput
-      v-model="_providerId"
-      :skeleton="skeleton"
-      label="Provider ID"
-      autofocus
+      label="App ID"
     />
 
     <AntTextInput
       v-model="_tenantId"
       :skeleton="skeleton"
+      :disabled="!isMultiTenant"
       label="Tenant ID"
     />
+
+    <AntFormGroup direction="row">
+      <AntSwitch
+        v-model="_isAdmin"
+        :skeleton="skeleton"
+        label="Admin"
+      />
+
+      <AntSwitch
+        v-model="_isBanned"
+        :skeleton="skeleton"
+        label="Banned"
+      />
+    </AntFormGroup>
+
+
 
     <div>
       <AntField
@@ -145,7 +181,7 @@ function unselectAll() {
       <AntCheckboxGroup
         v-model="_permissions"
         :skeleton="skeleton"
-        :checkboxes="allPermissions"
+        :checkboxes="appsPermissionsCheckboxes"
       />
     </div>
   </div>

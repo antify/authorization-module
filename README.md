@@ -5,9 +5,8 @@ It ships with a set of components and utils to make it easy to integrate authori
 
 ## Architecture
 
-This module uses the @antify/database, which is a multi-connection client for mongoose.
-It adapts his principles, that one provider, which represents a database, stores all main data 
-of all other providers and tenants in the system.
+This module supports different permissions in different multi-tenant applications.
+All permissions should be stored in one application instance.
 
 To encapsulate the authorization logic from your main application, this module provides an Authorization object.
 Extend your applications Account or User model with the Authorization object to extend your app with 
@@ -16,7 +15,7 @@ authorization functionality.
 ### Permission
 
 There's a global set of permissions. An authorization can have multiple permissions 
-for each tenant and provider.
+for each app and tenant.
 
 ### Role
 
@@ -36,7 +35,7 @@ An authorization can be banned in two ways:
 - Per tenant
 
 The isBan flag always is more important than the isAdmin flag.
-E. g.: A banned user has no permissions, even if he is an admin.
+E. g.: A banned user has no permissions, even if he is an admin or super admin.
 
 An authenticated user always get a valid token, even he's system-wide banned. 
 This gives the possibility to redirect him to login page OR show him a jail page.
@@ -51,19 +50,21 @@ following hierarchy is used:
 
 - System-wide ban
 - Is super admin
-- Is banned in provider
-- Is admin in provider
-- Has permission in provider
+- Is banned in app
+- Is admin in app
+- Has permission in app
 
 ## TODO::
 
-- [ ] Make sure that a ProviderAccess providerId and tenantId is the same as the roles providerId and tenantId
+- [ ] Add validator which check the tokens structure on runtime.
+- [ ] Make sure that a AppAccess appId and tenantId is the same as the roles appId and tenantId
 - [ ] Add refresh token process
 - [ ] Add access token process
 - [ ] Cleanup module.ts
 - [ ] Select multiple Roles components
 - [ ] Add roles CRUD
 - [ ] Composable to reach all permissions in system
+- [ ] Find a way to handle permissions properly across modules
 - [ ] Fix and add tests
 - [ ] Force logout or refresh token function to logout/ban all devices fast
 
@@ -120,9 +121,9 @@ A default jail page to show a user that he is banned.
 
 ## Important
 
-### Populate the authorization.providerAccesses.roles
+### Populate the authorization.appAccesses.roles
 
-Because `providerAccesses.roles` is a relation to the roles table, you need to populate it.
+Because `appAccesses.roles` is a relation to the roles table, you need to populate it.
 Also be careful, you need to add the model property to the populate method, because @antify/database
 is a multi connection client. To make mongoose work properly, you need to specify the model.
 Read more about
@@ -132,7 +133,7 @@ it [here](https://github.com/antify/database?tab=readme-ov-file#error-schema-has
 const user = await UserModel
 	.findOne({_id: userId})
 	.populate({
-		path: 'authorization.providerAccesses.roles',
+		path: 'authorization.appAccesses.roles',
 		model: client.getModel<Role>('authorization_roles')
 	});
 ```

@@ -9,13 +9,16 @@ import {
 
 export default defineEventHandler(async (event) => {
 	// TODO:: only call in dev mode!
-	const {tokenCookieName, jwtSecret} = useRuntimeConfig().authorizationModule;
+	const {tokenCookieName, jwtSecret, jwtExpiration} = useRuntimeConfig().authorizationModule;
 	const data = await readBody<JsonWebToken>(event);
+	const expirationDate = new Date();
+
+	expirationDate.setMinutes(expirationDate.getMinutes() + jwtExpiration);
 
 	setCookie(
 		event,
 		tokenCookieName,
-		await useAuth().signToken(data, jwtSecret, data.exp || '2h', data.iat)
+		await useAuth().signToken(data, jwtSecret, data.exp || expirationDate, data.iat)
 	);
 
 	return {};

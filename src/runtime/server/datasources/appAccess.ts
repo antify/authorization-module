@@ -5,18 +5,18 @@ import {
 	Schema
 } from 'mongoose';
 
-export interface ProviderAccess {
+export interface AppAccess {
 	_id: string;
-	providerId: string;
+	appId: string;
 	tenantId: string | null;
 	roles: Role[];
 	isBanned: boolean;
 }
 
-export type ProviderAccessDocument = Document<string, undefined, ProviderAccess>
+export type AppAccessDocument = Document<string, undefined, AppAccess>
 
-export const providerAccessSchemaDefinition: SchemaDefinition = {
-	providerId: {
+export const appAccessSchemaDefinition: SchemaDefinition = {
+	appId: {
 		type: String,
 		required: true
 	},
@@ -38,7 +38,7 @@ export const providerAccessSchemaDefinition: SchemaDefinition = {
 			);
 
 			if (duplicates.length > 0) {
-				throw new Error(`Can not accociate one ProviderAccess one role multiple times. Duplicate role ids found: ${duplicates.join(', ')}`);
+				throw new Error(`Can not accociate one AppAccess one role multiple times. Duplicate role ids found: ${duplicates.join(', ')}`);
 			}
 		}
 	},

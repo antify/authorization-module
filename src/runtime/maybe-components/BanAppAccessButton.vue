@@ -1,42 +1,40 @@
 <script lang="ts" setup>
 // TODO:: Make it way more extendable form outside. Like renaming all labels and contents in the dialogs.
-import {ref, computed} from 'vue';
 import {
-	useFetch,
-	useNuxtApp,
+	ref,
 	useUi,
-	showError,
+	computed,
+	useFetch,
 	useGuard,
+	showError,
+	useNuxtApp,
 	useAuthResponseErrorHandler,
-	useRuntimeConfig
 } from '#imports';
-import type {Authorization, ChangeBanStatusRequestBody} from '../glue/components/ban-authorization-button/types';
+import type {ChangeBanStatusRequestBody, AppAccess} from '../glue/components/ban-app-access-button/types';
 import {PermissionId} from '../glue/permissions';
 
 const emit = defineEmits(['update:modelValue']);
 const props = defineProps<{
-	modelValue: Authorization,
+	modelValue: AppAccess,
+	authorizationId: string | null,
 	skeleton?: boolean,
 	disabled?: boolean
 }>();
 const _modelValue = computed({
 	get: () => props.modelValue,
-	set: (value: Authorization) => emit('update:modelValue', value)
+	set: (value: AppAccess) => emit('update:modelValue', value)
 });
-const {mainProviderId} = useRuntimeConfig().public.authorizationModule;
 const isBanDialogOpen = ref(false);
 const isUnbanDialogOpen = ref(false);
 const {$uiModule} = useNuxtApp();
 const guard = useGuard();
 const ui = useUi();
 const body = computed<ChangeBanStatusRequestBody>(() => ({
-	authorizationId: _modelValue.value._id as string,
+	appAccessId: _modelValue.value._id,
+	authorizationId: props.authorizationId,
 	action: _modelValue.value.isBanned ? 'unban' : 'ban'
 }));
-const {
-	status,
-	execute
-} = useFetch(() => '/api/authorization-module/components/ban-authorization-button/change-ban-status', {
+const {status, execute} = useFetch(() => '/api/authorization-module/components/ban-app-access-button/change-ban-status', {
 	method: 'post',
 	watch: false,
 	immediate: false,
@@ -46,8 +44,8 @@ const {
 
 		if (response.status === 200) {
 			if (response._data.notFound) {
-				return $uiModule.toaster.toastError('User not found. Maybe he got already deleted. Please refresh the page.');
-			} else if (body.value.action === 'ban') {
+				return $uiModule.toaster.toastError('User not found. Maybe he got already deleted.');
+			} if (body.value.action === 'ban') {
 				$uiModule.toaster.toastSuccess('User has been banned');
 			} else {
 				$uiModule.toaster.toastSuccess('User has been unbanned');
@@ -67,27 +65,34 @@ function executeChangeBanStatus(action: 'ban' | 'unban') {
 	execute();
 }
 
+const isAppAccessAnAdmin = computed(() => _modelValue.value.roles.some(role => role.isAdmin));
 const hasPermission = computed(() => {
-		if (_modelValue.value._id === null) {
-			return false;
-		}
-
-		// Do not allow, ban or unban himself
-		if (_modelValue.value._id === guard.token.value?.id) {
-			return false;
-		}
-
-		return _modelValue.value.isBanned ?
-			guard.hasPermissionTo(PermissionId.CAN_UNBAN_AUTHORIZATION, mainProviderId) :
-			guard.hasPermissionTo(PermissionId.CAN_BAN_AUTHORIZATION, mainProviderId)
+	if (_modelValue.value.appId === null) {
+		return false;
 	}
-);
+
+	// Do not allow, ban or unban himself
+	if (props.authorizationId === guard.token.value?.id) {
+		return false;
+	}
+
+	// Make sure, if the current app access is an admin, that the user has the permission to ban or unban an admin
+	if (isAppAccessAnAdmin.value) {
+		return _modelValue.value.isBanned ?
+			guard.hasPermissionTo(PermissionId.CAN_UNBAN_ADMIN_APP_ACCESS, _modelValue.value.appId, _modelValue.value.tenantId) :
+			guard.hasPermissionTo(PermissionId.CAN_BAN_ADMIN_APP_ACCESS, _modelValue.value.appId, _modelValue.value.tenantId)
+	}
+
+	return _modelValue.value.isBanned ?
+		guard.hasPermissionTo(PermissionId.CAN_UNBAN_APP_ACCESS, _modelValue.value.appId, _modelValue.value.tenantId) :
+		guard.hasPermissionTo(PermissionId.CAN_BAN_APP_ACCESS, _modelValue.value.appId, _modelValue.value.tenantId)
+});
 </script>
 
 <template>
   <AntField
     label="Ban"
-    description="Ban the user system-wide. This will prevent the user from logging in."
+    description="Ban the user from this application. This will prevent the user from logging in."
     :skeleton="props.skeleton"
   >
     <AntActionButton
@@ -106,18 +111,25 @@ const hasPermission = computed(() => {
       </template>
 
       <template #invalidPermissionTooltipContent>
-        <template v-if="_modelValue._id === guard.token.value?.id">
+        <template v-if="authorizationId === guard.token.value?.id">
           You can not
           <template v-if="!_modelValue.isBanned">ban</template>
           <template v-else>unban</template>
           yourself
         </template>
 
+        <template v-else-if="isAppAccessAnAdmin">
+          This user is an admin. You have no permission to
+          <template v-if="!_modelValue.isBanned">ban</template>
+          <template v-else>unban</template>
+          admin users
+        </template>
+
         <template v-else>
           You have no permission to
           <template v-if="!_modelValue.isBanned">ban</template>
           <template v-else>unban</template>
-          users.
+          users
         </template>
       </template>
     </AntActionButton>

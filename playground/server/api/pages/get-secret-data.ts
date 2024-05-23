@@ -1,14 +1,14 @@
 import type {H3Event} from 'h3';
-import {isAuthorizedHandler, isLoggedInHandler} from '#authorization-module/handlers';
+import {isAuthorizedHandler, isLoggedInHandler} from '#authorization-module';
 import {PermissionId} from '~/glue/permissions';
-import {getContext} from '#database-module';
+import {useAppContext} from '#app-context-module';
 import {defineEventHandler} from '#imports';
 
 export default defineEventHandler(async (event: H3Event) => {
-	const {provider, tenantId} = getContext(event);
+	const {appId, tenantId} = useAppContext().handleRequest(event);
 
 	await isLoggedInHandler(event);
-	await isAuthorizedHandler(event, PermissionId.CAN_READ_SECRET_DATA, provider, tenantId);
+	await isAuthorizedHandler(event, PermissionId.CAN_READ_SECRET_DATA, appId, tenantId);
 
 	return {
 		default: 'Secret data!',

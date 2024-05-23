@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 
 export const generateRoles = (
 	count: number = 100,
-	data: Partial<Role> & Required<Pick<Role, 'providerId'>>
+	data: Partial<Role> & Required<Pick<Role, 'appId'>>
 ): Role[] => {
 	return Array.from({length: count}, (_, index) => ({
 		_id: new mongoose.Types.ObjectId().toString(),

@@ -20,7 +20,7 @@ export default defineSchema(async (client) => {
 			default: {
 				isSuperAdmin: false,
 				isBanned: false,
-				providerAccesses: []
+				appAccesses: []
 			}
 		}
 	});

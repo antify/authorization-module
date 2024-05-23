@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@antify/app-context-module':
+    specifier: file:../app-context-module
+    version: file:../app-context-module(rollup@3.29.4)
   '@antify/database':
     specifier: ^1.1.0
     version: 1.1.0
@@ -12,8 +15,8 @@ dependencies:
     specifier: ^1.1.0
     version: 1.1.0(rollup@3.29.4)
   '@antify/ui-module':
-    specifier: ^1.5.1
-    version: 1.5.1(@fortawesome/fontawesome-svg-core@6.5.1)(@tiptap/core@2.2.4)(rollup@3.29.4)(typescript@5.4.2)
+    specifier: ^1.6.0
+    version: 1.6.0(@fortawesome/fontawesome-svg-core@6.5.1)(@tiptap/core@2.2.4)(rollup@3.29.4)(typescript@5.4.2)
   '@antify/validate':
     specifier: 1.14.0
     version: 1.14.0
@@ -29,6 +32,9 @@ dependencies:
   cookie-es:
     specifier: ^1.0.0
     version: 1.0.0
+  date-fns:
+    specifier: ^3.3.1
+    version: 3.3.1
   jose:
     specifier: ^5.2.2
     version: 5.2.2
@@ -52,9 +58,6 @@ devDependencies:
   '@nuxt/schema':
     specifier: ^3.10.3
     version: 3.10.3(rollup@3.29.4)
-  date-fns:
-    specifier: ^3.3.1
-    version: 3.3.1
   eslint:
     specifier: ^8.57.0
     version: 8.57.0
@@ -156,8 +159,8 @@ packages:
       - supports-color
       - uWebSockets.js
 
-  /@antify/ui-module@1.5.1(@fortawesome/fontawesome-svg-core@6.5.1)(@tiptap/core@2.2.4)(rollup@3.29.4)(typescript@5.4.2):
-    resolution: {integrity: sha512-6TufT1W9/UBL8AUEPeiyLwNcEZvLOLvGr20TJe1lNA7SpI6P8fm3jtlkZ9wwsBrseYr5WjrYMnFbDpZGp2aJ4g==}
+  /@antify/ui-module@1.6.0(@fortawesome/fontawesome-svg-core@6.5.1)(@tiptap/core@2.2.4)(rollup@3.29.4)(typescript@5.4.2):
+    resolution: {integrity: sha512-wHWHdYjM2lfHC9q0k/MdF7FgqsbDZhDXWexDJrqEZNEfkkTacAPy4Gh1Ql6RiXs5nLOT2TRtcVM2t+o4MGp9VQ==}
     dependencies:
       '@antify/validate': 1.14.0
       '@fortawesome/free-regular-svg-icons': 6.5.1
@@ -4912,7 +4915,7 @@ packages:
 
   /date-fns@3.3.1:
     resolution: {integrity: sha512-y8e109LYGgoQDveiEBD3DYXKba1jWf5BA8YU1FL5Tvm0BTdEfy54WLCwnuYWZNnzzvALy/QQ4Hov+Q9RVRv+Zw==}
-    dev: true
+    dev: false
 
   /dateformat@3.0.3:
     resolution: {integrity: sha512-jyCETtSl3VMZMWeRo7iY1FL19ges1t55hMo5yaam4Jrsm5EPL89UQkoQRyiI+Yf4k8r2ZpdngkV8hr1lIdjb3Q==}
@@ -10384,3 +10387,16 @@ packages:
       compress-commons: 5.0.3
       readable-stream: 3.6.2
     dev: true
+
+  file:../app-context-module(rollup@3.29.4):
+    resolution: {directory: ../app-context-module, type: directory}
+    id: file:../app-context-module
+    name: '@antify/app-context-module'
+    dependencies:
+      '@antify/validate': 1.14.0
+      '@nuxt/kit': 3.10.3(rollup@3.29.4)
+      cookie-es: 1.0.0
+    transitivePeerDependencies:
+      - rollup
+      - supports-color
+    dev: false

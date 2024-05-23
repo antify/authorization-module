@@ -1,11 +1,10 @@
 import * as jose from 'jose';
 import {Guard} from '../guard';
-import type {JsonWebToken} from '../types';
-import {refreshCookie, useCookie, useRuntimeConfig} from '#imports';
-import {computed} from 'vue';
+import type {JsonWebToken, Permission} from '../types';
+import {refreshCookie, useCookie, useRuntimeConfig, computed} from '#imports';
 
 export const useGuard = () => {
-	const {tokenCookieName} = useRuntimeConfig().public.authorizationModule;
+	const {tokenCookieName, permissions} = useRuntimeConfig().public.authorizationModule;
 	const rawToken = useCookie(tokenCookieName)
 	const token = computed({
 		get(): JsonWebToken | null {
@@ -16,7 +15,9 @@ export const useGuard = () => {
 			throw new Error('Logic Error: Do not set the token directly. Use the logout method instead ' +
 				'or make a login requests and call the refresh function afterwards.');
 		}
-	})
+	});
+
+	// TODO:: validate token content with @antify/validate
 
 	return {
 		token,
@@ -29,6 +30,7 @@ export const useGuard = () => {
 		/**
 		 * Because useCookie does not trigger on cookie changes through a Set-Cookie header in
 		 * a login response, a manual call must be triggered to refresh the token.
+		 * It gives all watchers, which have an eye on the cookie, the chance to react.
 		 */
 		refresh() {
 			refreshCookie(tokenCookieName)
@@ -36,8 +38,12 @@ export const useGuard = () => {
 		isLoggedIn() {
 			return new Guard(token.value).isLoggedIn()
 		},
-		hasPermissionTo(permission: string[] | string, providerId: string, tenantId: string | null = null) {
-			return new Guard(token.value).hasPermissionTo(permission, providerId, tenantId)
+		hasPermissionTo(permission: string[] | string, appId: string, tenantId: string | null = null) {
+			return new Guard(token.value).hasPermissionTo(permission, appId, tenantId)
+		},
+		// TODO:: implement in dev component
+		getAppPermissions(appId: string): Permission[] {
+			return permissions.filter((permission: Permission) => permission.appIds?.includes(appId) || !permission.appIds)
 		}
 	};
 };

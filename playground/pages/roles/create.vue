@@ -11,8 +11,8 @@ const getListingRoute = () => ({
 </script>
 
 <template>
-  <AntAuthCreateRolePage
-    provider="core"
+  <AuthorizationModuleCreateRolePage
+    app="core"
     :get-listing-route="getListingRoute"
     :get-detail-route="getDetailRoute"
   />

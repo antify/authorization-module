@@ -3,5 +3,5 @@
 </script>
 
 <template>
-  <AntAuthJailPage />
+  <AuthorizationModuleJailPage />
 </template>

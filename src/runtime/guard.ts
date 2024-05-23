@@ -36,7 +36,7 @@ export class Guard {
 		return this.token?.isSuperAdmin || false;
 	}
 
-	isAdmin(providerId: string, tenantId: string | null = null) {
+	isAdmin(appId: string, tenantId: string | null = null) {
 		if (this.token?.isBanned) {
 			return false;
 		}
@@ -45,49 +45,49 @@ export class Guard {
 			return true;
 		}
 
-		const provider = (this.token?.providers || [])
-			.find((provider) => tenantId ?
-				tenantId === provider.tenantId && provider.providerId === providerId :
-				provider.providerId === providerId);
+		const app = (this.token?.apps || [])
+			.find((app) => tenantId ?
+				tenantId === app.tenantId && app.appId === appId :
+				app.appId === appId);
 
-		if (provider?.isBanned) {
+		if (app?.isBanned) {
 			return false;
 		}
 
-		return !!provider?.isAdmin;
+		return !!app?.isAdmin;
 	}
 
-	hasPermissionTo(permission: string[] | string, providerId: string, tenantId: string | null = null) {
+	hasPermissionTo(permission: string[] | string, appId: string, tenantId: string | null = null) {
 		if (this.token?.isBanned) {
 			return false;
 		}
 
-		const provider = (this.token?.providers || [])
-			.find((provider) => tenantId ?
-				tenantId === provider.tenantId && provider.providerId === providerId :
-				provider.providerId === providerId);
+		const app = (this.token?.apps || [])
+			.find((app) => tenantId ?
+				tenantId === app.tenantId && app.appId === appId :
+				app.appId === appId);
 
-		if (!provider) {
+		if (!app) {
 			return !!this.token?.isSuperAdmin;
 		}
 
-		if (provider.isBanned) {
+		if (app.isBanned) {
 			return false;
 		}
 
-		if (provider.isAdmin || this.token?.isSuperAdmin) {
+		if (app.isAdmin || this.token?.isSuperAdmin) {
 			return true;
 		}
 
 		if (Array.isArray(permission)) {
-			return (provider.permissions || []).some((permissionItem) =>
+			return (app.permissions || []).some((permissionItem) =>
 				permission.some(
 					(permissionToFind) => permissionToFind === permissionItem
 				)
 			);
 		}
 
-		return (provider.permissions || []).some(
+		return (app.permissions || []).some(
 			(permissionItem) => permissionItem === permission
 		);
 	}

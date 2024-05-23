@@ -18,10 +18,9 @@ enum Position {
 
 withDefaults(defineProps<{
 	position?: Position
-	defaultToken?: JsonWebToken
+	defaultToken?: Partial<JsonWebToken>
 }>(), {
-	position: Position.bottomRight,
-	defaultToken: null
+	position: Position.bottomRight
 });
 const jwtModalOpen = ref(false);
 </script>

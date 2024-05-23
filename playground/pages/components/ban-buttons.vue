@@ -2,21 +2,18 @@
 import {computed, ref, watch} from 'vue'
 import {
 	useFetch,
-	useNuxtApp,
 	showError,
 	useUiClient
 } from '#imports';
+import {type AppAccess} from '../../../src/runtime/glue/components/ban-app-access-button/types';
 import {type Authorization} from '../../../src/runtime/glue/components/ban-authorization-button/types';
-import {type ProviderAccess} from '../../../src/runtime/glue/components/ban-provider-access-button/types';
 
-const {$databaseModule} = useNuxtApp()
 const {
 	data: users,
 	pending: pendingGetUsers
 } = useFetch('/api/pages/components/ban-buttons/users', {
 	method: 'get',
 	watch: false,
-	headers: $databaseModule.getContextHeaders('core'),
 	onResponse({response}) {
 		if (response.status === 500) {
 			return showError(response._data)
@@ -24,9 +21,9 @@ const {
 
 		if (response.status === 200) {
 			selectedUserId.value = response._data[0]._id
-			selectedProviderAccessId.value = response._data[0].authorization.providerAccesses[0]?._id || null
+			selectedAppAccessId.value = response._data[0].authorization.appAccesses[0]?._id || null
 			authorization.value = response._data[0].authorization
-			providerAccess.value = response._data[0].authorization.providerAccesses[0] || null
+			appAccess.value = response._data[0].authorization.appAccesses[0] || null
 		}
 	}
 });
@@ -43,18 +40,18 @@ const authorization = ref<Authorization>({
 	isSuperAdmin: null
 });
 const skeleton = useUiClient().utils.createSkeleton(pendingGetUsers);
-const selectedProviderAccessId = ref<string | null>(null)
-const providerAccess = ref<ProviderAccess>({
+const selectedAppAccessId = ref<string | null>(null)
+const appAccess = ref<AppAccess>({
 	_id: null,
 	isBanned: null,
-	providerId: null,
+	appId: null,
 	tenantId: null
 })
-const providerAccessOptions = computed(() => {
-	return (users.value?.find((user) => user._id === selectedUserId.value)?.authorization.providerAccesses || [])
-		.map((providerAccess) => ({
-			value: providerAccess._id,
-			label: `${providerAccess.providerId} - ${providerAccess.tenantId}`
+const appAccessOptions = computed(() => {
+	return (users.value?.find((user) => user._id === selectedUserId.value)?.authorization.appAccesses || [])
+		.map((appAccess) => ({
+			value: appAccess._id,
+			label: `${appAccess.appId} - ${appAccess.tenantId}`
 		}))
 })
 
@@ -63,15 +60,15 @@ watch(selectedUserId, (val) => {
 
 	if (user) {
 		authorization.value = user.authorization
-		selectedProviderAccessId.value = user.authorization.providerAccesses[0]?._id || null
+		selectedAppAccessId.value = user.authorization.appAccesses[0]?._id || null
 	}
 })
-watch(selectedProviderAccessId, (val) => {
-	const _providerAccess = users.value?.find((_user) => _user._id === selectedUserId.value)
-		?.authorization.providerAccesses.find((item) => item._id === val)
+watch(selectedAppAccessId, (val) => {
+	const _appAccess = users.value?.find((_user) => _user._id === selectedUserId.value)
+		?.authorization.appAccesses.find((item) => item._id === val)
 
-	if (_providerAccess) {
-		providerAccess.value = _providerAccess
+	if (_appAccess) {
+		appAccess.value = _appAccess
 	}
 })
 </script>
@@ -91,11 +88,11 @@ watch(selectedProviderAccessId, (val) => {
       />
 
       <AntSelect
-        v-model="selectedProviderAccessId"
-        label="Provider access to ban"
-        description="List of provider accesses of the above selected user. The selected provider access will be banned."
-        placeholder="Provider access"
-        :options="providerAccessOptions"
+        v-model="selectedAppAccessId"
+        label="App access to ban"
+        description="List of app accesses of the above selected user. The selected app access will be banned."
+        placeholder="App access"
+        :options="appAccessOptions"
         :skeleton="skeleton"
       />
     </AntFormGroup>
@@ -104,9 +101,9 @@ watch(selectedProviderAccessId, (val) => {
 
     <AntFormGroup class="flex-grow p-2.5">
       <AntFormGroup>
-        <AntFormGroupLabel>AntAuthBanAuthorizationButton example</AntFormGroupLabel>
+        <AntFormGroupLabel>AuthorizationModuleBanAuthorizationButton example</AntFormGroupLabel>
 
-        <AntAuthBanAuthorizationButton
+        <AuthorizationModuleBanAuthorizationButton
           v-model="authorization"
           :skeleton="skeleton"
           :disabled="!authorization"
@@ -116,13 +113,13 @@ watch(selectedProviderAccessId, (val) => {
       <div class="h-px bg-neutral-300 w-full" />
 
       <AntFormGroup>
-        <AntFormGroupLabel>AntAuthBanProviderAccessButton example</AntFormGroupLabel>
+        <AntFormGroupLabel>AuthorizationModuleBanAppAccessButton example</AntFormGroupLabel>
 
-        <AntAuthBanProviderAccessButton
-          v-model="providerAccess"
+        <AuthorizationModuleBanAppAccessButton
+          v-model="appAccess"
           :authorization-id="authorization._id"
           :skeleton="skeleton"
-          :disabled="selectedProviderAccessId === null"
+          :disabled="selectedAppAccessId === null"
         />
       </AntFormGroup>
     </AntFormGroup>

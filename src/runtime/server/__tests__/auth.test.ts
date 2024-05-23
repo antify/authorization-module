@@ -84,10 +84,10 @@ describe('Auth test', async () => {
 		const decodedToken = {
 			'id': 'test-id',
 			'isSuperAdmin': false,
-			'providers': [
+			'apps': [
 				{
 					'isAdmin': false,
-					'providerId': 'core',
+					'appId': 'core',
 					'tenantId': '',
 					'permissions': [
 						'CAN_TEST'
@@ -95,7 +95,7 @@ describe('Auth test', async () => {
 				},
 				{
 					'isAdmin': false,
-					'providerId': 'tenant',
+					'appId': 'tenant',
 					'tenantId': 'one',
 					'permissions': [
 						'CAN_TEST'
@@ -103,7 +103,7 @@ describe('Auth test', async () => {
 				},
 				{
 					'isAdmin': false,
-					'providerId': 'tenant',
+					'appId': 'tenant',
 					'tenantId': 'two',
 					'permissions': [
 						'CAN_TEST'

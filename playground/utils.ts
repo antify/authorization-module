@@ -4,14 +4,14 @@ import {permissions} from './glue/permissions';
 export const defaultToken: JsonWebToken = {
 	id: 'an-user-id',
 	isSuperAdmin: false,
-	providers: [
+	apps: [
 		{
-			providerId: 'core',
+			appId: 'core',
 			tenantId: null,
 			isAdmin: false,
 			permissions: permissions.map(permission => permission.id)
 		}, {
-			providerId: 'tenant',
+			appId: 'tenant',
 			tenantId: '63e398316c6c22a1f5479ab6',
 			isAdmin: false,
 			permissions: permissions.map(permission => permission.id)

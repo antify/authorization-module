@@ -6,14 +6,14 @@ export interface Role {
 	isAdmin: boolean;
 	name: string;
 	permissions: string[];
-	providerId: string;
+	appId: string;
 	tenantId: string | null;
 }
 export type RoleDocument = Document<string, undefined, Role>
 
 export default defineSchema(async (client) => {
 	client.getSchema('authorization_roles').add({
-		providerId: {
+		appId: {
 			type: String,
 			required: true
 		},

@@ -1,16 +1,11 @@
 import {
 	useFetch,
-	useNuxtApp,
 	showError,
 	useUiClient
 } from '#imports';
 import {defineStore} from 'pinia';
 
-function useRoleFetch(providerId: string, tenantId?: string) {
-	const uiClient = useUiClient();
-	const nuxtApp = useNuxtApp();
-	const {$databaseModule} = nuxtApp;
-
+export function useRoleFetch(appId: string, tenantId: string | null) {
 	const {
 		data,
 		execute,
@@ -18,12 +13,14 @@ function useRoleFetch(providerId: string, tenantId?: string) {
 	} = useFetch(
 		'/api/authorization-module/stores/role/roles',
 		{
-			key: `role-${providerId}-${tenantId}`,
+			query: {
+				appId,
+				tenantId
+			},
 			watch: false,
 			immediate: false,
 			headers: {
-				Accept: 'application/json',
-				...$databaseModule.getContextHeaders(providerId, tenantId)
+				Accept: 'application/json'
 			},
 			onResponse({response}) {
 				// TODO:: remove if https://github.com/antify/ui-module/issues/45 is implemented
@@ -38,7 +35,7 @@ function useRoleFetch(providerId: string, tenantId?: string) {
 		execute,
 		data,
 		pending,
-		skeleton: uiClient.utils.createSkeleton(pending),
+		skeleton: useUiClient().utils.createSkeleton(pending),
 	}
 }
 
@@ -46,15 +43,15 @@ export const useRoleStore = defineStore('authorization-module-role', () => {
 	const state: Record<string, never> = {}
 
 	return {
-		getFetch: (providerId: string, tenantId?: string) => {
-			if (!state[`${providerId}-${tenantId}`]) {
-				state[`${providerId}-${tenantId}`] = useRoleFetch(providerId, tenantId)
+		getFetch: (appId: string, tenantId: string | null) => {
+			if (!state[`${appId}-${tenantId}`]) {
+				state[`${appId}-${tenantId}`] = useRoleFetch(appId, tenantId);
 			}
 
-			return state[`${providerId}-${tenantId}`]
+			return state[`${appId}-${tenantId}`];
 		},
-		deleteFetch: (providerId: string, tenantId?: string) => {
-			delete state[`${providerId}-${tenantId}`]
+		deleteFetch: (appId: string, tenantId: string | null) => {
+			delete state[`${appId}-${tenantId}`];
 		}
 	}
 });

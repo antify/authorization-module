@@ -1,9 +1,9 @@
-import {type H3Event} from 'h3';
-import {useAuth} from './auth';
 import * as jose from 'jose';
+import {useAuth} from './auth';
 import {Guard} from '../guard';
+import {type H3Event} from 'h3';
 import {createError} from '#imports';
-import {getContext} from '#database-module';
+import {useAppContext} from '#app-context-module';
 
 export const isLoggedInHandler = async (event: H3Event): Promise<Guard> => {
 	let guard: Guard;
@@ -31,14 +31,10 @@ export const isAuthorizedHandler = async (
 	event: H3Event,
 	permissions: string | string[]
 ): Promise<Guard> => {
-	const {provider, tenantId} = getContext(event);
 	const guard = await isLoggedInHandler(event);
+	const {appId, tenantId} = useAppContext().handleRequest(event);
 
-	if (!provider) {
-		throw createError('Missing required provider');
-	}
-
-	if (!guard.hasPermissionTo(permissions, provider, tenantId)) {
+	if (!guard.hasPermissionTo(permissions, appId, tenantId)) {
 		throw createError({
 			statusCode: 403,
 			statusMessage: 'Forbidden'

@@ -2,22 +2,33 @@
 import {ref} from 'vue'
 import {TEST_TENANT_ID} from '../../server/datasources/db/core/fixture-utils/tenant';
 
-const selectedRoles = ref([])
+const selectedRoles = ref([]);
 </script>
 
 <template>
   <AntFormGroup class="p-2.5">
-    <AntAuthRoleInput
+    <div>TODO:: add an app context switcher here</div>
+
+    <AuthorizationModuleRoleInput
       v-model="selectedRoles"
-      label="Core roles"
-      provider="core"
+      label="Roles from app context"
+      description="This input should show roles from the current app context"
     />
 
-    <AntAuthRoleInput
+    <AuthorizationModuleRoleInput
       v-model="selectedRoles"
       label="Tenant roles"
-      provider="tenant"
+      app-id="tenant"
       :tenant-id="TEST_TENANT_ID"
+      description="This input should always show roles from the tenant"
+    />
+
+    <AuthorizationModuleRoleInput
+      v-model="selectedRoles"
+      label="Another tenant roles"
+      app-id="tenant"
+      :tenant-id="TEST_TENANT_ID"
+      description="This input should make sure, that not multiple requests get send to the server for same role data"
     />
   </AntFormGroup>
 </template>

@@ -1,7 +1,7 @@
-export type ProviderAccess = {
+export type AppAccess = {
 	_id: string | null;
 	isBanned: boolean | null;
-	providerId: string | null;
+	appId: string | null;
 	tenantId: string | null;
 	roles: {
 		isAdmin: boolean
@@ -10,6 +10,6 @@ export type ProviderAccess = {
 
 export type ChangeBanStatusRequestBody = {
 	authorizationId: string;
-	providerAccessId: string;
+	appAccessId: string;
 	action: 'ban' | 'unban';
 };

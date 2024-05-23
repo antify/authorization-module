@@ -1,17 +1,21 @@
 import {type FetchResponse} from 'ofetch';
 import {
+	showError,
+	useRouter,
 	useNuxtApp,
-	useRuntimeConfig,
-	showError
+	useAppContext,
+	appHandlerFactory
 } from '#imports';
 
 export const useAuthResponseErrorHandler = (response: FetchResponse<never>) => {
-	const {loginPageRoute} = useRuntimeConfig().public.authorizationModule;
+	const {appId, tenantId} = useAppContext().context.value; // TODO:: Graph from plugin
+	const appHandler = appHandlerFactory(appId, tenantId);
 	const {$uiModule} = useNuxtApp();
+	const router = useRouter();
 
 	if (response.status === 401) {
-		if (loginPageRoute) {
-			return $uiModule.router.push(loginPageRoute);
+		if (appHandler?.loginPageRoute) {
+			return router.push(appHandler?.loginPageRoute);
 		}
 
 		return showError({

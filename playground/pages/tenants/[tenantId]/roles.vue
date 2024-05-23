@@ -1,21 +1,24 @@
 <script setup lang='ts'>
-const tenantId = useRoute().params.tenantId;
+import { useRoute } from '#imports';
+
+const route = useRoute();
+const tenantId = route.params.tenantId;
 const getCreateRoute = () => ({
   name: 'tenantId-roles-create',
   params: { tenantId },
-  query: useRoute().query
+  query: route.query
 });
 const getDetailRoute = (roleId) => ({
   name: 'tenantId-roles-roleId',
   params: { tenantId, roleId },
-  query: useRoute().query
+  query: route.query
 });
 </script>
 
 <template>
   <div>
-    <AntAuthRoleListingPage
-      provider="tenant"
+    <AuthorizationModuleRoleListingPage
+      app="tenant"
       :tenant-id="tenantId"
       :table-full-width="$route.name === 'tenantId-roles'"
       :get-detail-route="getDetailRoute"

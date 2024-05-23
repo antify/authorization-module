@@ -16,7 +16,7 @@ export const validator = useValidator<ChangeBanStatusRequestBody>({
 });
 
 export default defineEventHandler(async (event) => {
-	const {mainProviderId} = useRuntimeConfig().authorizationModule;
+	const {mainAppId} = useRuntimeConfig().public.authorizationModule;
 	const body = validator.validate(await readBody(event));
 
 	if (validator.hasErrors()) {
@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
 
 	const guard = await isLoggedInHandler(event);
 
-	if (!guard.hasPermissionTo(body.action === 'ban' ? PermissionId.CAN_BAN_AUTHORIZATION : PermissionId.CAN_UNBAN_AUTHORIZATION, mainProviderId)) {
+	if (!guard.hasPermissionTo(body.action === 'ban' ? PermissionId.CAN_BAN_AUTHORIZATION : PermissionId.CAN_UNBAN_AUTHORIZATION, mainAppId)) {
 		throw createError({
 			statusCode: 403,
 			statusMessage: 'Forbidden'

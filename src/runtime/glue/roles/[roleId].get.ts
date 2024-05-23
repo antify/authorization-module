@@ -2,6 +2,6 @@ export type Role = {
     isAdmin: boolean;
     name: string;
     permissions: string[];
-    providerId: string;
+    appId: string;
     tenantId: string | null;
 }
