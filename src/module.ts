@@ -9,7 +9,7 @@ import {
 	addServerHandler
 } from '@nuxt/kit';
 import {join, relative} from 'pathe';
-import type {App, Permission} from './runtime/types';
+import type {Permission} from './runtime/types';
 import {PermissionId} from './runtime/glue/permissions';
 import {isTypeOfRule, notBlankRule, Types, useValidator} from '@antify/validate';
 
@@ -149,9 +149,6 @@ export default defineNuxtModule<ModuleOptions>({
 		if (optionsValidator.hasErrors()) {
 			throw new Error(`Invalid options for authorization-module:\n${optionsValidator.getErrorsAsString()}`);
 		}
-
-		// TODO:: make sure, the @antify/database-module is installed
-		// await installModule('@antify/database-module')
 
 		await installModule('@pinia/nuxt');
 

@@ -14,7 +14,6 @@ export default defineBuildConfig({
 		// TODO:: doublecheck with code
 		'@antify/database',
 		'@antify/ui-module',
-		'@antify/database-module',
 		'@antify/validate',
 		'@fortawesome/free-solid-svg-icons',
 		'crypto',

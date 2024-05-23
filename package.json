@@ -25,7 +25,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@fortawesome/free-solid-svg-icons": "^6.5.1",
+		"@antify/validate": "1.14.0",
+		"@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@nuxt/kit": "^3.10.3",
     "@pinia/nuxt": "^0.5.1",
     "cookie-es": "^1.0.0",
@@ -51,9 +52,7 @@
   },
   "peerDependencies": {
 		"@antify/app-context-module": "^1.2.0",
-    "@antify/database": "^1.1.0",
-    "@antify/database-module": "^1.1.0",
-    "@antify/ui-module": "^1.6.0",
-    "@antify/validate": "1.14.0"
+    "@antify/database": "^1.2.0",
+    "@antify/ui-module": "^1.6.0"
   }
 }

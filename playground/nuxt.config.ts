@@ -9,8 +9,7 @@ export default defineNuxtConfig({
 	modules: [
 		'../src/module',
 		'@antify/app-context-module',
-		'@antify/ui-module',
-		'@antify/database-module'
+		'@antify/ui-module'
 	],
 	authorizationModule: {
 		jwtSecret: '#a!SuperSecret123',
