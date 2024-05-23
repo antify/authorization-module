@@ -16,7 +16,7 @@ import type {AppContext} from '#app-context-module/types';
  * definePageMeta({
  * 	middleware: [
  * 		function (to) {
- * 			return useRouteGuard('tenant', (to.params?.tenantId || null) as string | null, 'CAN_READ_SECRET_DATA');
+ * 			return useRouteGuard({appId: 'tenant', tenantId: (to.params?.tenantId || null) as string | null}, 'CAN_READ_SECRET_DATA');
  * 		}
  * 	]
  * });

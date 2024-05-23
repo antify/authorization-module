@@ -6,7 +6,6 @@ import {
 	useGuard,
 	useFetch,
 	onMounted,
-	useNuxtApp,
 	useAppContext,
 	useAuthResponseErrorHandler
 } from '#imports';

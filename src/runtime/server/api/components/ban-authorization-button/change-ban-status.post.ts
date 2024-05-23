@@ -52,7 +52,6 @@ export default defineEventHandler(async (event) => {
 
 	return {
 		_id: authorization._id,
-		isBanned: authorization.isBanned,
-		isSuperAdmin: authorization.isSuperAdmin
+		isBanned: authorization.isBanned
 	}
 });

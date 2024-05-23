@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@antify/app-context-module':
-    specifier: file:../app-context-module
-    version: file:../app-context-module(rollup@3.29.4)
+    specifier: ^1.2.0
+    version: 1.2.0(rollup@3.29.4)
   '@antify/database':
     specifier: ^1.1.0
     version: 1.1.0
@@ -108,6 +108,17 @@ packages:
   /@antfu/utils@0.7.7:
     resolution: {integrity: sha512-gFPqTG7otEJ8uP6wrhDv6mqwGWYZKNvAcCq6u9hOj0c+IKCEsY4L1oC9trPq2SaWIzAfHvqfBDxF591JkMf+kg==}
     dev: true
+
+  /@antify/app-context-module@1.2.0(rollup@3.29.4):
+    resolution: {integrity: sha512-pdIrvhz3kUpUNFSEka5p1v4a66wDy8vvIPjHvQ+hm0fpPDcOHNYLwOSOTBfpJp3Patm1avS5wjO21NxZZJRPKQ==}
+    dependencies:
+      '@antify/validate': 1.14.0
+      '@nuxt/kit': 3.10.3(rollup@3.29.4)
+      cookie-es: 1.0.0
+    transitivePeerDependencies:
+      - rollup
+      - supports-color
+    dev: false
 
   /@antify/database-cli@1.0.1:
     resolution: {integrity: sha512-Y1x/VuG96mbraiututb2RZLwnz64MSecWbn/qCkJ820y1UInlWu4c3qQLjFI/5Su5lMwMTPmZwtj/IhUn9wgZQ==}
@@ -10387,16 +10398,3 @@ packages:
       compress-commons: 5.0.3
       readable-stream: 3.6.2
     dev: true
-
-  file:../app-context-module(rollup@3.29.4):
-    resolution: {directory: ../app-context-module, type: directory}
-    id: file:../app-context-module
-    name: '@antify/app-context-module'
-    dependencies:
-      '@antify/validate': 1.14.0
-      '@nuxt/kit': 3.10.3(rollup@3.29.4)
-      cookie-es: 1.0.0
-    transitivePeerDependencies:
-      - rollup
-      - supports-color
-    dev: false

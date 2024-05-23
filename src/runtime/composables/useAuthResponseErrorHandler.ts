@@ -3,14 +3,13 @@ import {
 	showError,
 	useRouter,
 	useNuxtApp,
-	useAppContext,
 	appHandlerFactory
 } from '#imports';
 
 export const useAuthResponseErrorHandler = (response: FetchResponse<never>) => {
-	const {appId, tenantId} = useAppContext().context.value; // TODO:: Graph from plugin
+	const {$uiModule, $appContextModule} = useNuxtApp();
+	const {appId, tenantId} = $appContextModule.context;
 	const appHandler = appHandlerFactory(appId, tenantId);
-	const {$uiModule} = useNuxtApp();
 	const router = useRouter();
 
 	if (response.status === 401) {

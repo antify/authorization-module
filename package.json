@@ -50,7 +50,7 @@
     "vue": "^3.4.21"
   },
   "peerDependencies": {
-		"@antify/app-context-module": "^1.0.0",
+		"@antify/app-context-module": "^1.2.0",
     "@antify/database": "^1.1.0",
     "@antify/database-module": "^1.1.0",
     "@antify/ui-module": "^1.6.0",

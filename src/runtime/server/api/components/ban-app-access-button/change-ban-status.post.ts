@@ -86,12 +86,7 @@ export default defineEventHandler<AppAccess>(async (event) => {
 
 	return {
 		_id: appAccess._id,
-		isBanned: appAccess.isBanned,
-		appId: appAccess.appId,
-		tenantId: appAccess.tenantId,
-		roles: appAccess.roles.map(role => ({
-			isAdmin: role.isAdmin
-		}))
+		isBanned: appAccess.isBanned
 	}
 });
 

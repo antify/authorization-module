@@ -51,7 +51,7 @@ const {status, execute} = useFetch(() => '/api/authorization-module/components/b
 				$uiModule.toaster.toastSuccess('User has been unbanned');
 			}
 
-			_modelValue.value = response._data;
+			_modelValue.value.isBanned = response._data.isBanned;
 		}
 
 		if (response.status === 500) {

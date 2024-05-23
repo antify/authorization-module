@@ -3,7 +3,7 @@ import {useAuth} from './auth';
 import {Guard} from '../guard';
 import {type H3Event} from 'h3';
 import {createError} from '#imports';
-import {useAppContext} from '#app-context-module';
+import {isValidAppContextHandler} from '#app-context-module';
 
 export const isLoggedInHandler = async (event: H3Event): Promise<Guard> => {
 	let guard: Guard;
@@ -32,7 +32,7 @@ export const isAuthorizedHandler = async (
 	permissions: string | string[]
 ): Promise<Guard> => {
 	const guard = await isLoggedInHandler(event);
-	const {appId, tenantId} = useAppContext().handleRequest(event);
+	const {appId, tenantId} = isValidAppContextHandler(event);
 
 	if (!guard.hasPermissionTo(permissions, appId, tenantId)) {
 		throw createError({
