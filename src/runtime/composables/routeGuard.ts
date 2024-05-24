@@ -30,8 +30,8 @@ export const useRouteGuard = (
 	permissions?: string[] | string
 ) => {
 	const {$uiModule} = useNuxtApp();
-	const unauthorizedMessage = 'Unauthorized - Configure a loginPageRoute in nuxt config \nto automatically redirect unauthorized users to login page.';
-	const jailMessage = 'Banned - Configure a jailPageRoute in nuxt config \nto automatically redirect banned users to jail page.';
+	const unauthorizedMessage = 'Unauthorized - Configure a loginPageRoute in app handler \nto automatically redirect unauthorized users to login page.';
+	const jailMessage = 'Banned - Configure a jailPageRoute in app handler \nto automatically redirect banned users to jail page.';
 	const invalidPermissionsMessage = 'Unauthorized - You do not have the required permissions to access this page.\nPlease contact your administrator.';
 	const appHandler = appHandlerFactory(appContext.appId, appContext.tenantId);
 
