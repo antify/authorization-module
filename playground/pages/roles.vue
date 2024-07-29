@@ -1,9 +1,9 @@
 <script setup lang='ts'>
 const getDetailRoute = (roleId) => ({
   name: 'roles-roleId',
-  params: { roleId }
+  params: {roleId}
 });
-const getCreateRoute = () => ({ name: 'roles-create' });
+const getCreateRoute = () => ({name: 'roles-create'});
 </script>
 
 <template>

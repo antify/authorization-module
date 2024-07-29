@@ -1,34 +1,33 @@
 <script lang="ts" setup>
 import {PermissionId} from '~/glue/permissions';
 import {
-	ref,
-	useUi,
-	useGuard,
-	useFetch,
-	onMounted,
-	useAppContext,
-	useAuthResponseErrorHandler
+  ref,
+  useGuard,
+  useFetch,
+  onMounted,
+  useAppContext,
+  useAuthResponseErrorHandler
 } from '#imports';
+import {TagState, AntTagSize} from '#ui-module';
 
 const APP = 'core';
-const {ColorType} = useUi();
 const guard = ref(useGuard());
 const statusCode = ref<null | number>(null);
 const handleResponseErrors = ref(false);
 const appContext = useAppContext();
 const {execute, data} = useFetch('/api/pages/get-secret-data', {
-	immediate: false,
-	onResponse({response}) {
-		statusCode.value = response.status
+  immediate: false,
+  onResponse({response}) {
+    statusCode.value = response.status;
 
-		if (handleResponseErrors.value) {
-			useAuthResponseErrorHandler(response)
-		}
-	}
+    if (handleResponseErrors.value) {
+      useAuthResponseErrorHandler(response);
+    }
+  }
 });
 
 onMounted(() => {
-	appContext.value.setContext(APP)
+  appContext.value.setContext(APP);
 });
 </script>
 
@@ -45,14 +44,17 @@ onMounted(() => {
         <AntFormGroupLabel>Test guard client side</AntFormGroupLabel>
 
         <AntField label="Is logged in?">
-          <AntTag :color-type="guard.isLoggedIn() ? ColorType.success : ColorType.danger">
+          <AntTag
+            :state="guard.isLoggedIn() ? TagState.success : TagState.danger"
+            :size="AntTagSize.sm"
+          >
             {{ guard.isLoggedIn() }}
           </AntTag>
         </AntField>
 
         <AntField :label="`Has permission to do ${PermissionId.CAN_READ_SECRET_DATA} in ${APP} app`">
           <AntTag
-            :color-type="guard.hasPermissionTo(PermissionId.CAN_READ_SECRET_DATA, APP) ? ColorType.success : ColorType.danger"
+            :state="guard.hasPermissionTo(PermissionId.CAN_READ_SECRET_DATA, APP) ? TagState.success : TagState.danger"
           >
             {{ guard.hasPermissionTo(PermissionId.CAN_READ_SECRET_DATA, APP) }}
           </AntTag>
@@ -85,7 +87,7 @@ onMounted(() => {
             label="Status code"
           >
             <AntTag
-              :color-type="statusCode === 200 ? ColorType.success : ColorType.danger"
+              :state="statusCode === 200 ? TagState.success : TagState.danger"
             >
               {{ statusCode }}
             </AntTag>

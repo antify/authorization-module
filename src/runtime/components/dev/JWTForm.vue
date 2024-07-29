@@ -7,131 +7,133 @@ import {ref, computed, watch, onMounted} from 'vue';
 import {useGuard, useFetch, useUiClient} from '#imports';
 
 const props = withDefaults(defineProps<{
-	open: boolean
-	defaultToken?: Partial<JsonWebToken>
+  open: boolean
+  defaultToken?: Partial<JsonWebToken>
 }>(), {
-	defaultToken: () => ({})
+  defaultToken: () => ({})
 });
 const emit = defineEmits(['update:open']);
 const guard = useGuard();
 const token = ref<JsonWebToken | null>(null);
 
 const {status, execute} = useFetch(
-	'/api/authorization-module/dev/jwt-form/create-jwt',
-	{
-		method: 'POST',
-		body: token,
-		immediate: false,
-		watch: false
-	}
+  '/api/authorization-module/dev/jwt-form/create-jwt',
+  {
+    method: 'POST',
+    body: token,
+    immediate: false,
+    watch: false
+  }
 );
 const {
-	status: statusGetAppData,
-	data: appData
+  status: statusGetAppData,
+  data: appData
 } = useFetch('/api/authorization-module/dev/jwt-form/app-data', {
-	method: 'get'
+  method: 'get'
 });
 const allPermissions = computed(() => {
-	return appData.value?.permissions || [];
+  return appData.value?.permissions || [];
 });
 const skeleton = useUiClient().utils.createSkeleton(statusGetAppData);
 const _open = computed({
-	get() {
-		return props.open;
-	},
-	set(val) {
-		emit('update:open', val);
-	}
+  get() {
+    return props.open;
+  },
+  set(val) {
+    emit('update:open', val);
+  }
 });
 const iat = computed({
-	get() {
-		if (!token.value.iat) {
-			return null;
-		}
+  get() {
+    if (!token.value.iat) {
+      return null;
+    }
 
-		// TODO:: to iso string should do the same job?
-		return format(new Date(token.value.iat * 1000), 'yyyy-MM-dd\'T\'HH:mm:ss');
-	},
-	set(val) {
-		token.value.iat = getUnixTime(new Date(val));
-	}
+    // TODO:: to iso string should do the same job?
+    return format(new Date(token.value.iat * 1000), 'yyyy-MM-dd\'T\'HH:mm:ss');
+  },
+  set(val) {
+    token.value.iat = getUnixTime(new Date(val));
+  }
 });
 const exp = computed({
-	get() {
-		if (!token.value.exp) {
-			return null;
-		}
+  get() {
+    if (!token.value.exp) {
+      return null;
+    }
 
-		// TODO:: to iso string should do the same job?
-		return format(new Date(token.value.exp * 1000), 'yyyy-MM-dd\'T\'HH:mm:ss');
-	},
-	set(val) {
-		token.value.exp = getUnixTime(new Date(val));
-	}
+    // TODO:: to iso string should do the same job?
+    return format(new Date(token.value.exp * 1000), 'yyyy-MM-dd\'T\'HH:mm:ss');
+  },
+  set(val) {
+    token.value.exp = getUnixTime(new Date(val));
+  }
 });
 
 async function login() {
-	await execute();
+  await execute();
 
-	await guard.refresh();
-	// The refreshCookie function takes some time to update the token value.
-	setTimeout(() => setTokenValue(), 200)
+  await guard.refresh();
+  // The refreshCookie function takes some time to update the token value.
+  setTimeout(() => setTokenValue(), 200);
 }
+
 function logout() {
-	guard.logout();
-	token.value = createToken();
+  guard.logout();
+  token.value = createToken();
 }
+
 function setTokenValue() {
-	token.value = guard.token.value ? JSON.parse(JSON.stringify(guard.token.value)) : createToken();
+  token.value = guard.token.value ? JSON.parse(JSON.stringify(guard.token.value)) : createToken();
 }
 
 function setDefaultData() {
-	token.value = createToken(props.defaultToken);
+  token.value = createToken(props.defaultToken);
 }
 
 function createToken(data: Partial<JsonWebToken> = {}): JsonWebToken {
-	const _data = {
-		...{
-			id: '',
-			isSuperAdmin: false,
-			isBanned: false,
-			apps: []
-		},
-		...data
-	};
+  const _data = {
+    ...{
+      id: '',
+      isSuperAdmin: false,
+      isBanned: false,
+      apps: []
+    },
+    ...data
+  };
 
-	_data.apps = _data.apps.map((app) => createApp(app));
+  _data.apps = _data.apps.map((app) => createApp(app));
 
-	return _data;
+  return _data;
 }
 
 function createApp(data: Partial<JsonWebTokenApp> = {}) {
-	return {
-		...{
-			isAdmin: false,
-			isBanned: false,
-			appId: '',
-			tenantId: '',
-			permissions: []
-		}, ...data
-	};
+  return {
+    ...{
+      isAdmin: false,
+      isBanned: false,
+      appId: '',
+      tenantId: '',
+      permissions: []
+    }, ...data
+  };
 }
 
 function addApp(data = {}) {
-	token.value.apps.push(createApp(data));
+  token.value.apps.push(createApp(data));
 }
 
 function removeApp(index) {
-	token.value.apps.splice(index, 1);
+  token.value.apps.splice(index, 1);
 }
 
 watch(() => props.open, (val) => {
-	if (val) {
-		setTokenValue()
-	}
-})
+  if (val) {
+    setTokenValue();
+  }
+});
 
-onMounted(() => setTokenValue())
+onMounted(() => setTokenValue());
 </script>
 
 <template>

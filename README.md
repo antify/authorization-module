@@ -9,12 +9,12 @@ This module supports different permissions in different multi-tenant application
 All permissions should be stored in one application instance.
 
 To encapsulate the authorization logic from your main application, this module provides an Authorization object.
-Extend your applications Account or User model with the Authorization object to extend your app with 
+Extend your applications Account or User model with the Authorization object to extend your app with
 authorization functionality.
 
 ### Permission
 
-There's a global set of permissions. An authorization can have multiple permissions 
+There's a global set of permissions. An authorization can have multiple permissions
 for each app and tenant.
 
 ### Role
@@ -25,22 +25,24 @@ Each tenant can have it own set of roles.
 ### Admin
 
 An authorization can be an admin in two ways:
+
 - System-wide
 - Per tenant
 
 ### Ban
 
 An authorization can be banned in two ways:
+
 - System-wide
 - Per tenant
 
 The isBan flag always is more important than the isAdmin flag.
 E. g.: A banned user has no permissions, even if he is an admin or super admin.
 
-An authenticated user always get a valid token, even he's system-wide banned. 
+An authenticated user always get a valid token, even he's system-wide banned.
 This gives the possibility to redirect him to login page OR show him a jail page.
 
-A banned authorization for a specific tenant also get a valid token to give him access to other tenants 
+A banned authorization for a specific tenant also get a valid token to give him access to other tenants
 where he is not banned.
 
 ### Access hierarchy
@@ -101,19 +103,24 @@ TODO:: Describe it
 Button to ban and unban a user system-wide.
 
 It does:
+
 - Switch between ban and unban
 - Does not allow a user to ban / unban himself
-- Check if the user has the expected permission to ban / unban (`CAN_BAN_AUTHORIZATION` | `CAN_UNBAN_AUTHORIZATION` | is an admin | is an super admin)
+- Check if the user has the expected permission to ban / unban (`CAN_BAN_AUTHORIZATION` | `CAN_UNBAN_AUTHORIZATION` | is
+  an admin | is an super admin)
 
 ### AuthorizationModuleBanAppAccessButton
 
 Button to ban and unban a user from an app instance.
 
 It does:
+
 - Switch between ban and unban
 - Does not allow a user to ban / unban himself
-- Check if the user has the expected permission to ban / unban (`CAN_BAN_PROVIDER_ACCESS` | `CAN_UNBAN_PROVIDER_ACCESS` | is an admin | is a super admin)
-- Check if the user has the expected permission to ban / unban an administrator  (`CAN_BAN_ADMIN_PROVIDER_ACCESS` | `CAN_UNBAN_ADMIN_PROVIDER_ACCESS` | is an admin | is a super admin)
+- Check if the user has the expected permission to ban / unban (`CAN_BAN_PROVIDER_ACCESS` |
+  `CAN_UNBAN_PROVIDER_ACCESS` | is an admin | is a super admin)
+- Check if the user has the expected permission to ban / unban an administrator  (`CAN_BAN_ADMIN_PROVIDER_ACCESS` |
+  `CAN_UNBAN_ADMIN_PROVIDER_ACCESS` | is an admin | is a super admin)
 
 ### AuthorizationModuleJailPage
 

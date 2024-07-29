@@ -1,28 +1,28 @@
 <script lang="ts" setup>
 // TODO:: Make it way more extendable form outside. Like renaming all labels and contents in the dialogs.
 import {
-	ref,
-	useUi,
-	computed,
-	useFetch,
-	useGuard,
-	showError,
-	useNuxtApp,
-	useAuthResponseErrorHandler,
+  ref,
+  useUi,
+  computed,
+  useFetch,
+  useGuard,
+  showError,
+  useNuxtApp,
+  useAuthResponseErrorHandler,
 } from '#imports';
 import type {ChangeBanStatusRequestBody, AppAccess} from '../glue/components/ban-app-access-button/types';
 import {PermissionId} from '../glue/permissions';
 
 const emit = defineEmits(['update:modelValue']);
 const props = defineProps<{
-	modelValue: AppAccess,
-	authorizationId: string | null,
-	skeleton?: boolean,
-	disabled?: boolean
+  modelValue: AppAccess,
+  authorizationId: string | null,
+  skeleton?: boolean,
+  disabled?: boolean
 }>();
 const _modelValue = computed({
-	get: () => props.modelValue,
-	set: (value: AppAccess) => emit('update:modelValue', value)
+  get: () => props.modelValue,
+  set: (value: AppAccess) => emit('update:modelValue', value)
 });
 const isBanDialogOpen = ref(false);
 const isUnbanDialogOpen = ref(false);
@@ -30,62 +30,66 @@ const {$uiModule} = useNuxtApp();
 const guard = useGuard();
 const ui = useUi();
 const body = computed<ChangeBanStatusRequestBody>(() => ({
-	appAccessId: _modelValue.value._id,
-	authorizationId: props.authorizationId,
-	action: _modelValue.value.isBanned ? 'unban' : 'ban'
+  appAccessId: _modelValue.value._id,
+  authorizationId: props.authorizationId,
+  action: _modelValue.value.isBanned ? 'unban' : 'ban'
 }));
-const {status, execute} = useFetch(() => '/api/authorization-module/components/ban-app-access-button/change-ban-status', {
-	method: 'post',
-	watch: false,
-	immediate: false,
-	body,
-	onResponse({response}) {
-		useAuthResponseErrorHandler(response);
+const {
+  status,
+  execute
+} = useFetch(() => '/api/authorization-module/components/ban-app-access-button/change-ban-status', {
+  method: 'post',
+  watch: false,
+  immediate: false,
+  body,
+  onResponse({response}) {
+    useAuthResponseErrorHandler(response);
 
-		if (response.status === 200) {
-			if (response._data.notFound) {
-				return $uiModule.toaster.toastError('User not found. Maybe he got already deleted.');
-			} if (body.value.action === 'ban') {
-				$uiModule.toaster.toastSuccess('User has been banned');
-			} else {
-				$uiModule.toaster.toastSuccess('User has been unbanned');
-			}
+    if (response.status === 200) {
+      if (response._data.notFound) {
+        return $uiModule.toaster.toastError('User not found. Maybe he got already deleted.');
+      }
+      if (body.value.action === 'ban') {
+        $uiModule.toaster.toastSuccess('User has been banned');
+      } else {
+        $uiModule.toaster.toastSuccess('User has been unbanned');
+      }
 
-			_modelValue.value.isBanned = response._data.isBanned;
-		}
+      _modelValue.value.isBanned = response._data.isBanned;
+    }
 
-		if (response.status === 500) {
-			showError(response._data)
-		}
-	}
+    if (response.status === 500) {
+      showError(response._data);
+    }
+  }
 });
 
 function executeChangeBanStatus(action: 'ban' | 'unban') {
-	body.value.action = action;
-	execute();
+  body.value.action = action;
+  execute();
 }
 
 const isAppAccessAnAdmin = computed(() => _modelValue.value.roles.some(role => role.isAdmin));
 const hasPermission = computed(() => {
-	if (_modelValue.value.appId === null) {
-		return false;
-	}
+  if (_modelValue.value.appId === null) {
+    return false;
+  }
 
-	// Do not allow, ban or unban himself
-	if (props.authorizationId === guard.token.value?.id) {
-		return false;
-	}
+  // Do not allow, ban or unban himself
+  if (props.authorizationId === guard.token.value?.id) {
+    return false;
+  }
 
-	// Make sure, if the current app access is an admin, that the user has the permission to ban or unban an admin
-	if (isAppAccessAnAdmin.value) {
-		return _modelValue.value.isBanned ?
-			guard.hasPermissionTo(PermissionId.CAN_UNBAN_ADMIN_APP_ACCESS, _modelValue.value.appId, _modelValue.value.tenantId) :
-			guard.hasPermissionTo(PermissionId.CAN_BAN_ADMIN_APP_ACCESS, _modelValue.value.appId, _modelValue.value.tenantId)
-	}
+  // Make sure, if the current app access is an admin, that the user has the permission to ban or unban an admin
+  if (isAppAccessAnAdmin.value) {
+    return _modelValue.value.isBanned ?
+      guard.hasPermissionTo(PermissionId.CAN_UNBAN_ADMIN_APP_ACCESS, _modelValue.value.appId, _modelValue.value.tenantId) :
+      guard.hasPermissionTo(PermissionId.CAN_BAN_ADMIN_APP_ACCESS, _modelValue.value.appId, _modelValue.value.tenantId);
+  }
 
-	return _modelValue.value.isBanned ?
-		guard.hasPermissionTo(PermissionId.CAN_UNBAN_APP_ACCESS, _modelValue.value.appId, _modelValue.value.tenantId) :
-		guard.hasPermissionTo(PermissionId.CAN_BAN_APP_ACCESS, _modelValue.value.appId, _modelValue.value.tenantId)
+  return _modelValue.value.isBanned ?
+    guard.hasPermissionTo(PermissionId.CAN_UNBAN_APP_ACCESS, _modelValue.value.appId, _modelValue.value.tenantId) :
+    guard.hasPermissionTo(PermissionId.CAN_BAN_APP_ACCESS, _modelValue.value.appId, _modelValue.value.tenantId);
 });
 </script>
 

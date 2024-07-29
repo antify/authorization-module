@@ -1,77 +1,77 @@
 <script lang="ts" setup>
-import {computed, ref, watch} from 'vue'
+import {computed, ref, watch} from 'vue';
 import {
-	useFetch,
-	showError,
-	useUiClient
+  useFetch,
+  showError,
+  useUiClient
 } from '#imports';
 // TODO:: import from #
 import {type AppAccess} from '../../../src/runtime/glue/components/ban-app-access-button/types';
 import {type Authorization} from '../../../src/runtime/glue/components/ban-authorization-button/types';
 
 const {
-	data: users,
-	pending: pendingGetUsers
+  data: users,
+  pending: pendingGetUsers
 } = useFetch('/api/pages/components/ban-buttons/users', {
-	method: 'get',
-	watch: false,
-	onResponse({response}) {
-		if (response.status === 500) {
-			return showError(response._data)
-		}
+  method: 'get',
+  watch: false,
+  onResponse({response}) {
+    if (response.status === 500) {
+      return showError(response._data);
+    }
 
-		if (response.status === 200) {
-			selectedUserId.value = response._data[0]._id
-			selectedAppAccessId.value = response._data[0].authorization.appAccesses[0]?._id || null
-			authorization.value = response._data[0].authorization
-			appAccess.value = response._data[0].authorization.appAccesses[0] || null
-		}
-	}
+    if (response.status === 200) {
+      selectedUserId.value = response._data[0]._id;
+      selectedAppAccessId.value = response._data[0].authorization.appAccesses[0]?._id || null;
+      authorization.value = response._data[0].authorization;
+      appAccess.value = response._data[0].authorization.appAccesses[0] || null;
+    }
+  }
 });
-const selectedUserId = ref<string | null>(null)
+const selectedUserId = ref<string | null>(null);
 const userOptions = computed(() => {
-	return (users.value || []).map((user) => ({
-		value: user._id,
-		label: user.name
-	}))
+  return (users.value || []).map((user) => ({
+    value: user._id,
+    label: user.name
+  }));
 });
 const authorization = ref<Authorization>({
-	_id: null,
-	isBanned: null,
-	isSuperAdmin: null
+  _id: null,
+  isBanned: null,
+  isSuperAdmin: null
 });
 const skeleton = useUiClient().utils.createSkeleton(pendingGetUsers);
-const selectedAppAccessId = ref<string | null>(null)
+const selectedAppAccessId = ref<string | null>(null);
 const appAccess = ref<AppAccess>({
-	_id: null,
-	isBanned: null,
-	appId: null,
-	tenantId: null
-})
+  _id: null,
+  isBanned: null,
+  appId: null,
+  tenantId: null
+});
 const appAccessOptions = computed(() => {
-	return (users.value?.find((user) => user._id === selectedUserId.value)?.authorization.appAccesses || [])
-		.map((appAccess) => ({
-			value: appAccess._id,
-			label: `${appAccess.appId} - ${appAccess.tenantId}`
-		}))
-})
+  return (users.value?.find((user) => user._id === selectedUserId.value)?.authorization.appAccesses || [])
+    .map((appAccess) => ({
+      value: appAccess._id,
+      label: `${appAccess.appId} - ${appAccess.tenantId}`
+    }));
+});
 
 watch(selectedUserId, (val) => {
-	const user = users.value?.find((_user) => _user._id === val)
+  const user = users.value?.find((_user) => _user._id === val);
 
-	if (user) {
-		authorization.value = user.authorization
-		selectedAppAccessId.value = user.authorization.appAccesses[0]?._id || null
-	}
-})
+  if (user) {
+    authorization.value = user.authorization;
+    selectedAppAccessId.value = user.authorization.appAccesses[0]?._id || null;
+  }
+});
 watch(selectedAppAccessId, (val) => {
-	const _appAccess = users.value?.find((_user) => _user._id === selectedUserId.value)
-		?.authorization.appAccesses.find((item) => item._id === val)
+  const _appAccess = users.value?.find((_user) => _user._id === selectedUserId.value)
+    ?.authorization.appAccesses.find((item) => item._id === val);
 
-	if (_appAccess) {
-		appAccess.value = _appAccess
-	}
-})
+  if (_appAccess) {
+    appAccess.value = _appAccess;
+  }
+});
 </script>
 
 <template>

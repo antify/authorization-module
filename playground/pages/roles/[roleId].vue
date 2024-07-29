@@ -1,14 +1,14 @@
 <script setup lang='ts'>
 definePageMeta({
-	layout: 'unprotected'
-})
+  layout: 'unprotected'
+});
 
 const getDetailRoute = (roleId) => ({
   name: 'roles-roleId',
-  params: { roleId },
+  params: {roleId},
   query: useRoute().query
-})
-const getListingRoute = () => ({ name: 'roles' })
+});
+const getListingRoute = () => ({name: 'roles'});
 </script>
 
 <template>

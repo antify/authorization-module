@@ -3,14 +3,14 @@ import {definePageMeta, useRouteGuard} from '#imports';
 import {PermissionId} from '~/glue/permissions';
 
 definePageMeta({
-	middleware: [
-		function () {
-			return useRouteGuard({
-				appId: 'core',
-				tenantId: null
-			}, PermissionId.CAN_READ_SECRET_DATA);
-		}
-	]
+  middleware: [
+    function () {
+      return useRouteGuard({
+        appId: 'core',
+        tenantId: null
+      }, PermissionId.CAN_READ_SECRET_DATA);
+    }
+  ]
 });
 </script>
 

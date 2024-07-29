@@ -5,22 +5,22 @@ import JWTForm from './JWTForm.vue';
 import {withDefaults, ref} from 'vue';
 
 if (!import.meta.env.DEV) {
-	// TODO:: Just not provide id outside of dev context?
-	throw new Error('The JWTHelper is only available in development mode. Remove it from production code.');
+  // TODO:: Just not provide id outside of dev context?
+  throw new Error('The JWTHelper is only available in development mode. Remove it from production code.');
 }
 
 enum Position {
-	topRight = 'top-right',
-	bottomRight = 'bottom-right',
-	bottomLeft = 'bottom-left',
-	topLeft = 'top-left'
+  topRight = 'top-right',
+  bottomRight = 'bottom-right',
+  bottomLeft = 'bottom-left',
+  topLeft = 'top-left'
 }
 
 withDefaults(defineProps<{
-	position?: Position
-	defaultToken?: Partial<JsonWebToken>
+  position?: Position
+  defaultToken?: Partial<JsonWebToken>
 }>(), {
-	position: Position.bottomRight
+  position: Position.bottomRight
 });
 const jwtModalOpen = ref(false);
 </script>

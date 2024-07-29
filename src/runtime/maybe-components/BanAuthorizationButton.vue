@@ -2,26 +2,26 @@
 // TODO:: Make it way more extendable form outside. Like renaming all labels and contents in the dialogs.
 import {ref, computed} from 'vue';
 import {
-	useFetch,
-	useNuxtApp,
-	useUi,
-	showError,
-	useGuard,
-	useAuthResponseErrorHandler,
-	useRuntimeConfig
+  useFetch,
+  useNuxtApp,
+  useUi,
+  showError,
+  useGuard,
+  useAuthResponseErrorHandler,
+  useRuntimeConfig
 } from '#imports';
 import type {Authorization, ChangeBanStatusRequestBody} from '../glue/components/ban-authorization-button/types';
 import {PermissionId} from '../glue/permissions';
 
 const emit = defineEmits(['update:modelValue']);
 const props = defineProps<{
-	modelValue: Authorization,
-	skeleton?: boolean,
-	disabled?: boolean
+  modelValue: Authorization,
+  skeleton?: boolean,
+  disabled?: boolean
 }>();
 const _modelValue = computed({
-	get: () => props.modelValue,
-	set: (value: Authorization) => emit('update:modelValue', value)
+  get: () => props.modelValue,
+  set: (value: Authorization) => emit('update:modelValue', value)
 });
 const {mainAppId} = useRuntimeConfig().public.authorizationModule;
 const isBanDialogOpen = ref(false);
@@ -30,57 +30,57 @@ const {$uiModule} = useNuxtApp();
 const guard = useGuard();
 const ui = useUi();
 const body = computed<ChangeBanStatusRequestBody>(() => ({
-	authorizationId: _modelValue.value._id as string,
-	action: _modelValue.value.isBanned ? 'unban' : 'ban'
+  authorizationId: _modelValue.value._id as string,
+  action: _modelValue.value.isBanned ? 'unban' : 'ban'
 }));
 const {
-	status,
-	execute
+  status,
+  execute
 } = useFetch(() => '/api/authorization-module/components/ban-authorization-button/change-ban-status', {
-	method: 'post',
-	watch: false,
-	immediate: false,
-	body,
-	onResponse({response}) {
-		useAuthResponseErrorHandler(response, mainAppId);
+  method: 'post',
+  watch: false,
+  immediate: false,
+  body,
+  onResponse({response}) {
+    useAuthResponseErrorHandler(response, mainAppId);
 
-		if (response.status === 200) {
-			if (response._data.notFound) {
-				return $uiModule.toaster.toastError('User not found. Maybe he got already deleted.');
-			} else if (body.value.action === 'ban') {
-				$uiModule.toaster.toastSuccess('User has been banned');
-			} else {
-				$uiModule.toaster.toastSuccess('User has been unbanned');
-			}
+    if (response.status === 200) {
+      if (response._data.notFound) {
+        return $uiModule.toaster.toastError('User not found. Maybe he got already deleted.');
+      } else if (body.value.action === 'ban') {
+        $uiModule.toaster.toastSuccess('User has been banned');
+      } else {
+        $uiModule.toaster.toastSuccess('User has been unbanned');
+      }
 
-			_modelValue.value.isBanned = response._data.isBanned;
-		}
+      _modelValue.value.isBanned = response._data.isBanned;
+    }
 
-		if (response.status === 500) {
-			showError(response._data)
-		}
-	}
+    if (response.status === 500) {
+      showError(response._data);
+    }
+  }
 });
 
 function executeChangeBanStatus(action: 'ban' | 'unban') {
-	body.value.action = action;
-	execute();
+  body.value.action = action;
+  execute();
 }
 
 const hasPermission = computed(() => {
-		if (_modelValue.value._id === null) {
-			return false;
-		}
+    if (_modelValue.value._id === null) {
+      return false;
+    }
 
-		// Do not allow, ban or unban himself
-		if (_modelValue.value._id === guard.token.value?.id) {
-			return false;
-		}
+    // Do not allow, ban or unban himself
+    if (_modelValue.value._id === guard.token.value?.id) {
+      return false;
+    }
 
-		return _modelValue.value.isBanned ?
-			guard.hasPermissionTo(PermissionId.CAN_UNBAN_AUTHORIZATION, mainAppId) :
-			guard.hasPermissionTo(PermissionId.CAN_BAN_AUTHORIZATION, mainAppId)
-	}
+    return _modelValue.value.isBanned ?
+      guard.hasPermissionTo(PermissionId.CAN_UNBAN_AUTHORIZATION, mainAppId) :
+      guard.hasPermissionTo(PermissionId.CAN_BAN_AUTHORIZATION, mainAppId);
+  }
 );
 </script>
 
