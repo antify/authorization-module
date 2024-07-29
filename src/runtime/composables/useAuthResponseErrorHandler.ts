@@ -19,7 +19,7 @@ export const useAuthResponseErrorHandler = (response: FetchResponse<never>) => {
 
 		return showError({
 			statusCode: 401,
-			statusMessage: 'Unauthorized - Configure a loginPageRoute in nuxt config \nto automatically redirect unauthorized users to login page.'
+			message: 'Unauthorized - Configure a loginPageRoute in nuxt config \nto automatically redirect unauthorized users to login page.'
 		});
 	}
 
@@ -27,4 +27,4 @@ export const useAuthResponseErrorHandler = (response: FetchResponse<never>) => {
 		// TODO:: Mai write which permission/permissions is/are missing
 		return $uiModule.toaster.toastError('You are not authorized to carry out this action. \nPlease contact your administrator.');
 	}
-}
+};
