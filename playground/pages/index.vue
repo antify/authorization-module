@@ -46,7 +46,7 @@ onMounted(() => {
         <AntField label="Is logged in?">
           <AntTag
             :state="guard.isLoggedIn() ? TagState.success : TagState.danger"
-            :size="AntTagSize.sm"
+            :size="AntTagSize.xs3"
           >
             {{ guard.isLoggedIn() }}
           </AntTag>
@@ -55,6 +55,7 @@ onMounted(() => {
         <AntField :label="`Has permission to do ${PermissionId.CAN_READ_SECRET_DATA} in ${APP} app`">
           <AntTag
             :state="guard.hasPermissionTo(PermissionId.CAN_READ_SECRET_DATA, APP) ? TagState.success : TagState.danger"
+            :size="AntTagSize.xs3"
           >
             {{ guard.hasPermissionTo(PermissionId.CAN_READ_SECRET_DATA, APP) }}
           </AntTag>

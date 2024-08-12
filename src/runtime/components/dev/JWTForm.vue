@@ -5,6 +5,7 @@ import {format, getUnixTime} from 'date-fns';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
 import {ref, computed, watch, onMounted} from 'vue';
 import {useGuard, useFetch, useUiClient} from '#imports';
+import {AntDateInputTypes} from '#ui-module';
 
 const props = withDefaults(defineProps<{
   open: boolean
@@ -143,7 +144,7 @@ onMounted(() => setTokenValue());
     fullscreen
   >
     <div class="flex justify-between space-x-4">
-      <div class="flex flex-col space-y-2 flex-grow">
+      <AntFormGroup class="flex-grow">
         <AntTextInput
           v-model="token.id"
           label="ID"
@@ -186,58 +187,58 @@ onMounted(() => setTokenValue());
             />
           </div>
         </div>
-      </div>
+      </AntFormGroup>
 
-      <div class="w-2/5 flex-shrink-0 space-y-2">
-        <!-- TODO:: Replace with ui module's date input field -->
+      <AntFormGroup class="w-2/5 flex-shrink-0">
         <AntField label="Issued at">
-          <AntBaseInput
-            v-model:value="iat"
-            type="datetime-local"
+          <AntDateInput
+            v-model="iat"
+            :type="AntDateInputTypes.datetimeLocal"
           />
         </AntField>
 
         <AntField label="Expired at">
-          <AntBaseInput
-            v-model:value="exp"
-            type="datetime-local"
+          <AntDateInput
+            v-model="exp"
+            :type="AntDateInputTypes.datetimeLocal"
           />
         </AntField>
 
         <div class="bg-neutral-100 rounded border border-neutral-300">
           <pre class="p-2">{{ token }}</pre>
         </div>
-      </div>
+      </AntFormGroup>
     </div>
 
     <template #footer>
-      <div class="flex justify-end">
-        <div class="flex space-x-2.5">
-          <AntButton
-            :skeleton="skeleton"
-            @click="() => logout()"
-          >
-            Logout
-          </AntButton>
+      <AntFormGroup
+        direction="row"
+        class="justify-end"
+      >
+        <AntButton
+          :skeleton="skeleton"
+          @click="() => logout()"
+        >
+          Logout
+        </AntButton>
 
-          <AntButton
-            :skeleton="skeleton"
-            @click="setDefaultData"
-          >
-            Set default data
-          </AntButton>
+        <AntButton
+          :skeleton="skeleton"
+          @click="setDefaultData"
+        >
+          Set default data
+        </AntButton>
 
-          <AntButton
-            color-type="primary"
-            filled
-            :skeleton="skeleton"
-            :disabled="status === 'pending'"
-            @click="() => login()"
-          >
-            Login
-          </AntButton>
-        </div>
-      </div>
+        <AntButton
+          state="primary"
+          filled
+          :skeleton="skeleton"
+          :disabled="status === 'pending'"
+          @click="() => login()"
+        >
+          Login
+        </AntButton>
+      </AntFormGroup>
     </template>
   </AntModal>
 </template>

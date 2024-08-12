@@ -20,18 +20,18 @@ const _appId = computed<string>(() => {
     return props.appId;
   }
 
-  if (appContext.context.value.appId === null) {
+  if (appContext.value.context.appId === null) {
     throw new Error('App id is not set in app context. To make the RoleInput work, you need to set the app context or pass it as a prop.');
   }
 
-  return appContext.context.value.appId;
+  return appContext.value.context.appId;
 });
 const _tenantId = computed<string | null>(() => {
   if (props.tenantId !== undefined) {
     return props.tenantId;
   }
 
-  return appContext.context.value.tenantId;
+  return appContext.value.context.tenantId;
 });
 const emit = defineEmits(['update:modelValue']);
 const roleFetch = roleStore.getFetch(_appId.value, _tenantId.value);
@@ -53,5 +53,6 @@ onUnmounted(() => roleStore.deleteFetch(_appId.value, _tenantId.value));
     v-model="_modelValue"
     :skeleton="roleFetch.skeleton.value"
     :options="options"
+    placeholder="Add new role"
   />
 </template>

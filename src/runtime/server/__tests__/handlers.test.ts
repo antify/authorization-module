@@ -1,81 +1,142 @@
-import {describe, test, expect, vi} from 'vitest';
-import {isAuthorizedHandler, isLoggedInHandler} from '../handlers';
 import {expiredToken, validToken} from '../../__tests__/testTokens';
+import {isAuthorizedHandler, isLoggedInHandler} from '../handlers';
+import {describe, test, expect, vi, beforeEach} from 'vitest';
+import {createError as _createError} from 'h3';
+import {decodeJwt, errors} from 'jose';
+import {Guard} from '../../guard';
 
-vi.mock('#imports', () => {
+const {
+  isValidAppContextHandler,
+  useAuth,
+  createError
+} = vi.hoisted(() => {
   return {
-    useRuntimeConfig: () => ({
-      authorizationModule: {
-        jwtSecret: 'secret',
-        jwtExpiration: 480,
-        tokenCookieName: 'token',
-        passwordSalt: 'secret'
-      }
-    }),
-    getCookie: () => {
-    },
-    setCookie: () => {
-    },
+    isValidAppContextHandler: vi.fn(),
+    useAuth: vi.fn(),
+    createError: vi.fn()
   };
 });
 
-// TODO:: improve tests - test statuscodes too
-describe('handlers test', async () => {
-  test('should emit if user is not logged in', async () => {
-    expect.assertions(2);
+vi.mock('../auth', () => {
+  return {
+    useAuth
+  };
+});
 
-    try {
-      await isLoggedInHandler({
-        headers: {
-          authorization: expiredToken
-        }
-      });
-    } catch (e) {
-      expect(e.statusCode).toBe(401);
-      expect(e.statusMessage).toBe('Unauthorized');
-    }
+vi.mock('#app-context-module', () => {
+  return {
+    isValidAppContextHandler
+  };
+});
+
+vi.mock('#imports', () => {
+  return {
+    createError
+  };
+});
+
+// TODO:: improve tests - test status codes too
+describe('handlers test', async () => {
+  beforeEach(() => {
+    vi.restoreAllMocks();
+
+    createError.mockImplementation(_createError);
   });
 
-  test('should emit if user is logged in', async () => {
-    const guard = await isLoggedInHandler({
-      headers: {
-        authorization: validToken
+  describe('isLoggedInHandler', async () => {
+    test('should emit if user is not logged in', async () => {
+      expect.assertions(2);
+
+      useAuth.mockImplementationOnce(() => {
+        return {
+          verify: () => {
+            throw new errors.JWSInvalid();
+          }
+        };
+      });
+
+      try {
+        await isLoggedInHandler({
+          headers: {
+            authorization: expiredToken
+          }
+        });
+      } catch (e) {
+        expect(e.statusCode).toBe(401);
+        expect(e.statusMessage).toBe('Unauthorized');
       }
     });
 
-    expect(guard.isLoggedIn()).toBeTruthy();
-  });
+    test('should emit if user is logged in', async () => {
+      useAuth.mockImplementationOnce(() => {
+        return {
+          verify: (event) => {
+            return new Guard(decodeJwt(event.headers.authorization));
+          }
+        };
+      });
 
-  test('should emit if user is authorized correctly', async () => {
-    const guard = await isAuthorizedHandler(
-      {
+      const guard = await isLoggedInHandler({
         headers: {
           authorization: validToken
         }
-      },
-      'CAN_TEST',
-      'core'
-    );
+      });
 
-    expect(guard.isLoggedIn()).toBeTruthy();
+      expect(guard.isLoggedIn()).toBeTruthy();
+    });
   });
 
-  test('should emit if user is not authorized correctly', async () => {
-    expect.assertions(1);
+  describe('isAuthorizedHandler', async () => {
+    test('should emit if user is authorized correctly', async () => {
+      isValidAppContextHandler.mockImplementationOnce(() => {
+        return {appId: 'core', tenantId: ''};
+      });
+      useAuth.mockImplementationOnce(() => {
+        return {
+          verify: (event) => {
+            return new Guard(decodeJwt(event.headers.authorization));
+          }
+        };
+      });
 
-    try {
-      await isAuthorizedHandler(
+      const guard = await isAuthorizedHandler(
         {
           headers: {
             authorization: validToken
           }
         },
-        'CAN_TEST',
-        'tenant',
-        'notExistingOne'
+        'CAN_TEST'
       );
-    } catch (e) {
-      expect(e.message).toBe('Forbidden');
-    }
+
+      expect(guard.isLoggedIn()).toBeTruthy();
+    });
+
+    test('should emit if user is not authorized correctly', async () => {
+      expect.assertions(1);
+
+      isValidAppContextHandler.mockImplementationOnce(() => {
+        return {appId: 'tenant', tenantId: 'notExistingOne'};
+      });
+      useAuth.mockImplementationOnce(() => {
+        return {
+          verify: (event) => {
+            return new Guard(decodeJwt(event.headers.authorization));
+          }
+        };
+      });
+
+      try {
+        await isAuthorizedHandler(
+          {
+            headers: {
+              authorization: validToken
+            }
+          },
+          'CAN_TEST'
+        );
+      } catch (e) {
+        expect(e.message).toBe('Forbidden');
+      }
+    });
   });
 });

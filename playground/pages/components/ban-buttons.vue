@@ -5,9 +5,7 @@ import {
   showError,
   useUiClient
 } from '#imports';
-// TODO:: import from #
-import {type AppAccess} from '../../../src/runtime/glue/components/ban-app-access-button/types';
-import {type Authorization} from '../../../src/runtime/glue/components/ban-authorization-button/types';
+import {type AppAccess, type Authorization} from '#authorization-module';
 
 const {
   data: users,

@@ -113,75 +113,76 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="bg-neutral-100 p-2 rounded flex flex-col space-y-2 border border-neutral-300">
-    <div class="flex justify-end">
-      <AntButton
-        :icon-left="faMultiply"
-        size="sm"
-        outlined
+  <AntCard>
+    <AntFormGroup>
+      <div class="flex justify-end">
+        <AntButton
+          :icon-left="faMultiply"
+          size="sm"
+          outlined
+          :skeleton="skeleton"
+          @click="() => $emit('remove')"
+        />
+      </div>
+
+      <AntSelect
+        v-model="_appId"
+        :options="allAppsOptions"
         :skeleton="skeleton"
-        @click="() => $emit('remove')"
-      />
-    </div>
-
-    <AntSelect
-      v-model="_appId"
-      :options="allAppsOptions"
-      :skeleton="skeleton"
-      label="App ID"
-    />
-
-    <AntTextInput
-      v-model="_tenantId"
-      :skeleton="skeleton"
-      :disabled="!isMultiTenant"
-      label="Tenant ID"
-    />
-
-    <AntFormGroup direction="row">
-      <AntSwitch
-        v-model="_isAdmin"
-        :skeleton="skeleton"
-        label="Admin"
+        label="App ID"
       />
 
-      <AntSwitch
-        v-model="_isBanned"
+      <AntTextInput
+        v-model="_tenantId"
         :skeleton="skeleton"
-        label="Banned"
+        :disabled="!isMultiTenant"
+        label="Tenant ID"
       />
+
+      <AntFormGroup direction="row">
+        <AntSwitch
+          v-model="_isAdmin"
+          :skeleton="skeleton"
+          label="Admin"
+        />
+
+        <AntSwitch
+          v-model="_isBanned"
+          :skeleton="skeleton"
+          label="Banned"
+        />
+      </AntFormGroup>
+
+      <div>
+        <AntField
+          label="Permissions"
+          :skeleton="skeleton"
+        >
+          <div class="mb-2 flex space-x-2.5">
+            <AntButton
+              size="sm"
+              :skeleton="skeleton"
+              @click="selectAll"
+            >
+              Select all
+            </AntButton>
+
+            <AntButton
+              size="sm"
+              :skeleton="skeleton"
+              @click="unselectAll"
+            >
+              Unselect all
+            </AntButton>
+          </div>
+        </AntField>
+
+        <AntCheckboxGroup
+          v-model="_permissions"
+          :skeleton="skeleton"
+          :checkboxes="appsPermissionsCheckboxes"
+        />
+      </div>
     </AntFormGroup>
-
-
-    <div>
-      <AntField
-        label="Permissions"
-        :skeleton="skeleton"
-      >
-        <div class="mb-2 flex space-x-2.5">
-          <AntButton
-            size="sm"
-            :skeleton="skeleton"
-            @click="selectAll"
-          >
-            Select all
-          </AntButton>
-
-          <AntButton
-            size="sm"
-            :skeleton="skeleton"
-            @click="unselectAll"
-          >
-            Unselect all
-          </AntButton>
-        </div>
-      </AntField>
-
-      <AntCheckboxGroup
-        v-model="_permissions"
-        :skeleton="skeleton"
-        :checkboxes="appsPermissionsCheckboxes"
-      />
-    </div>
-  </div>
+  </AntCard>
 </template>

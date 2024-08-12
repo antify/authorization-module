@@ -3,14 +3,18 @@ import type {Permission} from '#authorization-module/types';
 
 export default defineNuxtConfig({
   ssr: false,
+
   imports: {
     autoImport: false
   },
+
   modules: [
+    '@antify/ui-module',
     '../src/module',
     '@antify/app-context-module',
-    '@antify/ui-module'
+    '@nuxt/test-utils/module'
   ],
+
   authorizationModule: {
     jwtSecret: '#a!SuperSecret123',
     databaseHandler: './server/datasources/db/core/databaseHandler',
@@ -23,6 +27,7 @@ export default defineNuxtConfig({
       }
     ],
   },
+
   appContextModule: {
     apps: [
       {
@@ -34,6 +39,7 @@ export default defineNuxtConfig({
       }
     ],
   },
+
   hooks: {
     'authorization-module:add-permissions': () => {
       return [{
@@ -43,5 +49,7 @@ export default defineNuxtConfig({
       }] as Permission[];
     }
   },
-  devtools: {enabled: true}
+
+  devtools: {enabled: true},
+  compatibilityDate: '2024-07-29'
 });

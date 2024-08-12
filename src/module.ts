@@ -157,7 +157,7 @@ export default defineNuxtModule<ModuleOptions>({
     const typesBuildDir = join(nuxt.options.buildDir, 'types');
 
     nuxt.options.build.transpile.push(runtimeDir);
-    nuxt.options.alias['#authorization-module'] = runtimeDir;
+    nuxt.options.alias['#authorization-module'] = resolve(runtimeDir, 'types');
 
     const permissions: Permission[] = [
       {

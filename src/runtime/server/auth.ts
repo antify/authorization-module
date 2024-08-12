@@ -2,7 +2,7 @@ import * as jose from 'jose';
 import {Guard} from '../guard';
 import {type H3Event} from 'h3';
 import {decodeJwt, SignJWT} from 'jose';
-import {useRuntimeConfig, getCookie, setCookie} from '#imports';
+import {useRuntimeConfig, getCookie, setCookie, deleteCookie} from '#imports';
 import {type Authorization, type JsonWebToken, type Role} from '../types';
 
 // TODO:: support different algorithm's
@@ -67,17 +67,8 @@ export const useAuth = () => {
         .setIssuedAt(issuedAt)
         .sign(new TextEncoder().encode(secret));
     },
-    async logout(event: H3Event) {
-      const expirationDate = new Date();
-
-      expirationDate.setMinutes(expirationDate.getMinutes() + jwtExpiration);
-
-      const rawToken = await signToken(token, jwtSecret, expirationDate.getTime() / 1000);
-
-      setCookie(event, tokenCookieName, rawToken);
-
-      // TODO:: makes no sense?
-      return new Guard();
+    logout(event: H3Event) {
+      deleteCookie(event, tokenCookieName);
     },
     /**
      * Verifies the token.
@@ -96,8 +87,6 @@ export const useAuth = () => {
       }
 
       await jose.jwtVerify(rawToken, new TextEncoder().encode(jwtSecret));
-
-      this.rawToken = rawToken;
 
       return new Guard(decodeJwt(rawToken));
     }

@@ -7,6 +7,8 @@ import {
   validToken,
   wrongSecretToken
 } from '../../__tests__/testTokens';
+import {Authorization} from '~/src/runtime/server';
+import {H3Event} from 'h3';
 
 vi.mock('#imports', () => {
   return {
@@ -57,7 +59,7 @@ describe('Auth test', async () => {
       }
     });
 
-    expect(guard.isLoggedIn()).toBeTruthy();
+    expect(guard.isLoggedIn()).toBeFalsy();
   });
 
   test('should validate an expired token correctly', async () => {
@@ -81,49 +83,57 @@ describe('Auth test', async () => {
   });
 
   test('should create a token correctly', async () => {
-    const decodedToken = {
-      'id': 'test-id',
-      'isSuperAdmin': false,
-      'apps': [
+    const authorization: Authorization = {
+      _id: '661f73b3e90e013526837a00',
+      isSuperAdmin: false,
+      isBanned: false,
+      appAccesses: [
         {
-          'isAdmin': false,
-          'appId': 'core',
-          'tenantId': '',
-          'permissions': [
-            'CAN_TEST'
-          ]
-        },
-        {
-          'isAdmin': false,
-          'appId': 'tenant',
-          'tenantId': 'one',
-          'permissions': [
-            'CAN_TEST'
-          ]
-        },
-        {
-          'isAdmin': false,
-          'appId': 'tenant',
-          'tenantId': 'two',
-          'permissions': [
-            'CAN_TEST'
-          ]
+          _id: '661f73b3e90e013526837a00',
+          appId: 'core',
+          tenantId: '',
+          roles: [
+            {
+              _id: '661f73b3e90e013526837a00',
+              appId: 'core',
+              tenantId: '',
+              name: 'foo',
+              isAdmin: true,
+              permissions: ['CAN_TEST']
+            }
+          ],
+          isBanned: false
         }
       ]
     };
 
     const token = (await useAuth()
-      .login({}, decodedToken))
+      .login({} as unknown as H3Event, authorization))
       .getToken();
 
     expect(token).toHaveProperty('exp');
-    expect(token['exp']).toBeGreaterThan(Math.round(new Date().getTime() / 1000));
+    expect(token?.exp).toBeGreaterThan(Math.round(new Date().getTime() / 1000));
     expect(token).toHaveProperty('iat');
-    expect(token['iat']).toBeLessThanOrEqual(Math.round(new Date().getTime() / 1000));
+    expect(token?.iat).toBeLessThanOrEqual(Math.round(new Date().getTime() / 1000));
 
-    delete token['exp'];
-    delete token['iat'];
+    delete token?.exp;
+    delete token?.iat;
 
-    expect(token).toStrictEqual(decodedToken);
+    expect(token).toStrictEqual({
+      apps: [
+        {
+          appId: 'core',
+          isAdmin: true,
+          isBanned: false,
+          permissions: [
+            'CAN_TEST',
+          ],
+          tenantId: '',
+        },
+      ],
+      id: '661f73b3e90e013526837a00',
+      isBanned: false,
+      isSuperAdmin: false,
+    });
   });
 });

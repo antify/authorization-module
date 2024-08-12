@@ -2,7 +2,6 @@
 // TODO:: Make it way more extendable form outside. Like renaming all labels and contents in the dialogs.
 import {
   ref,
-  useUi,
   computed,
   useFetch,
   useGuard,
@@ -12,6 +11,7 @@ import {
 } from '#imports';
 import type {ChangeBanStatusRequestBody, AppAccess} from '../glue/components/ban-app-access-button/types';
 import {PermissionId} from '../glue/permissions';
+import {State} from '#ui-module';
 
 const emit = defineEmits(['update:modelValue']);
 const props = defineProps<{
@@ -28,7 +28,6 @@ const isBanDialogOpen = ref(false);
 const isUnbanDialogOpen = ref(false);
 const {$uiModule} = useNuxtApp();
 const guard = useGuard();
-const ui = useUi();
 const body = computed<ChangeBanStatusRequestBody>(() => ({
   appAccessId: _modelValue.value._id,
   authorizationId: props.authorizationId,
@@ -142,7 +141,7 @@ const hasPermission = computed(() => {
       v-model:open="isBanDialogOpen"
       title="Ban user"
       confirm-text="Ban user"
-      :color-type="ui.ColorType.danger"
+      :state="State.danger"
       @confirm="() => executeChangeBanStatus('ban')"
     >
       Are you sure you want to ban this user?<br>
@@ -153,7 +152,7 @@ const hasPermission = computed(() => {
       v-model:open="isUnbanDialogOpen"
       title="Unban user"
       confirm-text="Unban user"
-      :color-type="ui.ColorType.warning"
+      :state="State.warning"
       @confirm="() => executeChangeBanStatus('unban')"
     >
       Are you sure you want to unban this user?<br>

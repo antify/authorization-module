@@ -4,7 +4,6 @@ import {ref, computed} from 'vue';
 import {
   useFetch,
   useNuxtApp,
-  useUi,
   showError,
   useGuard,
   useAuthResponseErrorHandler,
@@ -12,6 +11,7 @@ import {
 } from '#imports';
 import type {Authorization, ChangeBanStatusRequestBody} from '../glue/components/ban-authorization-button/types';
 import {PermissionId} from '../glue/permissions';
+import {State} from '#ui-module';
 
 const emit = defineEmits(['update:modelValue']);
 const props = defineProps<{
@@ -28,7 +28,6 @@ const isBanDialogOpen = ref(false);
 const isUnbanDialogOpen = ref(false);
 const {$uiModule} = useNuxtApp();
 const guard = useGuard();
-const ui = useUi();
 const body = computed<ChangeBanStatusRequestBody>(() => ({
   authorizationId: _modelValue.value._id as string,
   action: _modelValue.value.isBanned ? 'unban' : 'ban'
@@ -126,7 +125,7 @@ const hasPermission = computed(() => {
       v-model:open="isBanDialogOpen"
       title="Ban user"
       confirm-text="Ban user"
-      :color-type="ui.ColorType.danger"
+      :state="State.danger"
       @confirm="() => executeChangeBanStatus('ban')"
     >
       Are you sure you want to ban this user?<br>
@@ -137,7 +136,7 @@ const hasPermission = computed(() => {
       v-model:open="isUnbanDialogOpen"
       title="Unban user"
       confirm-text="Unban user"
-      :color-type="ui.ColorType.warning"
+      :state="State.warning"
       @confirm="() => executeChangeBanStatus('unban')"
     >
       Are you sure you want to unban this user?<br>
