@@ -137,8 +137,6 @@ export default defineNuxtModule<ModuleOptions>({
     // }
   },
   async setup(options, nuxt) {
-    await installModule('@antify/app-context-module', nuxt.options.runtimeConfig.appContextModule);
-
     if (JSON.stringify(options) === '{}') {
       // nuxt-module-build build --stub call this setup without any options. This would break the code.
       return;
@@ -151,6 +149,8 @@ export default defineNuxtModule<ModuleOptions>({
     }
 
     await installModule('@pinia/nuxt');
+    // @ts-ignore
+    await installModule('@antify/app-context-module', nuxt.options.runtimeConfig.appContextModule);
 
     const {resolve} = createResolver(import.meta.url);
     const runtimeDir = resolve('runtime');
