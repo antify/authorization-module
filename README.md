@@ -82,9 +82,9 @@ Add it to your `nuxt.config.ts`:
 
 ```typescript
 export default {
-	modules: [
-		'@antify/authorization-module'
-	]
+  modules: [
+    '@antify/authorization-module'
+  ]
 }
 ```
 
@@ -138,11 +138,11 @@ it [here](https://github.com/antify/database?tab=readme-ov-file#error-schema-has
 
 ```typescript
 const user = await UserModel
-	.findOne({_id: userId})
-	.populate({
-		path: 'authorization.appAccesses.roles',
-		model: client.getModel<Role>('authorization_roles')
-	});
+  .findOne({_id: userId})
+  .populate({
+    path: 'authorization.appAccesses.roles',
+    model: client.getModel<Role>('authorization_roles')
+  });
 ```
 
 ## Development
