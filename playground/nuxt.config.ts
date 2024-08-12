@@ -11,8 +11,7 @@ export default defineNuxtConfig({
   modules: [
     '@antify/ui-module',
     '../src/module',
-    '@antify/app-context-module',
-    '@nuxt/test-utils/module'
+    '@antify/app-context-module'
   ],
 
   authorizationModule: {
