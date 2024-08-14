@@ -4,6 +4,7 @@ export default defineBuildConfig({
   declaration: true,
   entries: [
     'src/module',
+    'src/package',
     {
       input: 'src/cli',
       builder: 'mkdist',

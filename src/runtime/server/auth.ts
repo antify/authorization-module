@@ -3,7 +3,8 @@ import {Guard} from '../guard';
 import {type H3Event} from 'h3';
 import {decodeJwt, SignJWT} from 'jose';
 import {useRuntimeConfig, getCookie, setCookie, deleteCookie} from '#imports';
-import {type Authorization, type JsonWebToken, type Role} from '../types';
+import {type Authorization, type JsonWebToken} from '../types';
+import {type Role} from './datasources/role';
 
 // TODO:: support different algorithm's
 export const JWT_ALGORITHM = 'HS256';

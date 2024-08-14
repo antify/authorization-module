@@ -37,4 +37,3 @@ export type {AppHandlerFactory, AppHandler} from './composables/appHandler';
 export type {DatabaseHandler} from './server/databaseHandler';
 export type {Authorization} from './server/datasources/authorization';
 export type {AppAccess} from './server/datasources/appAccess';
-export type {Role} from './server/datasources/schemas/role';

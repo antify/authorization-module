@@ -8,6 +8,10 @@
       "import": "./dist/module.mjs",
       "require": "./dist/module.cjs",
       "types": "./dist/types.d.ts"
+    },
+    "./dist/package": {
+      "import": "./dist/package.mjs",
+      "types": "./dist/package.d.ts"
     }
   },
   "main": "./dist/module.cjs",

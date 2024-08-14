@@ -41,6 +41,9 @@ export const useGuard = () => {
     hasPermissionTo(permission: string[] | string, appId: string, tenantId: string | null = null) {
       return new Guard(token.value).hasPermissionTo(permission, appId, tenantId);
     },
+    hasAppAccess(appId: string): number {
+      return new Guard(token.value).hasAppAccess(appId);
+    },
     // TODO:: implement in dev component
     getAppPermissions(appId: string): Permission[] {
       return permissions.filter((permission: Permission) => permission.appIds?.includes(appId) || !permission.appIds);

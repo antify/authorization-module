@@ -1,4 +1,4 @@
-import {type Role} from './schemas/role';
+import {type Role} from './role';
 import {
   type SchemaDefinition,
   type Document,
@@ -15,7 +15,7 @@ export interface AppAccess {
 
 export type AppAccessDocument = Document<string, undefined, AppAccess>
 
-export const appAccessSchemaDefinition: SchemaDefinition = {
+export const useAppAccessSchema = (roleSchemaName: string): SchemaDefinition => ({
   appId: {
     type: String,
     required: true
@@ -27,7 +27,7 @@ export const appAccessSchemaDefinition: SchemaDefinition = {
   roles: {
     type: [{
       type: Schema.Types.ObjectId,
-      ref: 'authorization_roles'
+      ref: roleSchemaName
     }],
     required: true,
     default: [],
@@ -38,7 +38,7 @@ export const appAccessSchemaDefinition: SchemaDefinition = {
       );
 
       if (duplicates.length > 0) {
-        throw new Error(`Can not accociate one AppAccess one role multiple times. Duplicate role ids found: ${duplicates.join(', ')}`);
+        throw new Error(`Can not associate one AppAccess one role multiple times. Duplicate role ids found: ${duplicates.join(', ')}`);
       }
     }
   },
@@ -47,4 +47,4 @@ export const appAccessSchemaDefinition: SchemaDefinition = {
     required: true,
     default: false
   }
-};
+});

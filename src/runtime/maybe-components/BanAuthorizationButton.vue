@@ -10,7 +10,7 @@ import {
   useRuntimeConfig
 } from '#imports';
 import type {Authorization, ChangeBanStatusRequestBody} from '../glue/components/ban-authorization-button/types';
-import {PermissionId} from '../glue/permissions';
+import {PermissionId} from '../../package/permissions';
 import {State} from '#ui-module';
 
 const emit = defineEmits(['update:modelValue']);

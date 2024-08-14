@@ -91,4 +91,17 @@ export class Guard {
       (permissionItem) => permissionItem === permission
     );
   }
+
+  /**
+   * Return the amount of app access for the given appId.
+   * Single tenancy apps will be 1 or 0, multi tenancy apps can
+   * be 0 or *.
+   */
+  hasAppAccess(appId: string): number {
+    if (!this.token) {
+      return 0;
+    }
+
+    return this.token.apps?.filter((app) => app.appId === appId).length || 0;
+  }
 }

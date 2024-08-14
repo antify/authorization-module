@@ -1,7 +1,7 @@
 import {defineSchema} from '@antify/database';
 import {
   type Authorization,
-  authorizationSchemaDefinition
+  useAuthorizationSchema
 } from '../../../../../../src/runtime/server/datasources/authorization';
 
 export interface User {
@@ -17,7 +17,7 @@ export default defineSchema(async (client) => {
       required: true
     },
     authorization: {
-      type: authorizationSchemaDefinition,
+      type: useAuthorizationSchema(),
       required: true,
       unique: true,
       default: {

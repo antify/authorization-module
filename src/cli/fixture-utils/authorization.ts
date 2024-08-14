@@ -1,4 +1,4 @@
-import {type Authorization} from '../../runtime/server';
+import {type Authorization} from '../../runtime/server/datasources/authorization';
 import mongoose from 'mongoose';
 
 export const generateAuthorizations = (count: number = 100, data: Partial<Authorization> = {}): Authorization[] => {

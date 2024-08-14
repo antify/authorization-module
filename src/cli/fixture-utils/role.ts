@@ -1,4 +1,4 @@
-import {type Role} from '../../runtime/server/datasources/schemas/role';
+import {type Role} from '../../runtime/server/datasources/role';
 import mongoose from 'mongoose';
 
 export const generateRoles = (

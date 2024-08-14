@@ -10,7 +10,7 @@ import {
   useAuthResponseErrorHandler,
 } from '#imports';
 import type {ChangeBanStatusRequestBody, AppAccess} from '../glue/components/ban-app-access-button/types';
-import {PermissionId} from '../glue/permissions';
+import {PermissionId} from '../../package/permissions';
 import {State} from '#ui-module';
 
 const emit = defineEmits(['update:modelValue']);

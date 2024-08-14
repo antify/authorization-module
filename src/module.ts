@@ -10,7 +10,7 @@ import {
 } from '@nuxt/kit';
 import {join, relative} from 'pathe';
 import type {Permission} from './runtime/types';
-import {PermissionId} from './runtime/glue/permissions';
+import {PermissionId} from './package/permissions';
 import {isTypeOfRule, notBlankRule, Types, useValidator} from '@antify/validate';
 
 export type ModuleOptions = {

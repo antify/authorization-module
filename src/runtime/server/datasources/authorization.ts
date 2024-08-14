@@ -1,5 +1,5 @@
 import {type Document, type SchemaDefinition} from 'mongoose';
-import {type AppAccess, appAccessSchemaDefinition} from './appAccess';
+import {type AppAccess, useAppAccessSchema} from './appAccess';
 
 export interface Authorization {
   _id: string;
@@ -9,10 +9,9 @@ export interface Authorization {
 }
 
 export type AuthorizationDocument = Document<string, undefined, Authorization>
-
-export const authorizationSchemaDefinition: SchemaDefinition = {
+export const useAuthorizationSchema = (roleSchemaName: string = 'authorization_roles'): SchemaDefinition => ({
   appAccesses: {
-    type: [appAccessSchemaDefinition],
+    type: [useAppAccessSchema(roleSchemaName)],
     required: true,
     default: []
   },
@@ -26,4 +25,5 @@ export const authorizationSchemaDefinition: SchemaDefinition = {
     required: true,
     default: false
   }
-};
+});
+

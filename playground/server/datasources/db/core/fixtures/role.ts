@@ -1,5 +1,5 @@
 import {defineFixture} from '@antify/database';
-import {PermissionId} from '../../../../../../src/runtime/glue/permissions';
+import {PermissionId} from '../../../../../../src/package/permissions';
 import {type Role} from '#authorization-module';
 import {TEST_TENANT_ID} from '../fixture-utils/tenant';
 import {generateRoles} from '../../../../../../src/cli/fixture-utils/role';
