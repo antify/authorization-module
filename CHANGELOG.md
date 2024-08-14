@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/antify/authorization-module/compare/v1.0.2...v1.1.0) (2024-08-14)
+
+
+### Features
+
+* Make module usable as package too ([e288d15](https://github.com/antify/authorization-module/commit/e288d1511e6941fa498b80f521a78fbb3f679d41))
+
 ### [1.0.2](https://github.com/antify/authorization-module/compare/v1.0.1...v1.0.2) (2024-08-12)
 
 ### [1.0.1](https://github.com/antify/authorization-module/compare/v1.0.0...v1.0.1) (2024-08-12)
