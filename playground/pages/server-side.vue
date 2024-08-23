@@ -1,16 +1,16 @@
 <script lang="ts" setup>
 import {
-  useUi,
   useGuard,
   useFetch,
   useNuxtApp,
-  useUiClient
+  useUiClient,
+  ref,
+  computed
 } from '#imports';
-import {ref, computed} from 'vue';
+import {Grouped} from '#ui-module';
 
 const guard = useGuard();
 const APP = 'core';
-const {Grouped} = useUi();
 const {$uiModule} = useNuxtApp();
 const {
   data: users,

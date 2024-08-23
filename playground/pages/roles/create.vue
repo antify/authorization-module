@@ -1,12 +1,15 @@
 <script setup lang="ts">
+import {useRoute} from '#imports';
+
+const route = useRoute();
 const getDetailRoute = (roleId) => ({
   name: 'roles-roleId',
   params: {roleId},
-  query: useRoute().query
+  query: route.query
 });
 const getListingRoute = () => ({
   name: 'roles',
-  query: useRoute().query
+  query: route.query
 });
 </script>
 

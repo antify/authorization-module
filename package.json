@@ -24,7 +24,7 @@
     "dev": "nuxi dev playground",
     "dev:build": "nuxi build playground",
     "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
-    "release": "standard-version && pnpm publish && git push --follow-tags",
+    "release": "pnpm test && standard-version && pnpm publish && git push --follow-tags",
     "lint": "eslint .",
     "test": "vitest run"
   },
@@ -57,6 +57,6 @@
   "peerDependencies": {
     "@antify/app-context-module": "^1.2.0",
     "@antify/database": "^1.2.0",
-    "@antify/ui-module": "^1.7.1"
+    "@antify/ui-module": "^1.8.5"
   }
 }

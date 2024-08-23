@@ -1,4 +1,4 @@
-import * as jose from 'jose';
+import {decodeJwt} from 'jose';
 import {Guard} from '../guard';
 import type {JsonWebToken, Permission} from '../types';
 import {refreshCookie, useCookie, useRuntimeConfig, computed} from '#imports';
@@ -9,7 +9,7 @@ export const useGuard = () => {
   const token = computed({
     get(): JsonWebToken | null {
       // TODO:: handle error and parse / validate JsonWebToken type
-      return rawToken.value ? jose.decodeJwt(rawToken.value) : null;
+      return rawToken.value ? decodeJwt(rawToken.value) : null;
     },
     set() {
       throw new Error('Logic Error: Do not set the token directly. Use the logout method instead ' +

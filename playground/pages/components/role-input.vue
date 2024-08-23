@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {ref} from 'vue';
+import {ref} from '#imports';
 import {TEST_TENANT_ID} from '../../server/datasources/db/core/fixture-utils/tenant';
 
 const selectedRoles = ref([]);

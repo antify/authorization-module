@@ -1,4 +1,6 @@
 <script setup lang='ts'>
+import {definePageMeta, useRoute} from '#imports';
+
 definePageMeta({
   layout: 'unprotected'
 });

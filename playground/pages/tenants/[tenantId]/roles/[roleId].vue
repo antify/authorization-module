@@ -1,4 +1,6 @@
 <script setup lang='ts'>
+import {useRoute} from '#imports';
+
 const tenantId = useRoute().params.tenantId;
 const getDetailRoute = (roleId) => ({
   name: 'tenantId-roles-roleId',

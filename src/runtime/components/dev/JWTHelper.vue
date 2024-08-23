@@ -2,7 +2,8 @@
 import type {JsonWebToken} from '../../types';
 import {faUserShield} from '@fortawesome/free-solid-svg-icons';
 import JWTForm from './JWTForm.vue';
-import {withDefaults, ref} from 'vue';
+import {ref} from '#imports';
+import {withDefaults} from 'vue';
 
 if (!import.meta.env.DEV) {
   // TODO:: Just not provide id outside of dev context?

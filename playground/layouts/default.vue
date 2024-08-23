@@ -66,6 +66,7 @@ const navItems = [
     <AuthorizationModuleJWTHelper
       :default-token="defaultToken"
     />
-    <AntToaster />
+
+    <AntToaster :toasts="$uiModule.toaster.getToasts()" />
   </AntNavLeftLayout>
 </template>
