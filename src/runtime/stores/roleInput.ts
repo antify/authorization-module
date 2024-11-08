@@ -1,7 +1,6 @@
 import {
   useFetch,
-  showError,
-  useUiClient
+  showError
 } from '#imports';
 import {defineStore} from 'pinia';
 
@@ -9,9 +8,9 @@ export function useRoleFetch(appId: string, tenantId: string | null) {
   const {
     data,
     execute,
-    pending
+    status
   } = useFetch(
-    '/api/authorization-module/stores/role/roles',
+    '/api/authorization-module/stores/role-input',
     {
       query: {
         appId,
@@ -34,12 +33,11 @@ export function useRoleFetch(appId: string, tenantId: string | null) {
   return {
     execute,
     data,
-    pending,
-    skeleton: useUiClient().utils.createSkeleton(pending),
+    status
   };
 }
 
-export const useRoleStore = defineStore('authorization-module-role', () => {
+export const useRoleInputStore = defineStore('authorization-module-role-input', () => {
   const state: Record<string, never> = {};
 
   return {

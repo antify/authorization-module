@@ -1,12 +1,12 @@
-import {type Role} from '../../runtime/server/datasources/role';
-import mongoose from 'mongoose';
+import {type Role} from '../../runtime/server/datasources/schemas/role';
+import {Types} from 'mongoose';
 
 export const generateRoles = (
   count: number = 100,
   data: Partial<Role> & Required<Pick<Role, 'appId'>>
 ): Role[] => {
-  return Array.from({length: count}, (_, index) => ({
-    _id: new mongoose.Types.ObjectId().toString(),
+  return Array.from<{ length: number }, Role>({length: count}, (_, index) => ({
+    _id: new Types.ObjectId(),
     name: `Role ${index}`,
     isAdmin: false,
     permissions: [],

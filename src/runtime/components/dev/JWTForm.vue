@@ -42,7 +42,7 @@ const {
 const allPermissions = computed(() => {
   return appData.value?.permissions || [];
 });
-const skeleton = useUiClient().utils.createSkeleton(statusGetAppData);
+const skeleton = computed(() => statusGetAppData.value === 'idle' || statusGetAppData.value === 'pending');
 const _open = computed({
   get() {
     return props.open;
@@ -150,7 +150,7 @@ onMounted(() => setTokenValue());
     title="Generate JWT"
     fullscreen
   >
-    <div class="flex justify-between space-x-4">
+    <div class="flex justify-between space-x-4 p-2.5">
       <AntFormGroup class="flex-grow">
         <AntTextInput
           v-model="token.id"

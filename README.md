@@ -64,7 +64,6 @@ following hierarchy is used:
 - [ ] Add access token process
 - [ ] Cleanup module.ts
 - [ ] Select multiple Roles components
-- [ ] Add roles CRUD
 - [ ] Composable to reach all permissions in system
 - [ ] Find a way to handle permissions properly across modules
 - [ ] Fix and add tests

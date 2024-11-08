@@ -29,11 +29,11 @@ const navItems = [
     children: [
       {
         label: 'Roles single tenancy',
-        to: {name: 'roles'}
+        to: {name: 'crud-role-crud-single-tenancy'}
       },
       {
         label: 'Roles multi tenancy',
-        to: {name: 'tenants-tenantId-roles', params: {tenantId: TEST_TENANT_ID}}
+        to: {name: 'crud-tenantId-role-crud-multi-tenancy', params: {tenantId: TEST_TENANT_ID}}
       }
     ]
   },
@@ -59,12 +59,16 @@ const navItems = [
 
 <template>
   <AntNavLeftLayout :navbar-items="navItems">
-    <AntContent class="h-full">
+    <AntContent
+      class="h-full"
+      :padding="false"
+    >
       <slot />
     </AntContent>
 
     <AuthorizationModuleJWTHelper
       :default-token="defaultToken"
+      position="bottom-left"
     />
 
     <AntToaster :toasts="$uiModule.toaster.getToasts()" />

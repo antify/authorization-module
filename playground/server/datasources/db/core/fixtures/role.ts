@@ -1,5 +1,5 @@
 import {defineFixture} from '@antify/database';
-import {PermissionId} from '../../../../../../src/package/permissions';
+import {PermissionId} from '../../../../../../src/runtime/permissions';
 import {type Role} from '#authorization-module';
 import {TEST_TENANT_ID} from '../fixture-utils/tenant';
 import {generateRoles} from '../../../../../../src/cli/fixture-utils/role';
@@ -14,14 +14,14 @@ export default defineFixture({
     await client.getModel<Role>('authorization_roles').insertMany([
       generateRoles(1, {
         _id: TENANT_ADMIN_ROLE_ID,
-        name: 'Admin',
+        name: 'Tenant admin',
         isAdmin: true,
         appId: 'tenant',
         tenantId: TEST_TENANT_ID
       })[0],
       generateRoles(1, {
         _id: TENANT_USER_ROLE_ID,
-        name: 'Employee',
+        name: 'Tenant employee',
         isAdmin: false,
         permissions: Object.values(PermissionId),
         appId: 'tenant',
@@ -29,13 +29,13 @@ export default defineFixture({
       })[0],
       generateRoles(1, {
         _id: CORE_ADMIN_ROLE_ID,
-        name: 'Admin',
+        name: 'Core admin',
         isAdmin: true,
         appId: 'core'
       })[0],
       generateRoles(1, {
         _id: CORE_USER_ROLE_ID,
-        name: 'Employee',
+        name: 'Core employee',
         isAdmin: false,
         permissions: Object.values(PermissionId),
         appId: 'core'

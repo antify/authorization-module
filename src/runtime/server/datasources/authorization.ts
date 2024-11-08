@@ -1,14 +1,13 @@
-import {type Document, type SchemaDefinition} from 'mongoose';
 import {type AppAccess, useAppAccessSchema} from './appAccess';
+import {type SchemaDefinition, Types} from 'mongoose';
 
 export interface Authorization {
-  _id: string;
+  _id: Types.ObjectId;
   isSuperAdmin: boolean;
   isBanned: boolean;
   appAccesses: AppAccess[];
 }
 
-export type AuthorizationDocument = Document<string, undefined, Authorization>
 export const useAuthorizationSchema = (roleSchemaName: string = 'authorization_roles'): SchemaDefinition => ({
   appAccesses: {
     type: [useAppAccessSchema(roleSchemaName)],

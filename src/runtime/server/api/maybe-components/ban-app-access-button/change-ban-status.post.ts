@@ -1,13 +1,13 @@
 import {createError, defineEventHandler, readBody} from '#imports';
 import {isLoggedInHandler} from '../../../handlers';
-import {PermissionId} from '../../../../../package/permissions';
+import {PermissionId} from '../../../../permissions';
 import {type DatabaseHandler} from '../../../databaseHandler';
 import defineDatabaseHandler from '#authorization-module-database-handler';
 import {isMongoDbObjectIdRule, isOneOfRule, useValidator} from '@antify/validate';
 import type {
   ChangeBanStatusRequestBody,
   AppAccess
-} from '~/src/runtime/glue/components/ban-app-access-button/types';
+} from '~/src/runtime/glue/maybe-components/ban-app-access-button/types';
 import {type AppAccess as AppAccessDoc} from '../../../datasources/appAccess';
 
 export const validator = useValidator<ChangeBanStatusRequestBody>({

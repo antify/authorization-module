@@ -1,19 +1,17 @@
-import {type Role} from './role';
+import {type Role} from './schemas/role';
 import {
   type SchemaDefinition,
-  type Document,
+  Types,
   Schema
 } from 'mongoose';
 
 export interface AppAccess {
-  _id: string;
+  _id: Types.ObjectId;
   appId: string;
   tenantId: string | null;
   roles: Role[];
   isBanned: boolean;
 }
-
-export type AppAccessDocument = Document<string, undefined, AppAccess>
 
 export const useAppAccessSchema = (roleSchemaName: string): SchemaDefinition => ({
   appId: {
@@ -31,7 +29,7 @@ export const useAppAccessSchema = (roleSchemaName: string): SchemaDefinition => 
     }],
     required: true,
     default: [],
-    validate: (val: Schema.Types.ObjectId[]) => {
+    validate: (val: Types.ObjectId[]) => {
       const duplicates = val.filter(
         (item, index) =>
           val.some((_item, _index) => _item.toString() === item.toString() && _index !== index)

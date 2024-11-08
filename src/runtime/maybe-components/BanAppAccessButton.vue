@@ -9,8 +9,11 @@ import {
   useNuxtApp,
   useAuthResponseErrorHandler,
 } from '#imports';
-import type {ChangeBanStatusRequestBody, AppAccess} from '../glue/components/ban-app-access-button/types';
-import {PermissionId} from '../../package/permissions';
+import type {
+  ChangeBanStatusRequestBody,
+  AppAccess
+} from '~/src/runtime/glue/maybe-components/ban-app-access-button/types';
+import {PermissionId} from '../permissions';
 import {State} from '#ui-module';
 
 const emit = defineEmits(['update:modelValue']);
@@ -36,7 +39,7 @@ const body = computed<ChangeBanStatusRequestBody>(() => ({
 const {
   status,
   execute
-} = useFetch(() => '/api/authorization-module/components/ban-app-access-button/change-ban-status', {
+} = useFetch(() => '/api/authorization-module/maybe-components/ban-app-access-button/change-ban-status', {
   method: 'post',
   watch: false,
   immediate: false,

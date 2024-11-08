@@ -10,7 +10,7 @@ import {
 } from '@nuxt/kit';
 import {join, relative} from 'pathe';
 import type {Permission} from './runtime/types';
-import {PermissionId} from './package/permissions';
+import {PermissionId} from './runtime/permissions';
 import {isTypeOfRule, notBlankRule, Types, useValidator} from '@antify/validate';
 
 export type ModuleOptions = {
@@ -125,6 +125,8 @@ const optionsValidator = useValidator<ValidatedModuleOptions>({
 // 	'authorizationModule:register-permissions'(): void
 // }
 
+export * from './runtime/types';
+
 // TODO:: on delete tenant, delete roles
 // TODO:: Write all permissions into a typed file. They are collected on build time once.
 //  It would improve code because unused or wrong permissions are detected on build time.
@@ -162,29 +164,29 @@ export default defineNuxtModule<ModuleOptions>({
     const permissions: Permission[] = [
       {
         id: PermissionId.CAN_BAN_AUTHORIZATION,
-        name: 'Can ban user system-wide',
+        name: 'Can ban account system-wide',
         appIds: [_options.mainAppId]
       },
       {
         id: PermissionId.CAN_UNBAN_AUTHORIZATION,
-        name: 'Can unban user system-wide',
+        name: 'Can unban account system-wide',
         appIds: [_options.mainAppId]
       },
       {
         id: PermissionId.CAN_BAN_APP_ACCESS,
-        name: 'Can ban user'
+        name: 'Can ban account'
       },
       {
         id: PermissionId.CAN_UNBAN_APP_ACCESS,
-        name: 'Can unban user'
+        name: 'Can unban account'
       },
       {
         id: PermissionId.CAN_BAN_ADMIN_APP_ACCESS,
-        name: 'Can ban admin user'
+        name: 'Can ban admin account'
       },
       {
         id: PermissionId.CAN_UNBAN_ADMIN_APP_ACCESS,
-        name: 'Can unban admin user'
+        name: 'Can unban admin account'
       },
       {
         id: PermissionId.CAN_UPDATE_ROLE,
@@ -291,10 +293,48 @@ export default defineNuxtModule<ModuleOptions>({
         global: true
       });
 
+      // TODO:: Test why this make problems on using this module in an other module
       addServerHandler({
-        route: '/api/authorization-module/stores/role/roles',
+        route: '/api/authorization-module/maybe-components/ban-authorization-button/change-ban-status',
+        method: 'post',
+        handler: resolve(runtimeDir, 'server', 'api', 'maybe-components', 'ban-authorization-button', 'change-ban-status.post')
+      });
+
+      addServerHandler({
+        route: '/api/authorization-module/maybe-components/ban-app-access-button/change-ban-status',
+        method: 'post',
+        handler: resolve(runtimeDir, 'server', 'api', 'maybe-components', 'ban-app-access-button', 'change-ban-status.post')
+      });
+
+      addServerHandler({
+        route: '/api/authorization-module/stores/role-input',
         method: 'get',
-        handler: resolve(runtimeDir, 'server', 'api', 'stores', 'role', 'roles.get')
+        handler: resolve(runtimeDir, 'server', 'api', 'stores', 'role-input', 'index.get')
+      });
+
+      // Role crud api endpoints
+      addServerHandler({
+        route: '/api/authorization-module/components/role-crud/role-table',
+        method: 'get',
+        handler: resolve(runtimeDir, 'server', 'api', 'components', 'role-crud', 'role-table', 'index.get')
+      });
+
+      addServerHandler({
+        route: '/api/authorization-module/stores/role-crud/:roleId',
+        method: 'get',
+        handler: resolve(runtimeDir, 'server', 'api', 'stores', 'role-crud', '[roleId].get')
+      });
+
+      addServerHandler({
+        route: '/api/authorization-module/stores/role-crud',
+        method: 'post',
+        handler: resolve(runtimeDir, 'server', 'api', 'stores', 'role-crud', 'index.post')
+      });
+
+      addServerHandler({
+        route: '/api/authorization-module/stores/role-crud/:roleId',
+        method: 'delete',
+        handler: resolve(runtimeDir, 'server', 'api', 'stores', 'role-crud', '[roleId].delete')
       });
     }
 
@@ -304,21 +344,6 @@ export default defineNuxtModule<ModuleOptions>({
       as: 'appHandlerFactory',
       from: resolve(nuxt.options.rootDir, _options.appHandlerFactoryPath)
     });
-
-    // TODO:: Test why this make problems on using this module in an other module
-    if (_options.databaseHandler) {
-      addServerHandler({
-        route: '/api/authorization-module/components/ban-authorization-button/change-ban-status',
-        method: 'post',
-        handler: resolve(runtimeDir, 'server', 'api', 'components', 'ban-authorization-button', 'change-ban-status.post')
-      });
-
-      addServerHandler({
-        route: '/api/authorization-module/components/ban-app-access-button/change-ban-status',
-        method: 'post',
-        handler: resolve(runtimeDir, 'server', 'api', 'components', 'ban-app-access-button', 'change-ban-status.post')
-      });
-    }
 
     // TODO:: only register in dev mode!
     addServerHandler({

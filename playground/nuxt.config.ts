@@ -39,6 +39,17 @@ export default defineNuxtConfig({
     ],
   },
 
+  app: {
+    pageTransition: {
+      name: 'fade',
+      mode: 'out-in'
+    },
+    layoutTransition: {
+      name: 'fade',
+      mode: 'out-in'
+    }
+  },
+
   hooks: {
     'authorization-module:add-permissions': () => {
       return [{

@@ -1,9 +1,6 @@
 <script lang="ts" setup>
-/**
- * TODO:: Finish implementation, when https://github.com/antify/ui-module/issues/50 is fixed.
- */
 import {onMounted, computed, onUnmounted, useAppContext} from '#imports';
-import {useRoleStore} from '../stores/role';
+import {useRoleInputStore} from '../stores/roleInput';
 
 const props = defineProps<{
   /**
@@ -13,7 +10,7 @@ const props = defineProps<{
   appId?: string
   tenantId?: string
 }>();
-const roleStore = useRoleStore();
+const roleStore = useRoleInputStore();
 const appContext = useAppContext();
 const _appId = computed<string>(() => {
   if (props.appId !== undefined) {
@@ -21,7 +18,8 @@ const _appId = computed<string>(() => {
   }
 
   if (appContext.value.context.appId === null) {
-    throw new Error('App id is not set in app context. To make the RoleInput work, you need to set the app context or pass it as a prop.');
+    throw new Error('App id is not set in app context. To make the RoleInput work, you need ' +
+      'to set the app context or pass it as a prop.');
   }
 
   return appContext.value.context.appId;
@@ -41,7 +39,7 @@ const _modelValue = computed({
 });
 const options = computed(() => (roleFetch.data.value || []).map((role) => ({
   label: role.name,
-  value: role.id
+  value: role._id
 })));
 
 onMounted(() => roleFetch.execute(_appId.value, _tenantId.value));
@@ -51,8 +49,8 @@ onUnmounted(() => roleStore.deleteFetch(_appId.value, _tenantId.value));
 <template>
   <AntTagInput
     v-model="_modelValue"
-    :skeleton="roleFetch.skeleton.value"
+    :skeleton="['pending', 'idle'].includes(roleFetch.status.value)"
     :options="options"
-    placeholder="Add new role"
+    placeholder="Add role"
   />
 </template>

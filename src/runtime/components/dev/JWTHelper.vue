@@ -1,27 +1,20 @@
 <script lang='ts' setup>
-import type {JsonWebToken} from '../../types';
 import {faUserShield} from '@fortawesome/free-solid-svg-icons';
+import type {JsonWebToken} from '../../types';
 import JWTForm from './JWTForm.vue';
-import {ref} from '#imports';
 import {withDefaults} from 'vue';
+import {ref} from '#imports';
 
 if (!import.meta.env.DEV) {
   // TODO:: Just not provide id outside of dev context?
   throw new Error('The JWTHelper is only available in development mode. Remove it from production code.');
 }
 
-enum Position {
-  topRight = 'top-right',
-  bottomRight = 'bottom-right',
-  bottomLeft = 'bottom-left',
-  topLeft = 'top-left'
-}
-
 withDefaults(defineProps<{
-  position?: Position
+  position?: 'top-right' | 'bottom-right' | 'bottom-left' | 'top-left',
   defaultToken?: Partial<JsonWebToken>
 }>(), {
-  position: Position.bottomRight
+  position: 'bottom-right'
 });
 const jwtModalOpen = ref(false);
 </script>
