@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/antify/authorization-module/compare/v1.1.1...v1.2.0) (2024-11-12)
+
+
+### Features
+
+* Finish role crud and RoleInput ([dab19a1](https://github.com/antify/authorization-module/commit/dab19a1c916c0962bb1bc6fe87686110f58c0b40))
+
 ### [1.1.1](https://github.com/antify/authorization-module/compare/v1.1.0...v1.1.1) (2024-08-23)
 
 ## [1.1.0](https://github.com/antify/authorization-module/compare/v1.0.2...v1.1.0) (2024-08-14)
