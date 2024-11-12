@@ -20,7 +20,7 @@ export const useAppAccessSchema = (roleSchemaName: string): SchemaDefinition => 
   },
   tenantId: {
     type: String,
-    required: false
+    default: null
   },
   roles: {
     type: [{

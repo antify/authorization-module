@@ -6,7 +6,6 @@ export default defineDatabaseConfig({
     isSingleConnection: true,
     migrationDir: 'src/runtime/server/datasources/db/migrations',
     fixturesDir: [
-      'src/cli/fixtures',
       'playground/server/datasources/db/core/fixtures',
     ],
     schemasDir: [
