@@ -59,6 +59,6 @@
   "peerDependencies": {
     "@antify/app-context-module": "^1.2.0",
     "@antify/database": "^1.2.0",
-    "@antify/ui-module": "^2.3.0"
+    "@antify/ui-module": "^2.3.2"
   }
 }
