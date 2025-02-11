@@ -26,5 +26,6 @@ export default defineBuildConfig({
     'pathe',
     'pinia',
     '#vue-router'
-  ]
+  ],
+  failOnWarn: false,
 });
