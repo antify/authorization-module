@@ -3,7 +3,6 @@ import type {Role} from '~/src/runtime/server/datasources/schemas/role';
 
 export interface Authorization {
   _id: Types.ObjectId;
-  tenantId: string | null;
   roles: Role[];
   isBanned: boolean;
 
@@ -20,10 +19,6 @@ export interface Authorization {
 
 export const useAuthorizationSchema = (roleSchemaName: string = 'authorization_roles'): SchemaDefinition => {
   const schema = new Schema({
-    tenantId: {
-      type: String,
-      default: null
-    },
     roles: {
       type: [{
         type: Schema.Types.ObjectId,
