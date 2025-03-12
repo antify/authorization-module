@@ -57,7 +57,7 @@ export const useRouteGuard = (
   }
 
   // Check if authorization is banned
-  if (useGuard().token.value?.isBanned === true) {
+  if (guard.isBanned()) {
     if (appHandler?.onBanned) {
       return appHandler.onBanned();
     }
@@ -77,7 +77,7 @@ export const useRouteGuard = (
   }
 
   // Check permissions if provided
-  if (permissions && !useGuard().hasPermissionTo(permissions)) {
+  if (permissions && !guard.hasPermissionTo(permissions)) {
     // On route change
     $uiModule.toaster.toastError(invalidPermissionsMessage);
 

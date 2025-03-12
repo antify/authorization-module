@@ -43,6 +43,9 @@ export const useGuard = () => {
     isLoggedIn() {
       return new Guard(token.value, _tenantId.value).isLoggedIn();
     },
+    isBanned() {
+      return new Guard(token.value, _tenantId.value).isBanned();
+    },
     hasPermissionTo(permission: string[] | string) {
       return new Guard(token.value, _tenantId.value).hasPermissionTo(permission);
     },
