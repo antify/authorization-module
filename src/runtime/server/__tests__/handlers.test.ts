@@ -1,3 +1,4 @@
+import {TEST_TENANT_ID} from '../../../../playground/server/datasources/db/fixture-utils/tenant';
 import {expiredToken, validToken} from '../../__tests__/testTokens';
 import {isAuthorizedHandler, isLoggedInHandler} from '../handlers';
 import {describe, test, expect, vi, beforeEach} from 'vitest';
@@ -6,12 +7,10 @@ import {decodeJwt, errors} from 'jose';
 import {Guard} from '../../guard';
 
 const {
-  isValidAppContextHandler,
   useAuth,
   createError
 } = vi.hoisted(() => {
   return {
-    isValidAppContextHandler: vi.fn(),
     useAuth: vi.fn(),
     createError: vi.fn()
   };
@@ -65,7 +64,7 @@ describe('handlers test', async () => {
       useAuth.mockImplementationOnce(() => {
         return {
           verify: (event) => {
-            return new Guard(decodeJwt(event.headers.authorization));
+            return new Guard(decodeJwt(event.headers.authorization), TEST_TENANT_ID);
           }
         };
       });
@@ -82,13 +81,10 @@ describe('handlers test', async () => {
 
   describe('isAuthorizedHandler', async () => {
     test('should emit if user is authorized correctly', async () => {
-      isValidAppContextHandler.mockImplementationOnce(() => {
-        return {appId: 'core', tenantId: ''};
-      });
       useAuth.mockImplementationOnce(() => {
         return {
           verify: (event) => {
-            return new Guard(decodeJwt(event.headers.authorization));
+            return new Guard(decodeJwt(event.headers.authorization), TEST_TENANT_ID);
           }
         };
       });
@@ -99,7 +95,7 @@ describe('handlers test', async () => {
             authorization: validToken
           }
         },
-        'CAN_TEST'
+        'CAN_READ_SECRET_DATA'
       );
 
       expect(guard.isLoggedIn()).toBeTruthy();
@@ -108,13 +104,10 @@ describe('handlers test', async () => {
     test('should emit if user is not authorized correctly', async () => {
       expect.assertions(1);
 
-      isValidAppContextHandler.mockImplementationOnce(() => {
-        return {appId: 'tenant', tenantId: 'notExistingOne'};
-      });
       useAuth.mockImplementationOnce(() => {
         return {
           verify: (event) => {
-            return new Guard(decodeJwt(event.headers.authorization));
+            return new Guard(decodeJwt(event.headers.authorization), 'not-existing-tenant-id');
           }
         };
       });
@@ -126,7 +119,7 @@ describe('handlers test', async () => {
               authorization: validToken
             }
           },
-          'CAN_TEST'
+          'CAN_READ_SECRET_DATA'
         );
       } catch (e) {
         expect(e.message).toBe('Forbidden');

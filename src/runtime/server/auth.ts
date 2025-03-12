@@ -1,11 +1,11 @@
-import * as jose from 'jose';
-import {Guard} from '../guard';
-import {type H3Event, setCookie, deleteCookie} from 'h3';
-import {decodeJwt, SignJWT} from 'jose';
-import {type Role} from './datasources/role';
 import {type Authorization, type JsonWebToken} from '../types';
+import {type H3Event, setCookie, deleteCookie} from 'h3';
+import {type Role} from './datasources/role';
 import {useRuntimeConfig} from '#imports';
+import {decodeJwt, SignJWT} from 'jose';
 import {useEventReader} from './utils';
+import {Guard} from '../guard';
+import * as jose from 'jose';
 
 // TODO:: support different algorithm's
 export const JWT_ALGORITHM = 'HS256';
@@ -75,8 +75,7 @@ export const useAuth = () => {
      * It is also the only one method to reach the Guard instance. This is by design, to ensure that
      * the token is verified before any other method is called. This prevents security issues.
      *
-     * Throws one of following jose errors if something is wrong with the token:
-     * https://github.com/panva/jose/tree/main/docs/classes
+     * Throws a jose errors if something is wrong with the token
      */
     async verify(event: H3Event) {
       const rawToken = eventReader.getToken(event);

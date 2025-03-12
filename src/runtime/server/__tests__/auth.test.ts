@@ -1,5 +1,6 @@
-import {describe, test, expect, vi} from 'vitest';
-import {useAuth} from '../auth';
+import {TEST_TENANT_ID} from '../../../../playground/server/datasources/db/fixture-utils/tenant';
+import {Authorization} from '~/src/runtime/server';
+import {describe, test, expect, vi, beforeEach} from 'vitest';
 import {
   changedToken,
   expiredToken,
@@ -7,19 +8,31 @@ import {
   validToken,
   wrongSecretToken
 } from '../../__tests__/testTokens';
-import {Authorization} from '~/src/runtime/server';
-import {H3Event} from 'h3';
+import {useAuth} from '../auth';
+import {createError as _createError, H3Event} from 'h3';
+
+const {
+  useEventReader,
+} = vi.hoisted(() => {
+  return {
+    useEventReader: vi.fn(),
+  };
+});
 
 vi.mock('#imports', () => {
   return {
     useRuntimeConfig: () => ({
       authorizationModule: {
-        jwtSecret: 'secret',
+        jwtSecret: '#a!SuperSecret123',
         jwtExpiration: 480,
-        tokenCookieName: 'token',
-        passwordSalt: 'secret'
+        tokenCookieName: 'token'
       }
     }),
+  };
+});
+
+vi.mock('h3', () => {
+  return {
     getCookie: () => {
     },
     setCookie: () => {
@@ -27,39 +40,49 @@ vi.mock('#imports', () => {
   };
 });
 
+vi.mock('../utils', () => {
+  return {
+    useEventReader
+  };
+});
+
 describe('Auth test', async () => {
   async function testErrorCaseWithToken(rawToken: string | null, errorCode: string) {
     expect.assertions(1);
 
+    useEventReader.mockImplementation(() => ({
+      getTenantId: () => {
+        return TEST_TENANT_ID;
+      },
+      getToken: () => {
+        return rawToken;
+      }
+    }));
+
     try {
-      await useAuth().verify({
-        headers: {
-          authorization: rawToken
-        }
-      });
+      await useAuth().verify({} as H3Event);
     } catch (e) {
       expect(e.code).toBe(errorCode);
     }
   }
 
   test('should validate a valid token correctly', async () => {
-    const guard = await useAuth().verify({
-      headers: {
-        authorization: validToken
+    useEventReader.mockImplementation(() => ({
+      getTenantId: () => {
+        return TEST_TENANT_ID;
+      },
+      getToken: () => {
+        return validToken;
       }
-    });
+    }));
+
+    const guard = await useAuth().verify({} as H3Event);
 
     expect(guard.isLoggedIn()).toBeTruthy();
   });
 
   test('should validate a token without exp correctly', async () => {
-    const guard = await useAuth().verify({
-      headers: {
-        authorization: tokenWithoutExp
-      }
-    });
-
-    expect(guard.isLoggedIn()).toBeFalsy();
+    await testErrorCaseWithToken(tokenWithoutExp, 'ERR_JWS_SIGNATURE_VERIFICATION_FAILED');
   });
 
   test('should validate an expired token correctly', async () => {
@@ -86,24 +109,16 @@ describe('Auth test', async () => {
     const authorization: Authorization = {
       _id: '661f73b3e90e013526837a00',
       isBanned: false,
-      appAccesses: [
+      tenantId: TEST_TENANT_ID,
+      roles: [
         {
           _id: '661f73b3e90e013526837a00',
-          appId: 'core',
-          tenantId: '',
-          roles: [
-            {
-              _id: '661f73b3e90e013526837a00',
-              appId: 'core',
-              tenantId: '',
-              name: 'foo',
-              isAdmin: true,
-              permissions: ['CAN_TEST']
-            }
-          ],
-          isBanned: false
+          name: 'foo',
+          isAdmin: true,
+          permissions: ['CAN_TEST']
         }
-      ]
+      ],
+      allPermissions: ['CAN_TEST'],
     };
 
     const token = (await useAuth()
@@ -119,19 +134,13 @@ describe('Auth test', async () => {
     delete token?.iat;
 
     expect(token).toStrictEqual({
-      apps: [
-        {
-          appId: 'core',
-          isAdmin: true,
-          isBanned: false,
-          permissions: [
-            'CAN_TEST',
-          ],
-          tenantId: '',
-        },
-      ],
       id: '661f73b3e90e013526837a00',
+      isAdmin: true,
       isBanned: false,
+      permissions: [
+        'CAN_TEST',
+      ],
+      tenantId: '63e398316c6c22a1f5479ab6',
     });
   });
 });
