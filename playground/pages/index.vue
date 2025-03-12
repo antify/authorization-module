@@ -4,17 +4,13 @@ import {
   ref,
   useGuard,
   useFetch,
-  onMounted,
-  useAppContext,
   useAuthResponseErrorHandler
 } from '#imports';
 import {TagState, AntTagSize} from '#ui-module';
 
-const APP = 'core';
 const guard = ref(useGuard());
 const statusCode = ref<null | number>(null);
 const handleResponseErrors = ref(false);
-const appContext = useAppContext();
 const {execute, data} = useFetch('/api/pages/get-secret-data', {
   immediate: false,
   onResponse({response}) {
@@ -25,10 +21,6 @@ const {execute, data} = useFetch('/api/pages/get-secret-data', {
     }
   }
 });
-
-onMounted(() => {
-  appContext.value.setContext(APP);
-});
 </script>
 
 <template>
@@ -36,7 +28,6 @@ onMounted(() => {
     <div class="text-3xl">Authorization module playground</div>
     <div>
       With this page, you can test if the guard work client- and server side correctly. <br>
-      Everything is associated to <strong>{{ APP }}</strong> app.
     </div>
 
     <div class="flex gap-2.5 w-full">
@@ -52,12 +43,12 @@ onMounted(() => {
           </AntTag>
         </AntField>
 
-        <AntField :label="`Has permission to do ${PermissionId.CAN_READ_SECRET_DATA} in ${APP} app`">
+        <AntField :label="`Has permission to do ${PermissionId.CAN_READ_SECRET_DATA}`">
           <AntTag
-            :state="guard.hasPermissionTo(PermissionId.CAN_READ_SECRET_DATA, APP) ? TagState.success : TagState.danger"
+            :state="guard.hasPermissionTo(PermissionId.CAN_READ_SECRET_DATA) ? TagState.success : TagState.danger"
             :size="AntTagSize.xs3"
           >
-            {{ guard.hasPermissionTo(PermissionId.CAN_READ_SECRET_DATA, APP) }}
+            {{ guard.hasPermissionTo(PermissionId.CAN_READ_SECRET_DATA) }}
           </AntTag>
         </AntField>
 

@@ -4,9 +4,10 @@ import {Types} from 'mongoose';
 export const generateAuthorizations = (count: number = 100, data: Partial<Authorization> = {}): Authorization[] => {
   return Array.from<{ length: number }, Authorization>({length: count}, () => ({
     _id: new Types.ObjectId(),
-    isSuperAdmin: false,
+    tenantId: null,
+    isAdmin: false,
     isBanned: false,
-    appAccesses: [],
+    roles: [],
     ...data
   }));
 };

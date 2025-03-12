@@ -1,11 +1,17 @@
+import {setCookie, defineEventHandler, useRuntimeConfig, readBody} from '#imports';
+import {object, number, array, boolean, string} from 'yup';
 import {type JsonWebToken} from '../../../../types';
 import {useAuth} from '../../../auth';
-import {
-  setCookie,
-  defineEventHandler,
-  useRuntimeConfig,
-  readBody
-} from '#imports';
+
+const requestBodySchema = object({
+  id: string().default(''),
+  tenantId: string().nullable().default(null),
+  isBanned: boolean().required(),
+  isAdmin: boolean().required(),
+  permissions: array().of(string()).required(),
+  exp: number().optional(),
+  iat: number().optional()
+});
 
 export default defineEventHandler(async (event) => {
   // TODO:: only call in dev mode!
@@ -13,12 +19,14 @@ export default defineEventHandler(async (event) => {
   const data = await readBody<JsonWebToken>(event);
   const expirationDate = new Date();
 
+  const validatedData = await requestBodySchema.validate(data);
+
   expirationDate.setMinutes(expirationDate.getMinutes() + jwtExpiration);
 
   setCookie(
     event,
     tokenCookieName,
-    await useAuth().signToken(data, jwtSecret, data.exp || expirationDate, data.iat)
+    await useAuth().signToken(validatedData, jwtSecret, validatedData.exp || expirationDate, validatedData.iat)
   );
 
   return {};

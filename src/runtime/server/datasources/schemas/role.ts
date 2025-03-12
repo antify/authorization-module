@@ -6,8 +6,6 @@ export interface Role {
   isAdmin: boolean;
   name: string;
   permissions: string[];
-  appId: string;
-  tenantId: string | null;
 }
 
 export type RoleDocument = HydratedDocument<Role>
@@ -16,14 +14,6 @@ export const ROLE_SCHEMA_NAME = 'authorization_roles';
 
 export default defineSchema(async (client) => {
   client.getSchema(ROLE_SCHEMA_NAME).add({
-    appId: {
-      type: String,
-      required: true
-    },
-    tenantId: {
-      type: String,
-      required: false
-    },
     name: {
       type: String,
       required: true

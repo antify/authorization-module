@@ -1,10 +1,13 @@
 import {defineEventHandler} from '#imports';
-import {User} from '~/server/datasources/db/core/schemas/user';
-import databaseHandler from '../../datasources/db/core/databaseHandler';
+import {User} from '~/server/datasources/db/schemas/user';
+import {useDatabaseClient} from "#database-module";
+import {useEventReader} from "#authorization-module";
 
-export default defineEventHandler(async () => {
-  const userModel = (await databaseHandler.getMainDatabaseClient())
-    .getModel<User>('users');
+export default defineEventHandler(async (event) => {
+  const client = await useDatabaseClient('app', useEventReader().getTenantId(event));
 
-  return await userModel.find({}).sort('name');
+  return await client
+    .getModel<User>('users')
+    .find({})
+    .sort('name');
 });

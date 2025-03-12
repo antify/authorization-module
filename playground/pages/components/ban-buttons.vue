@@ -7,7 +7,7 @@ import {
   ref,
   watch
 } from '#imports';
-import {type AppAccess, type Authorization} from '#authorization-module';
+import {type Authorization} from '#authorization-module';
 
 const {
   data: users,
@@ -22,9 +22,7 @@ const {
 
     if (response.status === 200) {
       selectedUserId.value = response._data[0]._id;
-      selectedAppAccessId.value = response._data[0].authorization.appAccesses[0]?._id || null;
       authorization.value = response._data[0].authorization;
-      appAccess.value = response._data[0].authorization.appAccesses[0] || null;
     }
   }
 });
@@ -41,35 +39,12 @@ const authorization = ref<Authorization>({
   isSuperAdmin: null
 });
 const skeleton = useUiClient().utils.createSkeleton(pendingGetUsers);
-const selectedAppAccessId = ref<string | null>(null);
-const appAccess = ref<AppAccess>({
-  _id: null,
-  isBanned: null,
-  appId: null,
-  tenantId: null
-});
-const appAccessOptions = computed(() => {
-  return (users.value?.find((user) => user._id === selectedUserId.value)?.authorization.appAccesses || [])
-    .map((appAccess) => ({
-      value: appAccess._id,
-      label: `${appAccess.appId} - ${appAccess.tenantId}`
-    }));
-});
 
 watch(selectedUserId, (val) => {
   const user = users.value?.find((_user) => _user._id === val);
 
   if (user) {
     authorization.value = user.authorization;
-    selectedAppAccessId.value = user.authorization.appAccesses[0]?._id || null;
-  }
-});
-watch(selectedAppAccessId, (val) => {
-  const _appAccess = users.value?.find((_user) => _user._id === selectedUserId.value)
-    ?.authorization.appAccesses.find((item) => item._id === val);
-
-  if (_appAccess) {
-    appAccess.value = _appAccess;
   }
 });
 </script>
@@ -87,15 +62,6 @@ watch(selectedAppAccessId, (val) => {
         :options="userOptions"
         :skeleton="skeleton"
       />
-
-      <AntSelect
-        v-model="selectedAppAccessId"
-        label="App access to ban"
-        description="List of app accesses of the above selected user. The selected app access will be banned."
-        placeholder="App access"
-        :options="appAccessOptions"
-        :skeleton="skeleton"
-      />
     </AntFormGroup>
 
     <div class="w-px bg-neutral-300 min-h-screen" />
@@ -108,19 +74,6 @@ watch(selectedAppAccessId, (val) => {
           v-model="authorization"
           :skeleton="skeleton"
           :disabled="!authorization"
-        />
-      </AntFormGroup>
-
-      <div class="h-px bg-neutral-300 w-full" />
-
-      <AntFormGroup>
-        <AntFormGroupLabel>AuthorizationModuleBanAppAccessButton example</AntFormGroupLabel>
-
-        <AuthorizationModuleBanAppAccessButton
-          v-model="appAccess"
-          :authorization-id="authorization._id"
-          :skeleton="skeleton"
-          :disabled="selectedAppAccessId === null"
         />
       </AntFormGroup>
     </AntFormGroup>

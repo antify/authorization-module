@@ -1,5 +1,6 @@
 import {type FetchResponse} from 'ofetch';
 import {
+  useGuard,
   showError,
   useRouter,
   useNuxtApp,
@@ -7,9 +8,8 @@ import {
 } from '#imports';
 
 export const useAuthResponseErrorHandler = (response: FetchResponse<never>) => {
-  const {$uiModule, $appContextModule} = useNuxtApp();
-  const {appId, tenantId} = $appContextModule.context;
-  const appHandler = appHandlerFactory(appId, tenantId);
+  const {$uiModule} = useNuxtApp();
+  const appHandler = appHandlerFactory(useGuard().getTenantId());
   const router = useRouter();
 
   if (response.status === 401) {

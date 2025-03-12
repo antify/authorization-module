@@ -124,7 +124,7 @@ async function deleteEntity() {
         <AntDeleteButton
           icon-variant
           size="xs"
-          :can-delete="guard.hasPermissionTo(PermissionId.CAN_DELETE_ROLE, $appContextModule.context.appId, $appContextModule.context.tenantId)"
+          :can-delete="guard.hasPermissionTo(PermissionId.CAN_DELETE_ROLE)"
           @click="() => openDeleteEntity(element)"
         />
       </div>

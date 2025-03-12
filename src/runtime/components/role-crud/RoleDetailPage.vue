@@ -50,7 +50,7 @@ onMounted(() => {
         :get-entity-name="() => `${detailStore.entity.name}`"
         :delete-button-disabled="detailStore.formDisabled"
         :show-delete-button="!routingStore.routing.isCreatePage.value"
-        :can-delete="guard.hasPermissionTo(PermissionId.CAN_DELETE_ROLE, $appContextModule.context.appId, $appContextModule.context.tenantId)"
+        :can-delete="guard.hasPermissionTo(PermissionId.CAN_DELETE_ROLE)"
         @delete="() => deleteStore.execute(detailStore.entity._id as string)"
       />
     </template>

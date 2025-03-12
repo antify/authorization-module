@@ -1,22 +1,18 @@
 <script lang="ts" setup>
-import {definePageMeta, useRouteGuard, useAppContext} from '#imports';
-import {PermissionId} from '../../../src/runtime/permissions';
+import {definePageMeta, useRouteGuard} from '#imports';
+import {PermissionId} from '../../src/runtime/permissions';
 
-const listingRouteName = 'crud-role-crud-single-tenancy';
-const detailRouteName = 'crud-role-crud-single-tenancy-roleId';
+const listingRouteName = 'role-crud';
+const detailRouteName = 'role-crud-roleId';
 
 definePageMeta({
   middleware: [
     function () {
-      return useRouteGuard({
-        appId: 'core',
-        tenantId: null
-      }, PermissionId.CAN_READ_ROLE);
+      // TODO:: on a wrong tenantId, this should logout the user
+      return useRouteGuard(PermissionId.CAN_READ_ROLE);
     }
   ]
 });
-
-useAppContext().value.setContext('core');
 </script>
 
 <template>
@@ -27,6 +23,6 @@ useAppContext().value.setContext('core');
     :get-detail-route="(roleId) => ({ name: detailRouteName, params: { roleId } })"
     :get-listing-route="() => ({ name: listingRouteName })"
   >
-    <NuxtPage />
+    <NuxtPage/>
   </AuthorizationModuleRoleListingPage>
 </template>

@@ -10,31 +10,18 @@ export default defineNuxtConfig({
 
   modules: [
     '@antify/ui-module',
-    '../src/module',
-    '@antify/app-context-module'
+    '@antify/database-module',
+    '../src/module'
   ],
 
   authorizationModule: {
     jwtSecret: '#a!SuperSecret123',
-    databaseHandler: './server/datasources/db/core/databaseHandler',
+    databaseHandler: './server/datasources/db/databaseHandler',
     appHandlerFactoryPath: './appHandlerFactory',
-    mainAppId: 'core',
     permissions: [
       {
         id: PermissionId.CAN_READ_SECRET_DATA,
         name: 'Can read secret data in playground'
-      }
-    ],
-  },
-
-  appContextModule: {
-    apps: [
-      {
-        id: 'core'
-      },
-      {
-        id: 'tenant',
-        isMultiTenant: true
       }
     ],
   },
@@ -53,9 +40,8 @@ export default defineNuxtConfig({
   hooks: {
     'authorization-module:add-permissions': () => {
       return [{
-        id: 'CAN_READ_COCKPIT_SECRET_DATA',
-        name: 'Can read secret data in cockpit app',
-        appIds: ['core'],
+        id: 'CAN_READ_ANOTHER_SECRET_DATA',
+        name: 'Can read another secret data',
       }] as Permission[];
     }
   },

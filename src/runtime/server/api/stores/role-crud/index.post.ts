@@ -3,21 +3,21 @@ import {Role, ROLE_SCHEMA_NAME} from '../../../datasources/schemas/role';
 import {isAuthorizedHandler, isLoggedInHandler} from '../../../handlers';
 import {roleServerSchema} from '../../../../glue/stores/role-crud';
 import type {DatabaseHandler} from '../../../databaseHandler';
-import {isValidAppContextHandler} from '#app-context-module';
 import {defineEventHandler, readBody} from '#imports';
 import {PermissionId} from '../../../../permissions';
+import {useEventReader} from '../../../utils';
 import {Error} from 'mongoose';
 
 export default defineEventHandler(async (event) => {
   await isLoggedInHandler(event);
 
-  const {appId, tenantId} = isValidAppContextHandler(event);
   const body = await roleServerSchema
     .validate(await readBody(event), {strict: true, stripUnknown: true});
 
   await isAuthorizedHandler(event, body._id === null ? PermissionId.CAN_CREATE_ROLE : PermissionId.CAN_UPDATE_ROLE);
 
-  const client = await (defineDatabaseHandler as DatabaseHandler).getMainDatabaseClient();
+  const client = await (defineDatabaseHandler as DatabaseHandler)
+    .getDatabaseClient(useEventReader().getTenantId(event));
   const RoleModel = client.getModel<Role>(ROLE_SCHEMA_NAME);
 
   // On update
@@ -29,18 +29,11 @@ export default defineEventHandler(async (event) => {
         notFound: true
       };
     }
-
-    if (role.appId !== appId || role.tenantId !== tenantId) {
-      throw new Error('Looks like you are trying to update a role that does not ' +
-        'belong to the original origin app or tenant. This would cause a data mess!');
-    }
   }
 
   const role = new RoleModel<Role>({
     ...body,
-    _id: undefined,
-    appId,
-    tenantId
+    _id: undefined
   });
 
   // On update

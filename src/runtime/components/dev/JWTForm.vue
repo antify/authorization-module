@@ -1,8 +1,6 @@
 <script lang='ts' setup>
-import type {JsonWebToken, JsonWebTokenApp} from '../../types';
-import AppBox from './AppBox.vue';
+import type {JsonWebToken, Permission} from '../../types';
 import {format, getUnixTime} from 'date-fns';
-import {faPlus} from '@fortawesome/free-solid-svg-icons';
 import {
   useGuard,
   useFetch,
@@ -22,7 +20,7 @@ const props = withDefaults(defineProps<{
 });
 const emit = defineEmits(['update:open']);
 const guard = useGuard();
-const token = ref<JsonWebToken | null>(null);
+const token = ref<JsonWebToken>(createToken());
 
 const {status, execute} = useFetch(
   '/api/authorization-module/dev/jwt-form/create-jwt',
@@ -77,6 +75,13 @@ const exp = computed({
     token.value.exp = getUnixTime(new Date(val));
   }
 });
+const permissions = computed(() => {
+  return allPermissions.value
+    .map((item: Permission) => ({
+      value: item.id,
+      label: item.name
+    }));
+});
 
 async function login() {
   await execute();
@@ -99,40 +104,25 @@ function setDefaultData() {
   token.value = createToken(props.defaultToken);
 }
 
+function selectAll() {
+  token.value.permissions = allPermissions.value.map((permission) => permission.id);
+}
+
+function unselectAll() {
+  token.value.permissions = [];
+}
+
 function createToken(data: Partial<JsonWebToken> = {}): JsonWebToken {
-  const _data = {
+  return {
     ...{
       id: '',
-      isSuperAdmin: false,
+      tenantId: null,
       isBanned: false,
-      apps: []
+      isAdmin: false,
+      permissions: []
     },
     ...data
   };
-
-  _data.apps = _data.apps.map((app) => createApp(app));
-
-  return _data;
-}
-
-function createApp(data: Partial<JsonWebTokenApp> = {}) {
-  return {
-    ...{
-      isAdmin: false,
-      isBanned: false,
-      appId: '',
-      tenantId: '',
-      permissions: []
-    }, ...data
-  };
-}
-
-function addApp(data = {}) {
-  token.value.apps.push(createApp(data));
-}
-
-function removeApp(index) {
-  token.value.apps.splice(index, 1);
 }
 
 watch(() => props.open, (val) => {
@@ -152,15 +142,24 @@ onMounted(() => setTokenValue());
   >
     <div class="flex justify-between space-x-4 p-2.5">
       <AntFormGroup class="flex-grow">
-        <AntTextInput
-          v-model="token.id"
-          label="ID"
-        />
+        <AntFormGroup direction="row">
+          <AntTextInput
+            v-model="token.id"
+            label="Authorization ID"
+          />
+
+          <!-- TODO:: Make select field with all tenants as option for faster tenant change -->
+          <AntTextInput
+            v-model="token.tenantId"
+            :skeleton="skeleton"
+            label="Tenant ID"
+          />
+        </AntFormGroup>
 
         <AntFormGroup direction="row">
           <AntSwitch
-            v-model="token.isSuperAdmin"
-            label="Superadmin"
+            v-model="token.isAdmin"
+            label="Admin"
           />
 
           <AntSwitch
@@ -169,30 +168,35 @@ onMounted(() => setTokenValue());
           />
         </AntFormGroup>
 
-        <AntFormGroupLabel>Apps</AntFormGroupLabel>
-
         <div class="flex flex-wrap">
-          <AppBox
-            v-for="(app, index) of token.apps"
-            :key="index"
-            v-model:is-admin="app.isAdmin"
-            v-model:is-banned="app.isBanned"
-            v-model:app-id="app.appId"
-            v-model:tenant-id="app.tenantId"
-            v-model:permissions="app.permissions"
-            :all-permissions="allPermissions"
-            :all-apps="appData.apps || []"
+          <AntField
+            label="Permissions"
             :skeleton="skeleton"
-            class="mb-4 mr-4"
-            @remove="() => removeApp(index)"
-          />
+          >
+            <div class="mb-2 flex space-x-2.5">
+              <AntButton
+                size="sm"
+                :skeleton="skeleton"
+                @click="selectAll"
+              >
+                Select all
+              </AntButton>
 
-          <div class="flex items-center mb-4">
-            <AntButton
-              :icon-left="faPlus"
-              @click="addApp"
-            />
-          </div>
+              <AntButton
+                size="sm"
+                :skeleton="skeleton"
+                @click="unselectAll"
+              >
+                Unselect all
+              </AntButton>
+            </div>
+          </AntField>
+
+          <AntCheckboxGroup
+            v-model="token.permissions"
+            :skeleton="skeleton"
+            :checkboxes="permissions"
+          />
         </div>
       </AntFormGroup>
 

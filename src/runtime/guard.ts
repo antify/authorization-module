@@ -4,11 +4,18 @@ import type {JsonWebToken} from './types';
  * Using one guard for client and server side to ensure the same logic is used.
  */
 export class Guard {
-  constructor(protected token: JsonWebToken | null) {
+  constructor(
+    protected token: JsonWebToken | null,
+    protected tenantId: string | null
+  ) {
   }
 
   getToken(): JsonWebToken | null {
     return this.token;
+  }
+
+  getTenantId(): string | null {
+    return this.tenantId;
   }
 
   getId(): string | null {
@@ -25,83 +32,59 @@ export class Guard {
       return false;
     }
 
+    // The users token comes from another tenant instance
+    if (this.token.tenantId !== this.tenantId) {
+      return false;
+    }
+
     return this.token.exp * 1000 > Date.now();
   }
 
-  isSuperAdmin(): boolean {
-    if (this.token?.isBanned) {
+  isAdmin() {
+    if (!this.isLoggedIn()) {
       return false;
     }
 
-    return this.token?.isSuperAdmin || false;
+    if (this.isBanned()) {
+      return false;
+    }
+
+    return this.token?.isAdmin;
   }
 
-  isAdmin(appId: string, tenantId: string | null = null) {
-    if (this.token?.isBanned) {
+  isBanned() {
+    if (!this.isLoggedIn()) {
       return false;
     }
 
-    if (this.token?.isSuperAdmin) {
-      return true;
-    }
-
-    const app = (this.token?.apps || [])
-      .find((app) => tenantId ?
-        tenantId === app.tenantId && app.appId === appId :
-        app.appId === appId);
-
-    if (app?.isBanned) {
-      return false;
-    }
-
-    return !!app?.isAdmin;
+    return this.token?.isBanned || false;
   }
 
-  hasPermissionTo(permission: string[] | string, appId: string, tenantId: string | null = null) {
-    if (this.token?.isBanned) {
+  hasPermissionTo(permission: string[] | string) {
+    // TODO:: following log get called 20 times on playground role crud?!?
+    // console.log('Checking permission');
+    if (!this.isLoggedIn()) {
       return false;
     }
 
-    const app = (this.token?.apps || [])
-      .find((app) => tenantId ?
-        tenantId === app.tenantId && app.appId === appId :
-        app.appId === appId);
-
-    if (!app) {
-      return !!this.token?.isSuperAdmin;
-    }
-
-    if (app.isBanned) {
+    if (this.isBanned()) {
       return false;
     }
 
-    if (app.isAdmin || this.token?.isSuperAdmin) {
+    if (this.isAdmin()) {
       return true;
     }
 
     if (Array.isArray(permission)) {
-      return (app.permissions || []).some((permissionItem) =>
+      return (this.token?.permissions || []).some((permissionItem) =>
         permission.some(
           (permissionToFind) => permissionToFind === permissionItem
         )
       );
     }
 
-    return (app.permissions || []).some(
+    return (this.token?.permissions || []).some(
       (permissionItem) => permissionItem === permission
     );
-  }
-
-  /**
-   * Return the amount of app access for the given appId.
-   * Single tenancy apps will be 1 or 0, multi tenancy apps can
-   * be 0 or *.
-   */
-  hasAppAccess(appId: string): number {
-    if (!this.token) {
-      return 0;
-    }
-
-    return this.token.apps?.filter((app) => app.appId === appId).length || 0;
   }
 }

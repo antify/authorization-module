@@ -10,7 +10,6 @@ import {
 import {Grouped} from '#ui-module';
 
 const guard = useGuard();
-const APP = 'core';
 const {$uiModule} = useNuxtApp();
 const {
   data: users,

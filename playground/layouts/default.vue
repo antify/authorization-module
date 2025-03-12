@@ -1,6 +1,10 @@
 <script setup lang='ts'>
 import {defaultToken} from '../utils';
-import {TEST_TENANT_ID} from '../server/datasources/db/core/fixture-utils/tenant';
+import {
+  SECOND_TEST_TENANT_ID,
+  TEST_TENANT_ID
+} from '~/server/datasources/db/fixture-utils/tenant';
+import {onMounted, useGuard, computed} from "#imports";
 
 const navItems = [
   {
@@ -13,29 +17,11 @@ const navItems = [
   },
   {
     label: 'Protected area',
-    children: [
-      {
-        label: 'Core app',
-        to: {name: 'protected-area-core'}
-      },
-      {
-        label: 'Tenant app',
-        to: {name: 'protected-area-tenantId', params: {tenantId: TEST_TENANT_ID}}
-      }
-    ]
+    to: {name: 'protected-area'}
   },
   {
-    label: 'CRUD',
-    children: [
-      {
-        label: 'Roles single tenancy',
-        to: {name: 'crud-role-crud-single-tenancy'}
-      },
-      {
-        label: 'Roles multi tenancy',
-        to: {name: 'crud-tenantId-role-crud-multi-tenancy', params: {tenantId: TEST_TENANT_ID}}
-      }
-    ]
+    label: 'Role CRUD',
+    to: {name: 'role-crud'}
   },
   {
     label: 'Components',
@@ -55,15 +41,42 @@ const navItems = [
     ]
   },
 ];
+const guard = useGuard();
+const selectedTenantId = computed<string | null>({
+  get() {
+    return guard.getTenantId();
+  },
+  set(value) {
+    guard.setTenantId(value);
+  }
+});
+
+onMounted(() => guard.setTenantId(TEST_TENANT_ID));
 </script>
 
 <template>
   <AntNavLeftLayout :navbar-items="navItems">
     <AntContent
-      class="h-full"
+      class="h-full flex flex-col"
       :padding="false"
     >
-      <slot />
+      <div class="border-b border-neutral-300 p-2.5 bg-white flex justify-end">
+        <div>
+          <AntSelect
+            v-model="selectedTenantId"
+            description="Emulate the current application to be an instance of a specific tenant."
+            :options="[
+            {label: `Default tenant (${TEST_TENANT_ID})`, value: TEST_TENANT_ID},
+            {label: `Second tenant (${SECOND_TEST_TENANT_ID})`, value: SECOND_TEST_TENANT_ID},
+            {label: `Invalid tenant (123456789123456789123457)`, value: '123456789123456789123457'}
+            ]"
+            placeholder="Null"
+            nullable
+          />
+        </div>
+      </div>
+
+      <slot/>
     </AntContent>
 
     <AuthorizationModuleJWTHelper
@@ -71,6 +84,6 @@ const navItems = [
       position="bottom-left"
     />
 
-    <AntToaster :toasts="$uiModule.toaster.getToasts()" />
+    <AntToaster :toasts="$uiModule.toaster.getToasts()"/>
   </AntNavLeftLayout>
 </template>

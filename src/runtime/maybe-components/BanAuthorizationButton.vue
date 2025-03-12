@@ -5,8 +5,7 @@ import {
   useNuxtApp,
   showError,
   useGuard,
-  useAuthResponseErrorHandler,
-  useRuntimeConfig
+  useAuthResponseErrorHandler
 } from '#imports';
 import type {
   Authorization,
@@ -30,7 +29,7 @@ const props = withDefaults(defineProps<{
   entityName?: string
 }>(), {
   label: 'Ban',
-  description: 'Ban the user system-wide. This will prevent the user from logging in.',
+  description: 'Ban the user from this application. This will prevent the user from logging in.',
   entityNotFoundToastMessage: 'User not found. Maybe he got already deleted.',
   entityHasBeenBannedToastMessage: 'User has been banned',
   entityUnbannedToastMessage: 'User has been unbanned',
@@ -42,7 +41,6 @@ const _modelValue = computed({
   get: () => props.modelValue,
   set: (value: Authorization) => emit('update:modelValue', value)
 });
-const {mainAppId} = useRuntimeConfig().public.authorizationModule;
 const isBanDialogOpen = ref(false);
 const isUnbanDialogOpen = ref(false);
 const {$uiModule} = useNuxtApp();
@@ -60,7 +58,7 @@ const {
   immediate: false,
   body,
   onResponse({response}) {
-    useAuthResponseErrorHandler(response, mainAppId);
+    useAuthResponseErrorHandler(response);
 
     if (response.status === 200) {
       if (response._data.notFound) {
@@ -96,8 +94,8 @@ const hasPermission = computed(() => {
     }
 
     return _modelValue.value.isBanned ?
-      guard.hasPermissionTo(PermissionId.CAN_UNBAN_AUTHORIZATION, mainAppId) :
-      guard.hasPermissionTo(PermissionId.CAN_BAN_AUTHORIZATION, mainAppId);
+      guard.hasPermissionTo(PermissionId.CAN_UNBAN_AUTHORIZATION) :
+      guard.hasPermissionTo(PermissionId.CAN_BAN_AUTHORIZATION);
   }
 );
 </script>

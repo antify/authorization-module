@@ -1,31 +1,23 @@
-import {createError, defineEventHandler, readBody, useRuntimeConfig} from '#imports';
-import {isLoggedInHandler} from '../../../handlers';
-import {PermissionId} from '../../../../permissions';
-import {type DatabaseHandler} from '../../../databaseHandler';
 import defineDatabaseHandler from '#authorization-module-database-handler';
-import {isMongoDbObjectIdRule, isOneOfRule, useValidator} from '@antify/validate';
-import type {ChangeBanStatusRequestBody} from '~/src/runtime/glue/maybe-components/ban-authorization-button/types';
+import {createError, defineEventHandler, readBody} from '#imports';
+import {type DatabaseHandler} from '../../../databaseHandler';
+import {PermissionId} from '../../../../permissions';
+import {isLoggedInHandler} from '../../../handlers';
+import {useEventReader} from '../../../utils';
+import {object, string} from 'yup';
 
-export const validator = useValidator<ChangeBanStatusRequestBody>({
-  authorizationId: {
-    rules: isMongoDbObjectIdRule
-  },
-  action: {
-    rules: (val) => isOneOfRule(val, ['ban', 'unban'])
-  }
+const requestSchema = object({
+  authorizationId: string().required(),
+  action: string().oneOf(['ban', 'unban']).required(),
+  tenantId: string().nullable(),
 });
 
 export default defineEventHandler(async (event) => {
-  const {mainAppId} = useRuntimeConfig().public.authorizationModule;
-  const body = validator.validate(await readBody(event));
-
-  if (validator.hasErrors()) {
-    throw new Error(validator.getErrorsAsString());
-  }
-
+  const body = await requestSchema.validate(await readBody(event));
   const guard = await isLoggedInHandler(event);
+  const eventReader = useEventReader();
 
-  if (!guard.hasPermissionTo(body.action === 'ban' ? PermissionId.CAN_BAN_AUTHORIZATION : PermissionId.CAN_UNBAN_AUTHORIZATION, mainAppId)) {
+  if (!guard.hasPermissionTo(body.action === 'ban' ? PermissionId.CAN_BAN_AUTHORIZATION : PermissionId.CAN_UNBAN_AUTHORIZATION)) {
     throw createError({
       statusCode: 403,
       statusMessage: 'Forbidden'
@@ -38,7 +30,7 @@ export default defineEventHandler(async (event) => {
 
   const databaseHandler = (defineDatabaseHandler as DatabaseHandler);
   const authorization = await databaseHandler
-    .findOneAuthorization(body.authorizationId);
+    .findOneAuthorization(body.authorizationId, eventReader.getTenantId(event));
 
   if (!authorization) {
     return {
@@ -48,7 +40,7 @@ export default defineEventHandler(async (event) => {
 
   authorization.isBanned = body.action === 'ban';
 
-  await databaseHandler.updateAuthorization(authorization);
+  await databaseHandler.updateAuthorization(authorization, eventReader.getTenantId(event));
 
   return {
     _id: authorization._id,

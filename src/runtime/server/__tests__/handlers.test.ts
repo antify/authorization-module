@@ -23,12 +23,6 @@ vi.mock('../auth', () => {
   };
 });
 
-vi.mock('#app-context-module', () => {
-  return {
-    isValidAppContextHandler
-  };
-});
-
 vi.mock('#imports', () => {
   return {
     createError

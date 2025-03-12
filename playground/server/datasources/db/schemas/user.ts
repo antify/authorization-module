@@ -2,7 +2,7 @@ import {defineSchema} from '@antify/database';
 import {
   type Authorization,
   useAuthorizationSchema
-} from '../../../../../../src/runtime/server/datasources/authorization';
+} from '../../../../../src/runtime/server/datasources/authorization';
 
 export interface User {
   _id: string;
@@ -21,9 +21,8 @@ export default defineSchema(async (client) => {
       required: true,
       unique: true,
       default: {
-        isSuperAdmin: false,
-        isBanned: false,
-        appAccesses: []
+        isAdmin: false,
+        isBanned: false
       }
     }
   });

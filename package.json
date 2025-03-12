@@ -41,7 +41,8 @@
     "yup": "^1.6.1"
   },
   "devDependencies": {
-    "@antify/database-cli": "^1.0.1",
+    "@antify/database-cli": "^1.1.0",
+    "@antify/database-module": "^1.4.0",
     "@faker-js/faker": "^8.4.1",
     "@nuxt/eslint-config": "^0.2.0",
     "@nuxt/module-builder": "^0.8.4",
@@ -57,8 +58,6 @@
     "vue": "^3.5.13"
   },
   "peerDependencies": {
-    "@antify/app-context-module": "^1.2.0",
-    "@antify/database": "^1.2.0",
-    "@antify/ui-module": "^2.3.2"
+    "@antify/ui-module": "^1.9.2"
   }
 }

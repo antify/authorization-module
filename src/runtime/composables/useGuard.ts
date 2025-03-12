@@ -1,11 +1,17 @@
 import {decodeJwt} from 'jose';
 import {Guard} from '../guard';
-import type {JsonWebToken, Permission} from '../types';
+import type {JsonWebToken} from '../types';
 import {refreshCookie, useCookie, useRuntimeConfig, computed} from '#imports';
 
 export const useGuard = () => {
-  const {tokenCookieName, permissions} = useRuntimeConfig().public.authorizationModule;
+  const {
+    tokenCookieName,
+    tenantIdCookieName
+  } = useRuntimeConfig().public.authorizationModule;
   const rawToken = useCookie(tokenCookieName);
+  const _tenantId = useCookie<string | null>(tenantIdCookieName, {
+    default: () => null
+  });
   const token = computed({
     get(): JsonWebToken | null {
       // TODO:: handle error and parse / validate JsonWebToken type
@@ -17,8 +23,7 @@ export const useGuard = () => {
     }
   });
 
-  // TODO:: validate token content with @antify/validate
-
+  // TODO:: validate token content with yup
   return {
     token,
     getRawToken() {
@@ -36,17 +41,20 @@ export const useGuard = () => {
       refreshCookie(tokenCookieName);
     },
     isLoggedIn() {
-      return new Guard(token.value).isLoggedIn();
+      return new Guard(token.value, _tenantId.value).isLoggedIn();
     },
-    hasPermissionTo(permission: string[] | string, appId: string, tenantId: string | null = null) {
-      return new Guard(token.value).hasPermissionTo(permission, appId, tenantId);
+    hasPermissionTo(permission: string[] | string) {
+      return new Guard(token.value, _tenantId.value).hasPermissionTo(permission);
     },
-    hasAppAccess(appId: string): number {
-      return new Guard(token.value).hasAppAccess(appId);
+    /**
+     * To keep the browser session, token and server in sync, the tenantId must be set.
+     * Only one time on app start, may after the login, the tenantId must be set.
+     */
+    setTenantId(tenantId: string | null) {
+      _tenantId.value = tenantId;
     },
-    // TODO:: implement in dev component
-    getAppPermissions(appId: string): Permission[] {
-      return permissions.filter((permission: Permission) => permission.appIds?.includes(appId) || !permission.appIds);
+    getTenantId(): string | null {
+      return _tenantId.value;
     }
   };
 };

@@ -21,7 +21,7 @@ import {
   type ResponsePermissionType
 } from '../glue/stores/role-crud/[roleId].get';
 import {type RoleListingData} from '../glue/components/role/roleTable';
-import {type CrudRoutingOptions, type FormFieldType} from '@antify/ui-module';
+import type {CrudRoutingOptions, FormFieldType} from '@antify/ui-module';
 
 export const useRoleListingStore = defineStore('authorization-module-crud-role-listing', () => {
   const router = useRouter();

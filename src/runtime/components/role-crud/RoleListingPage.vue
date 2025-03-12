@@ -6,7 +6,10 @@ import {
   useRoleDetailStore
 } from '../../stores/roleCrud';
 import type {RouteParams} from '#vue-router';
-import {useGuard} from '#imports';
+import {
+  useGuard,
+  useRouteGuard
+} from '#imports';
 import {PermissionId} from '../../permissions';
 
 const props = defineProps<{
@@ -43,7 +46,7 @@ function onCreate() {
     </template>
 
     <template #table-section>
-      <RoleTable :show-light-version="routingStore.routing.isDetailPage.value" />
+      <RoleTable :show-light-version="routingStore.routing.isDetailPage.value"/>
     </template>
 
     <template #table-nav-section>
@@ -56,6 +59,6 @@ function onCreate() {
       />
     </template>
 
-    <slot />
+    <slot/>
   </AntCrud>
 </template>

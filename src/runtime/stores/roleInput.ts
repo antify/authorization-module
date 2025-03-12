@@ -4,7 +4,7 @@ import {
 } from '#imports';
 import {defineStore} from 'pinia';
 
-export function useRoleFetch(appId: string, tenantId: string | null) {
+export const useRoleInputStore = defineStore('authorization-module-role-input', () => {
   const {
     data,
     execute,
@@ -12,12 +12,9 @@ export function useRoleFetch(appId: string, tenantId: string | null) {
   } = useFetch(
     '/api/authorization-module/stores/role-input',
     {
-      query: {
-        appId,
-        tenantId
-      },
       watch: false,
       immediate: false,
+      dedupe: 'defer',
       headers: {
         Accept: 'application/json'
       },
@@ -31,25 +28,8 @@ export function useRoleFetch(appId: string, tenantId: string | null) {
   );
 
   return {
-    execute,
     data,
+    execute,
     status
-  };
-}
-
-export const useRoleInputStore = defineStore('authorization-module-role-input', () => {
-  const state: Record<string, never> = {};
-
-  return {
-    getFetch: (appId: string, tenantId: string | null) => {
-      if (!state[`${appId}-${tenantId}`]) {
-        state[`${appId}-${tenantId}`] = useRoleFetch(appId, tenantId);
-      }
-
-      return state[`${appId}-${tenantId}`];
-    },
-    deleteFetch: (appId: string, tenantId: string | null) => {
-      delete state[`${appId}-${tenantId}`];
-    }
   };
 });

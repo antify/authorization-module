@@ -85,7 +85,6 @@ describe('Auth test', async () => {
   test('should create a token correctly', async () => {
     const authorization: Authorization = {
       _id: '661f73b3e90e013526837a00',
-      isSuperAdmin: false,
       isBanned: false,
       appAccesses: [
         {
@@ -133,7 +132,6 @@ describe('Auth test', async () => {
       ],
       id: '661f73b3e90e013526837a00',
       isBanned: false,
-      isSuperAdmin: false,
     });
   });
 });

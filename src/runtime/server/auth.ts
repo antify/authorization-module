@@ -1,10 +1,11 @@
 import * as jose from 'jose';
 import {Guard} from '../guard';
-import {type H3Event} from 'h3';
+import {type H3Event, setCookie, deleteCookie} from 'h3';
 import {decodeJwt, SignJWT} from 'jose';
-import {useRuntimeConfig, getCookie, setCookie, deleteCookie} from '#imports';
-import {type Authorization, type JsonWebToken} from '../types';
 import {type Role} from './datasources/role';
+import {type Authorization, type JsonWebToken} from '../types';
+import {useRuntimeConfig} from '#imports';
+import {useEventReader} from './utils';
 
 // TODO:: support different algorithm's
 export const JWT_ALGORITHM = 'HS256';
@@ -19,15 +20,10 @@ const authorizationToJwt = (authorization: Authorization): JsonWebToken => {
 
   return {
     id: authorization._id,
-    isSuperAdmin: authorization.isSuperAdmin,
+    tenantId: authorization.tenantId,
     isBanned: authorization.isBanned,
-    apps: authorization.appAccesses.map(appAccess => ({
-      appId: appAccess.appId,
-      tenantId: appAccess.tenantId,
-      isAdmin: emitValuesFromRoles(appAccess.roles).isAdmin,
-      isBanned: appAccess.isBanned,
-      permissions: emitValuesFromRoles(appAccess.roles).permissions
-    }))
+    isAdmin: emitValuesFromRoles(authorization.roles).isAdmin,
+    permissions: emitValuesFromRoles(authorization.roles).permissions
   };
 };
 
@@ -37,13 +33,15 @@ export const useAuth = () => {
     jwtSecret,
     tokenCookieName
   } = useRuntimeConfig().authorizationModule;
+  const eventReader = useEventReader();
 
   return {
     async login(event: H3Event, authorization: Authorization) {
-      if (authorization.appAccesses[0]?.roles[0] &&
-        !authorization.appAccesses[0].roles[0]?.appId) {
-        throw new Error('The authorization.appAccesses.roles is not populated. To make the login work, provide a populated authorization object.');
-      }
+      // TODO:: Test and fix if needed
+      // if (authorization?.roles[0] &&
+      //   !authorization.roles[0]?.appId) {
+      //   throw new Error('The authorization.roles is not populated. To make the login work, provide a populated authorization object.');
+      // }
 
       const token = authorizationToJwt(authorization);
       const expirationDate = new Date();
@@ -54,8 +52,9 @@ export const useAuth = () => {
 
       setCookie(event, tokenCookieName, rawToken);
 
-      return new Guard(decodeJwt(rawToken));
+      return new Guard(decodeJwt(rawToken), eventReader.getTenantId(event));
     },
+    // TODO:: refactor, token.exp is already a expiration date
     async signToken(
       token: JsonWebToken,
       secret: string,
@@ -80,8 +79,7 @@ export const useAuth = () => {
      * https://github.com/panva/jose/tree/main/docs/classes
      */
     async verify(event: H3Event) {
-      const rawToken = event.headers['authorization'] ||
-        getCookie(event, tokenCookieName);
+      const rawToken = eventReader.getToken(event);
 
       if (!rawToken) {
         throw new jose.errors.JWSInvalid();
@@ -89,7 +87,7 @@ export const useAuth = () => {
 
       await jose.jwtVerify(rawToken, new TextEncoder().encode(jwtSecret));
 
-      return new Guard(decodeJwt(rawToken));
+      return new Guard(decodeJwt(rawToken), eventReader.getTenantId(event));
     }
   };
 };

@@ -11,7 +11,7 @@ import {
 import {join, relative} from 'pathe';
 import type {Permission} from './runtime/types';
 import {PermissionId} from './runtime/permissions';
-import {isTypeOfRule, notBlankRule, Types, useValidator} from '@antify/validate';
+import {object, string, number, array, mixed} from 'yup';
 
 export type ModuleOptions = {
   /**
@@ -35,19 +35,23 @@ export type ModuleOptions = {
   databaseHandler?: string | null;
 
   /**
-   * AppId where the Authorizations are stored.
-   */
-  mainAppId: string;
-
-  /**
    * The name of the cookie to store the jwt.
    * Default is antt
    */
   tokenCookieName?: string;
 
   /**
+   * The name of the cookie to store the tenantId.
+   * Only mandatory on multi-tenancy systems.
+   * Default is antten
+   */
+  tenantIdCookieName?: string;
+
+  /**
    * List of permissions, that are available in the system.
    * This list can get extended by other modules.
+   *
+   * It is required to show it in role CRUD.
    */
   permissions?: Permission[];
 
@@ -60,64 +64,19 @@ export type ModuleOptions = {
   appHandlerFactoryPath: string;
 };
 
-type ValidatedModuleOptions = Required<ModuleOptions>
-
-const optionsValidator = useValidator<ValidatedModuleOptions>({
-  jwtSecret: {
-    rules: [notBlankRule]
-  },
-  jwtExpiration: {
-    // TODO:: Make sure its bigger than 1 minute?
-    rules: [
-      (val) => isTypeOfRule(val, Types.NUMBER)
-    ],
-    defaultValue: 480
-  },
-
-  databaseHandler: {
-    rules: [
-      (val) => isTypeOfRule(val, [Types.STRING, Types.NULL]),
-      (val) => isTypeOfRule(val, Types.STRING) === true ? notBlankRule(val) : true
-    ],
-    defaultValue: null
-  },
-
-  mainAppId: {
-    rules: [notBlankRule]
-  },
-
-  tokenCookieName: {
-    rules: [notBlankRule],
-    defaultValue: 'antt'
-  },
-
-  // TODO:: Make sure, the permissions group is in appApps
-  // TODO:: Test if https://github.com/antify/validate/issues/7 is implemented
-  permissions: {
-    rules: [
-      (val) => isTypeOfRule(val, Types.ARRAY),
-      (val, formData) => {
-        if (!isTypeOfRule(val, Types.ARRAY) || !isTypeOfRule(formData.appApps, Types.ARRAY)) {
-          return true;
-        }
-
-        for (const permission of val) {
-          for (const appId of permission.appIds || []) {
-            if (!(formData.appApps || []).includes(appId)) {
-              return `Permission ${permission.id} has an invalid appId ${appId} in appIds`;
-            }
-          }
-        }
-
-        return true;
-      }
-    ],
-    defaultValue: [],
-  },
-
-  appHandlerFactoryPath: {
-    rules: [notBlankRule]
-  }
+const optionsValidator = object().shape({
+  jwtSecret: string().required('JWT secret is required'),
+  jwtExpiration: number().min(1, 'JWT expiration must be greater than 1 minute').default(480),
+  databaseHandler: string().nullable().default(null),
+  tokenCookieName: string().required('Token cookie name is required').default('antt'),
+  tenantIdCookieName: string().required('TenantId cookie name is required').default('antten'),
+  permissions: array().of(
+    object().shape({
+      id: string().required(),
+      name: string().required(),
+    })
+  ).default([]),
+  appHandlerFactoryPath: string().required('App handler factory path is required')
 });
 
 // https://github.com/nuxt/content/blob/main/src/module.ts
@@ -144,76 +103,56 @@ export default defineNuxtModule<ModuleOptions>({
       return;
     }
 
-    const _options = optionsValidator.validate(options);
-
-    if (optionsValidator.hasErrors()) {
-      throw new Error(`Invalid options for authorization-module:\n${optionsValidator.getErrorsAsString()}`);
+    try {
+      await optionsValidator.validate(options);
+    } catch (e) {
+      throw new Error(`Invalid options for authorization-module:\n${e.message}`);
     }
 
+    const _options = await optionsValidator.cast(options, {stripUnknown: true});
+
     await installModule('@pinia/nuxt');
-    // @ts-ignore
-    await installModule('@antify/app-context-module', nuxt.options.runtimeConfig.appContextModule);
 
     const {resolve} = createResolver(import.meta.url);
     const runtimeDir = resolve('runtime');
     const typesBuildDir = join(nuxt.options.buildDir, 'types');
 
     nuxt.options.build.transpile.push(runtimeDir);
-    nuxt.options.alias['#authorization-module'] = resolve(runtimeDir, 'types');
-
-    const permissions: Permission[] = [
-      {
-        id: PermissionId.CAN_BAN_AUTHORIZATION,
-        name: 'Can ban account system-wide',
-        appIds: [_options.mainAppId]
-      },
-      {
-        id: PermissionId.CAN_UNBAN_AUTHORIZATION,
-        name: 'Can unban account system-wide',
-        appIds: [_options.mainAppId]
-      },
-      {
-        id: PermissionId.CAN_BAN_APP_ACCESS,
-        name: 'Can ban account'
-      },
-      {
-        id: PermissionId.CAN_UNBAN_APP_ACCESS,
-        name: 'Can unban account'
-      },
-      {
-        id: PermissionId.CAN_BAN_ADMIN_APP_ACCESS,
-        name: 'Can ban admin account'
-      },
-      {
-        id: PermissionId.CAN_UNBAN_ADMIN_APP_ACCESS,
-        name: 'Can unban admin account'
-      },
-      {
-        id: PermissionId.CAN_UPDATE_ROLE,
-        name: 'Can update role'
-      },
-      {
-        id: PermissionId.CAN_DELETE_ROLE,
-        name: 'Can delete role'
-      },
-      {
-        id: PermissionId.CAN_CREATE_ROLE,
-        name: 'Can create role'
-      },
-      {
-        id: PermissionId.CAN_READ_ROLE,
-        name: 'Can read role'
-      }
-    ];
+    nuxt.options.alias['#authorization-module'] = resolve(runtimeDir, 'server');
 
     nuxt.options.runtimeConfig.authorizationModule = {
       ..._options,
-      permissions: [..._options.permissions, ...permissions]
+      permissions: [..._options.permissions, ...[
+        {
+          id: PermissionId.CAN_BAN_AUTHORIZATION,
+          name: 'Can ban authorization'
+        },
+        {
+          id: PermissionId.CAN_UNBAN_AUTHORIZATION,
+          name: 'Can unban authorization'
+        },
+        {
+          id: PermissionId.CAN_UPDATE_ROLE,
+          name: 'Can update role'
+        },
+        {
+          id: PermissionId.CAN_DELETE_ROLE,
+          name: 'Can delete role'
+        },
+        {
+          id: PermissionId.CAN_CREATE_ROLE,
+          name: 'Can create role'
+        },
+        {
+          id: PermissionId.CAN_READ_ROLE,
+          name: 'Can read role'
+        }
+      ]]
     };
 
     nuxt.options.runtimeConfig.public.authorizationModule = {
       tokenCookieName: _options.tokenCookieName,
-      mainAppId: _options.mainAppId
+      tenantIdCookieName: _options.tenantIdCookieName
     };
 
     // nuxt.hook('modules:done', async () => {
@@ -259,6 +198,7 @@ export default defineNuxtModule<ModuleOptions>({
         `  const defineDatabaseHandler: typeof import('${relative(typesBuildDir, join(runtimeDir, 'server', 'database-handler'))}')['defineDatabaseHandler']`,
         `  const isLoggedInHandler: typeof import('${relative(typesBuildDir, join(runtimeDir, 'server', 'handlers'))}')['isLoggedInHandler']`,
         `  const isAuthorizedHandler: typeof import('${relative(typesBuildDir, join(runtimeDir, 'server', 'handlers'))}')['isAuthorizedHandler']`,
+        `  const useEventReader: typeof import('${relative(typesBuildDir, join(runtimeDir, 'server', 'utils'))}')['useEventReader']`,
         `  export * from '${relative(typesBuildDir, join(runtimeDir, 'types'))}'`,
         '}',
         // "declare module '@nuxt/schema' {",
@@ -298,12 +238,6 @@ export default defineNuxtModule<ModuleOptions>({
         route: '/api/authorization-module/maybe-components/ban-authorization-button/change-ban-status',
         method: 'post',
         handler: resolve(runtimeDir, 'server', 'api', 'maybe-components', 'ban-authorization-button', 'change-ban-status.post')
-      });
-
-      addServerHandler({
-        route: '/api/authorization-module/maybe-components/ban-app-access-button/change-ban-status',
-        method: 'post',
-        handler: resolve(runtimeDir, 'server', 'api', 'maybe-components', 'ban-app-access-button', 'change-ban-status.post')
       });
 
       addServerHandler({
