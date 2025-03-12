@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.1.3](https://github.com/antify/authorization-module/compare/v2.1.2...v2.1.3) (2025-03-12)
+
+
+### Bug Fixes
+
+* Fix concept error. Do not store tenantId in database ([c643370](https://github.com/antify/authorization-module/commit/c643370a157dacf82132a0d619ad4f2809c70eeb))
+
 ### [2.1.2](https://github.com/antify/authorization-module/compare/v2.1.1...v2.1.2) (2025-03-12)
 
 
