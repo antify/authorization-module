@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/antify/authorization-module/compare/v1.2.1...v2.0.0) (2025-03-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* The authorization module now just support one security context per nuxt project. But it still supports multitenancy
+
+### Features
+
+* Remove multi app support ([8fe5303](https://github.com/antify/authorization-module/commit/8fe530321765c65709dcedfa3fd48b843bc1cfea))
+
 ### [1.2.1](https://github.com/antify/authorization-module/compare/v1.2.0...v1.2.1) (2025-02-11)
 
 ## [1.2.0](https://github.com/antify/authorization-module/compare/v1.1.1...v1.2.0) (2024-11-12)
