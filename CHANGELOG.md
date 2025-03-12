@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0](https://github.com/antify/authorization-module/compare/v2.0.0...v2.1.0) (2025-03-12)
+
+
+### Features
+
+* Add isBanned to client guard ([9c9bf22](https://github.com/antify/authorization-module/commit/9c9bf22fad27496f91e7133993a56e7d0fb6e1ea))
+
 ## [2.0.0](https://github.com/antify/authorization-module/compare/v1.2.1...v2.0.0) (2025-03-12)
 
 
