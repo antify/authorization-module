@@ -22,8 +22,7 @@ export const useAuthorizationSchema = (roleSchemaName: string = 'authorization_r
   const schema = new Schema({
     tenantId: {
       type: String,
-      default: null,
-      required: true
+      default: null
     },
     roles: {
       type: [{
