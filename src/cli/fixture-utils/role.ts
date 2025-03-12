@@ -10,7 +10,6 @@ export const generateRoles = (
     name: `Role ${index}`,
     isAdmin: false,
     permissions: [],
-    tenantId: null,
     ...data
   }));
 };

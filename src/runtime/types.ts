@@ -14,3 +14,4 @@ export type JsonWebToken = {
 export type {AppHandlerFactory, AppHandler} from './composables/appHandler';
 export type {DatabaseHandler} from './server/databaseHandler';
 export type {Authorization} from './server/datasources/authorization';
+export type {Role} from './server/datasources/schemas/role';

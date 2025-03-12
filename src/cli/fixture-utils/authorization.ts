@@ -5,7 +5,6 @@ export const generateAuthorizations = (count: number = 100, data: Partial<Author
   return Array.from<{ length: number }, Authorization>({length: count}, () => ({
     _id: new Types.ObjectId(),
     tenantId: null,
-    isAdmin: false,
     isBanned: false,
     roles: [],
     ...data

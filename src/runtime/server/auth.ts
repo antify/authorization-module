@@ -2,7 +2,12 @@ import {type Authorization, type JsonWebToken} from '../types';
 import {type H3Event, setCookie, deleteCookie} from 'h3';
 import {type Role} from './datasources/role';
 import {useRuntimeConfig} from '#imports';
-import {decodeJwt, SignJWT} from 'jose';
+import {
+  decodeJwt,
+  jwtVerify,
+  errors as joseErrors,
+  SignJWT
+} from 'jose';
 import {useEventReader} from './utils';
 import {Guard} from '../guard';
 import * as jose from 'jose';
@@ -81,10 +86,10 @@ export const useAuth = () => {
       const rawToken = eventReader.getToken(event);
 
       if (!rawToken) {
-        throw new jose.errors.JWSInvalid();
+        throw new joseErrors.JWSInvalid();
       }
 
-      await jose.jwtVerify(rawToken, new TextEncoder().encode(jwtSecret));
+      await jwtVerify(rawToken, new TextEncoder().encode(jwtSecret));
 
       return new Guard(decodeJwt(rawToken), eventReader.getTenantId(event));
     }
