@@ -1,15 +1,23 @@
 <script lang="ts" setup>
-import {onMounted, computed, onUnmounted} from '#imports';
+import {onMounted, computed} from '#imports';
 import {useRoleInputStore} from '../stores/roleInput';
 
-const props = defineProps<{
-  /**
-   * Array of role id's
-   */
-  modelValue: string[]
-  appId?: string
-  tenantId?: string
-}>();
+const props = withDefaults(
+  defineProps<{
+    /**
+     * Array of role id's
+     */
+    modelValue: string[]
+    appId?: string
+    tenantId?: string
+    disabled?: boolean
+    skeleton?: boolean
+  }>(),
+  {
+    disabled: false,
+    skeleton: false
+  }
+);
 const roleStore = useRoleInputStore();
 const emit = defineEmits(['update:modelValue']);
 const _modelValue = computed({
@@ -23,8 +31,9 @@ onMounted(() => roleStore.execute());
 <template>
   <AntTagInput
     v-model="_modelValue"
-    :skeleton="['pending', 'idle'].includes(roleStore.status.value)"
+    :skeleton="['pending', 'idle'].includes(roleStore.status.value) || props.skeleton"
     :options="roleStore.data || []"
+    :disabled="props.disabled"
     placeholder="Add role"
   />
 </template>
