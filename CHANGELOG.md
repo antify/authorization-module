@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.2.0](https://github.com/antify/authorization-module/compare/v2.1.3...v2.2.0) (2025-03-13)
+
+
+### Features
+
+* **RoleInput:** Add disabled and skeleton prop ([3b31d69](https://github.com/antify/authorization-module/commit/3b31d69e4762e2f2ef29ab1b2f23bd0e1e9e1d5f))
+
 ### [2.1.3](https://github.com/antify/authorization-module/compare/v2.1.2...v2.1.3) (2025-03-12)
 
 
