@@ -34,8 +34,10 @@ function unselectAll() {
 </script>
 
 <template>
-  <div class="p-2.5">
-    <form @submit.prevent="roleDetailStore.save">
+  <form
+    class="p-2.5"
+    @submit.prevent="roleDetailStore.save">
+    <AntCard class="w-full">
       <AntFormGroup>
         <AntFormGroup direction="row">
           <div class="w-1/2">
@@ -105,6 +107,6 @@ function unselectAll() {
           />
         </div>
       </AntFormGroup>
-    </form>
-  </div>
+    </AntCard>
+  </form>
 </template>
