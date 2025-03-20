@@ -10,12 +10,11 @@ import {
 } from 'jose';
 import {useEventReader} from './utils';
 import {Guard} from '../guard';
-import * as jose from 'jose';
 
 // TODO:: support different algorithm's
 export const JWT_ALGORITHM = 'HS256';
 
-const authorizationToJwt = (authorization: Authorization): JsonWebToken => {
+const authorizationToJwt = (authorization: Authorization, tenantId: string | null): JsonWebToken => {
   function emitValuesFromRoles(roles: Role[]): { isAdmin: boolean, permissions: string[] } {
     return {
       isAdmin: roles.some(role => role.isAdmin),
@@ -25,7 +24,7 @@ const authorizationToJwt = (authorization: Authorization): JsonWebToken => {
 
   return {
     id: authorization._id,
-    tenantId: authorization.tenantId,
+    tenantId: tenantId,
     isBanned: authorization.isBanned,
     isAdmin: emitValuesFromRoles(authorization.roles).isAdmin,
     permissions: emitValuesFromRoles(authorization.roles).permissions
@@ -42,13 +41,8 @@ export const useAuth = () => {
 
   return {
     async login(event: H3Event, authorization: Authorization) {
-      // TODO:: Test and fix if needed
-      // if (authorization?.roles[0] &&
-      //   !authorization.roles[0]?.appId) {
-      //   throw new Error('The authorization.roles is not populated. To make the login work, provide a populated authorization object.');
-      // }
-
-      const token = authorizationToJwt(authorization);
+      const tenantId = eventReader.getTenantId(event);
+      const token = authorizationToJwt(authorization, tenantId);
       const expirationDate = new Date();
 
       expirationDate.setMinutes(expirationDate.getMinutes() + jwtExpiration);
@@ -57,7 +51,7 @@ export const useAuth = () => {
 
       setCookie(event, tokenCookieName, rawToken);
 
-      return new Guard(decodeJwt(rawToken), eventReader.getTenantId(event));
+      return new Guard(decodeJwt(rawToken), tenantId);
     },
     // TODO:: refactor, token.exp is already a expiration date
     async signToken(
