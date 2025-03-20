@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.3.2](https://github.com/antify/authorization-module/compare/v2.3.1...v2.3.2) (2025-03-20)
+
+
+### Bug Fixes
+
+* Fix missing tenant id on token generation ([6fd4014](https://github.com/antify/authorization-module/commit/6fd4014cab75a97478f1619b77af0ae666c9ac98))
+
 ### [2.3.1](https://github.com/antify/authorization-module/compare/v2.3.0...v2.3.1) (2025-03-14)
 
 
