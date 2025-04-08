@@ -156,9 +156,13 @@ export default defineNuxtModule<ModuleOptions>({
     };
 
     nuxt.hook('modules:done', async () => {
+      // TODO:: type hook
+      // @ts-ignore
     	const permissions = await nuxt.callHook('authorization-module:add-permissions') as Permission[] || [];
 
+      //@ts-ignore
     	nuxt.options.runtimeConfig.authorizationModule.permissions = [
+        // @ts-ignore
     		...nuxt.options.runtimeConfig.authorizationModule.permissions,
     		...permissions
     	];
