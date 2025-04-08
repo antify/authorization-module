@@ -155,18 +155,14 @@ export default defineNuxtModule<ModuleOptions>({
       tenantIdCookieName: _options.tenantIdCookieName
     };
 
-    // nuxt.hook('modules:done', async () => {
-    // 	// TODO:: type hook
-    // 	// @ts-ignore
-    // 	const permissions = await nuxt.callHook('authorization-module:add-permissions') as Permission[] || [];
-    //
-    // 	// @ts-ignore
-    // 	nuxt.options.runtimeConfig.authorizationModule.permissions = [
-    // 		// @ts-ignore
-    // 		...nuxt.options.runtimeConfig.authorizationModule.permissions,
-    // 		...permissions
-    // 	];
-    // });
+    nuxt.hook('modules:done', async () => {
+    	const permissions = await nuxt.callHook('authorization-module:add-permissions') as Permission[] || [];
+
+    	nuxt.options.runtimeConfig.authorizationModule.permissions = [
+    		...nuxt.options.runtimeConfig.authorizationModule.permissions,
+    		...permissions
+    	];
+    });
 
     const databaseHandlerPath = _options.databaseHandler ? resolve(nuxt.options.rootDir, _options.databaseHandler) : null;
 
