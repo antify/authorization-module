@@ -4,8 +4,7 @@
  */
 export * from './runtime/server/databaseHandler';
 export * from './runtime/types';
-export * from '../playground/server/datasources/db/fixture-utils/authorization';
-export * from '../playground/server/datasources/db/fixture-utils/role';
+export * from './runtime/server/types';
 export {
   PermissionId,
 } from './runtime/permissions';
