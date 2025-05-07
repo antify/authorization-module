@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/antify/authorization-module/compare/v2.3.2...v3.0.0) (2025-05-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* Cleanup code, upgrade eslint, upgrade @antify/database to 2.0.0, abstract database logic
+
+* Cleanup code, upgrade eslint, upgrade @antify/database to 2.0.0, abstract database logic ([cf8cbd8](https://github.com/antify/authorization-module/commit/cf8cbd85192a2ad4a7e48eda9d05eb99b80d4116))
+
 ### [2.3.2](https://github.com/antify/authorization-module/compare/v2.3.1...v2.3.2) (2025-03-20)
 
 
