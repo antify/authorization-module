@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.0](https://github.com/antify/authorization-module/compare/v3.0.0...v3.1.0) (2025-05-07)
+
+### [2.3.3](https://github.com/antify/authorization-module/compare/v2.3.2...v2.3.3) (2025-04-08)
+
+
+### Features
+
+* Add extension of permissions via hook ([ff5ab8f](https://github.com/antify/authorization-module/commit/ff5ab8f9280424938658656e16efa37763589ea8))
+
 ### [2.3.2](https://github.com/antify/authorization-module/compare/v2.3.1...v2.3.2) (2025-03-20)
 
 
