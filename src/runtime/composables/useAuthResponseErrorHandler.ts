@@ -1,14 +1,18 @@
-import {type FetchResponse} from 'ofetch';
+import {
+  type FetchResponse,
+} from 'ofetch';
 import {
   useGuard,
   showError,
   useRouter,
   useNuxtApp,
-  appHandlerFactory
+  appHandlerFactory,
 } from '#imports';
 
 export const useAuthResponseErrorHandler = (response: FetchResponse<never>) => {
-  const {$uiModule} = useNuxtApp();
+  const {
+    $uiModule,
+  } = useNuxtApp();
   const appHandler = appHandlerFactory(useGuard().getTenantId());
   const router = useRouter();
 
@@ -19,7 +23,7 @@ export const useAuthResponseErrorHandler = (response: FetchResponse<never>) => {
 
     return showError({
       statusCode: 401,
-      message: 'Unauthorized - Configure a loginPageRoute in nuxt config \nto automatically redirect unauthorized users to login page.'
+      message: 'Unauthorized - Configure a loginPageRoute in nuxt config \nto automatically redirect unauthorized users to login page.',
     });
   }
 

@@ -1,8 +1,16 @@
 import * as jose from 'jose';
-import {useAuth} from './auth';
-import {Guard} from '../guard';
-import {type H3Event} from 'h3';
-import {createError} from '#imports';
+import {
+  useAuth,
+} from './auth';
+import {
+  Guard,
+} from '../guard';
+import {
+  type H3Event,
+} from 'h3';
+import {
+  createError,
+} from '#imports';
 
 export const isLoggedInHandler = async (event: H3Event): Promise<Guard> => {
   let guard: Guard;
@@ -19,7 +27,7 @@ export const isLoggedInHandler = async (event: H3Event): Promise<Guard> => {
 
     throw createError({
       statusCode: 401,
-      statusMessage: 'Unauthorized'
+      statusMessage: 'Unauthorized',
     });
   }
 
@@ -28,14 +36,14 @@ export const isLoggedInHandler = async (event: H3Event): Promise<Guard> => {
 
 export const isAuthorizedHandler = async (
   event: H3Event,
-  permissions: string | string[]
+  permissions: string | string[],
 ): Promise<Guard> => {
   const guard = await isLoggedInHandler(event);
 
   if (!guard.hasPermissionTo(permissions)) {
     throw createError({
       statusCode: 403,
-      statusMessage: 'Forbidden'
+      statusMessage: 'Forbidden',
     });
   }
 

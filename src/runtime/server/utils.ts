@@ -1,5 +1,9 @@
-import {type H3Event, getCookie} from 'h3';
-import {useRuntimeConfig} from '#imports';
+import {
+  type H3Event, getCookie,
+} from 'h3';
+import {
+  useRuntimeConfig,
+} from '#imports';
 
 /**
  * Graph values from request event.
@@ -7,7 +11,7 @@ import {useRuntimeConfig} from '#imports';
 export const useEventReader = () => {
   const {
     tokenCookieName,
-    tenantIdCookieName
+    tenantIdCookieName,
   } = useRuntimeConfig().public.authorizationModule;
 
   return {
@@ -16,6 +20,6 @@ export const useEventReader = () => {
     },
     getToken: (event: H3Event) => {
       return event.headers['authorization'] || getCookie(event, tokenCookieName);
-    }
+    },
   };
 };

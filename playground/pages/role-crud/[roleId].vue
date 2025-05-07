@@ -1,15 +1,17 @@
 <script lang="ts" setup>
-import {definePageMeta} from '#imports';
+import {
+  definePageMeta,
+} from '#imports';
 
 definePageMeta({
   pageTransition: {
     // using false does not work
-    name: 'noop'
+    name: 'noop',
   },
   layoutTransition: {
     // using false does not work
-    name: 'noop'
-  }
+    name: 'noop',
+  },
 });
 </script>
 

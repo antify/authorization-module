@@ -1,8 +1,10 @@
-import {defineDatabaseConfig} from '@antify/database';
+import {
+  defineDatabaseConfig,
+} from '@antify/database';
 import {
   TEST_TENANT_ID,
-  SECOND_TEST_TENANT_ID
-} from "./playground/server/datasources/db/fixture-utils/tenant";
+  SECOND_TEST_TENANT_ID,
+} from './playground/server/datasources/db/fixture-utils/tenant';
 
 export default defineDatabaseConfig({
   app: {
@@ -21,13 +23,14 @@ export default defineDatabaseConfig({
         resolve([
           {
             id: TEST_TENANT_ID,
-            name: 'Test tenant'
-          }, {
+            name: 'Test tenant',
+          },
+          {
             id: SECOND_TEST_TENANT_ID,
-            name: 'Second tenant'
-          }
-        ])
+            name: 'Second tenant',
+          },
+        ]);
       });
-    }
-  }
+    },
+  },
 });

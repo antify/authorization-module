@@ -1,9 +1,17 @@
 <script lang='ts' setup>
-import {faUserShield} from '@fortawesome/free-solid-svg-icons';
-import type {JsonWebToken} from '../../types';
+import {
+  faUserShield,
+} from '@fortawesome/free-solid-svg-icons';
+import type {
+  JsonWebToken,
+} from '../../types';
 import JWTForm from './JWTForm.vue';
-import {withDefaults} from 'vue';
-import {ref} from '#imports';
+import {
+  withDefaults,
+} from 'vue';
+import {
+  ref,
+} from '#imports';
 
 if (!import.meta.env.DEV) {
   // TODO:: Just not provide id outside of dev context?
@@ -11,10 +19,10 @@ if (!import.meta.env.DEV) {
 }
 
 withDefaults(defineProps<{
-  position?: 'top-right' | 'bottom-right' | 'bottom-left' | 'top-left',
-  defaultToken?: Partial<JsonWebToken>
+  position?: 'top-right' | 'bottom-right' | 'bottom-left' | 'top-left';
+  defaultToken?: Partial<JsonWebToken>;
 }>(), {
-  position: 'bottom-right'
+  position: 'bottom-right',
 });
 const jwtModalOpen = ref(false);
 </script>

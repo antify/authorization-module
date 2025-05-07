@@ -3,22 +3,25 @@ import RoleTable from './RoleTable.vue';
 import {
   useRoleListingStore,
   useRoleRoutingStore,
-  useRoleDetailStore
+  useRoleDetailStore,
 } from '../../stores/roleCrud';
-import type {RouteParams} from '#vue-router';
+import type {
+  RouteParams,
+} from '#vue-router';
 import {
   useGuard,
-  useRouteGuard
 } from '#imports';
-import {PermissionId} from '../../permissions';
+import {
+  PermissionId,
+} from '../../permissions';
 
 const props = defineProps<{
-  detailRouteName: string
-  listingRouteName: string
-  getDetailRouteParams?: () => RouteParams,
-  getListingRouteParams?: () => RouteParams,
-  entityIdentifier?: string
-  createEntityIdentifier?: string
+  detailRouteName: string;
+  listingRouteName: string;
+  getDetailRouteParams?: () => RouteParams;
+  getListingRouteParams?: () => RouteParams;
+  entityIdentifier?: string;
+  createEntityIdentifier?: string;
 }>();
 const routingStore = useRoleRoutingStore();
 const listingStore = useRoleListingStore();
@@ -40,13 +43,14 @@ function onCreate() {
         :full-width="routingStore.routing.isListingPage.value"
         :skeleton="listingStore.skeleton"
         :can-delete="guard.hasPermissionTo(PermissionId.CAN_DELETE_ROLE)"
+        :show-filter="false"
         @search="() => listingStore.refresh()"
         @create="onCreate"
       />
     </template>
 
     <template #table-section>
-      <RoleTable :show-light-version="routingStore.routing.isDetailPage.value"/>
+      <RoleTable :show-light-version="routingStore.routing.isDetailPage.value" />
     </template>
 
     <template #table-nav-section>
@@ -59,6 +63,6 @@ function onCreate() {
       />
     </template>
 
-    <slot/>
+    <slot />
   </AntCrud>
 </template>

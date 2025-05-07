@@ -115,7 +115,7 @@ const user = await UserModel
   .findOne({_id: userId})
   .populate({
     path: 'authorization.roles',
-    model: client.getModel<Role>('authorization_roles')
+    model: client.getModel(defineRoleSchema)
   });
 ```
 

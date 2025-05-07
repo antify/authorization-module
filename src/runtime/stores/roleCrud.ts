@@ -1,5 +1,6 @@
 import {
   ref,
+  watch,
   useFetch,
   computed,
   reactive,
@@ -9,7 +10,9 @@ import {
   useUiClient,
   useAuthResponseErrorHandler,
 } from '#imports';
-import {defineStore, storeToRefs} from 'pinia';
+import {
+  defineStore, storeToRefs,
+} from 'pinia';
 import {
   roleClientSchema,
   roleServerSchema,
@@ -18,10 +21,14 @@ import {
 } from '../glue/stores/role-crud';
 import {
   type ResponseType as GetRoleResponseType,
-  type ResponsePermissionType
+  type ResponsePermissionType,
 } from '../glue/stores/role-crud/[roleId].get';
-import {type RoleListingData} from '../glue/components/role/roleTable';
-import type {CrudRoutingOptions, FormFieldType} from '@antify/ui-module';
+import {
+  type RoleListingData,
+} from '../glue/components/role/roleTable';
+import type {
+  CrudRoutingOptions, FormFieldType,
+} from '@antify/ui-module';
 
 export const useRoleListingStore = defineStore('authorization-module-crud-role-listing', () => {
   const router = useRouter();
@@ -34,20 +41,22 @@ export const useRoleListingStore = defineStore('authorization-module-crud-role-l
     },
     async refresh(resetPageQuery = true, pageQuery = 'p') {
       if (resetPageQuery) {
-        const query = {...router.currentRoute.value.query};
+        const query = {
+          ...router.currentRoute.value.query,
+        };
 
         delete query[pageQuery];
 
         await router.push({
           ...router.currentRoute.value,
-          query
+          query,
         });
       }
 
       await this._refresh();
     },
     data,
-    skeleton
+    skeleton,
   };
 });
 
@@ -62,23 +71,21 @@ export const useDeleteRoleStore = defineStore('authorization-module-crud-role-de
       method: 'delete',
       immediate: false,
       watch: false,
-      onResponse({response}) {
-        switch (response.status) {
-          case 200:
-            listingStore.refresh(false);
-            routingStore.routing.goToListingPage();
-            nuxtApp.$uiModule.toaster.toastDeleted();
-            break;
-          case 401:
-          case 403:
-            useAuthResponseErrorHandler(response);
-            break;
-          default:
-            showError(response._data);
+      onResponse({
+        response,
+      }) {
+        useAuthResponseErrorHandler(response);
+
+        if (response.status === 200) {
+          listingStore.refresh(false);
+          routingStore.routing.goToListingPage();
+          nuxtApp.$uiModule.toaster.toastDeleted();
         }
-      }
-    }
+      },
+    },
   );
+
+  watch(fetch.error, (e) => showError(e));
 
   return {
     execute: (id: string) => {
@@ -87,7 +94,7 @@ export const useDeleteRoleStore = defineStore('authorization-module-crud-role-de
       return fetch.execute();
     },
     status: fetch.status,
-    loading: computed(() => fetch.status.value === 'idle' || fetch.status.value === 'pending')
+    loading: computed(() => fetch.status.value === 'idle' || fetch.status.value === 'pending'),
   };
 });
 
@@ -96,12 +103,15 @@ export const useRoleDetailStore = defineStore('authorization-module-crud-role-de
   const uiClient = useUiClient();
   const routingStore = useRoleRoutingStore();
   const listingStore = useRoleListingStore();
-  const {status: deleteStatus} = storeToRefs(useDeleteRoleStore());
+  const {
+    status: deleteStatus,
+  } = storeToRefs(useDeleteRoleStore());
   const entity = ref<RoleClientType>(roleClientSchema.cast({}));
   const allPermissions = ref<ResponsePermissionType[]>([]);
   const {
     status: saveStatus,
     execute: executeSave,
+    error: saveError,
   } = useFetch<RoleServerType>(
     () => '/api/authorization-module/stores/role-crud',
     {
@@ -111,36 +121,42 @@ export const useRoleDetailStore = defineStore('authorization-module-crud-role-de
       onRequest(request) {
         request.options.body = roleServerSchema.cast(entity.value);
       },
-      async onResponse({response}) {
+      async onResponse({
+        response,
+      }) {
         await uiClient.handler.handleNotFoundResponse(response, routingStore.routing.getListingRoute());
+        useAuthResponseErrorHandler(response);
 
-        switch (response.status) {
-          case 200:
-            if (entity.value._id === null) {
-              routingStore.routing.goToDetailPage(response._data._id);
-            }
+        if (response.status === 200) {
+          if (entity.value._id === null) {
+            routingStore.routing.goToDetailPage(response._data._id);
+          }
 
-            entity.value = response._data;
-            listingStore.refresh(false);
-            nuxtApp.$uiModule.toaster.toastUpdated();
-            break;
-          case 401:
-          case 403:
-            useAuthResponseErrorHandler(response);
-            break;
-          default:
-            showError(response._data);
+          entity.value = response._data;
+          listingStore.refresh(false);
+          nuxtApp.$uiModule.toaster.toastUpdated();
         }
-      }
-    }
+      },
+    },
   );
-  const formDisabled = computed(() => uiClient.utils.isFormDisabled([saveStatus, deleteStatus]));
+
+  watch(saveError, (e) => showError(e));
+
+  const formDisabled = computed(() => uiClient.utils.isFormDisabled([
+    saveStatus,
+    deleteStatus,
+  ]));
   const forms = reactive<Record<string, FormFieldType[]>>({
-    mainData: []
+    mainData: [],
   });
   const skeleton = ref<boolean>(false);
   const roleId = ref<string | null>(null);
-  const {execute} = useFetch<GetRoleResponseType | { notFound: true }>(
+  const {
+    execute,
+    error,
+  } = useFetch<GetRoleResponseType | {
+    notFound: true;
+  }>(
     () => `/api/authorization-module/stores/role-crud/${roleId.value}`,
     {
       immediate: false,
@@ -149,25 +165,23 @@ export const useRoleDetailStore = defineStore('authorization-module-crud-role-de
         skeleton.value = true;
         entity.value = roleClientSchema.cast({});
       },
-      async onResponse({response}) {
+      async onResponse({
+        response,
+      }) {
         await uiClient.handler.handleNotFoundResponse(response, routingStore.routing.getListingRoute());
+        useAuthResponseErrorHandler(response);
 
-        switch (response.status) {
-          case 200:
-            entity.value = response._data.role;
-            allPermissions.value = response._data.allPermissions;
-            break;
-          case 401:
-          case 403:
-            useAuthResponseErrorHandler(response);
-            break;
-          default:
-            showError(response._data);
+        if (response.status === 200) {
+          entity.value = response._data.role;
+          allPermissions.value = response._data.allPermissions;
         }
 
         skeleton.value = false;
-      }
-    });
+      },
+    },
+  );
+
+  watch(error, (e) => showError(e));
 
   return {
     allPermissions,
@@ -200,10 +214,8 @@ export const useRoleDetailStore = defineStore('authorization-module-crud-role-de
       }
 
       // Validate all fields of all forms
-      await Promise.all(
-        Object.values(forms)
-          .map(form => form.map(field => field.validate()))
-      );
+      await Promise.all(Object.values(forms)
+        .map(form => form.map(field => field.validate())));
 
       // Check if any field has errors
       if (Object.values(forms).some(form => form.some(field => field.errors.length > 0))) {
@@ -216,7 +228,7 @@ export const useRoleDetailStore = defineStore('authorization-module-crud-role-de
       await this.save();
       this.resetData();
       await routingStore.routing.goToDetailPage();
-    }
+    },
   };
 });
 
@@ -236,8 +248,8 @@ export const useRoleRoutingStore = defineStore('authorization-module-crud-role-r
         options.value.getDetailRouteParams,
         options.value.getListingRouteParams,
         options.value.entityIdentifier,
-        options.value.createEntityIdentifier
+        options.value.createEntityIdentifier,
       );
-    })
+    }),
   };
 });

@@ -2,7 +2,7 @@
 import {
   useRoleListingStore,
   useRoleRoutingStore,
-  useDeleteRoleStore
+  useDeleteRoleStore,
 } from '../../stores/roleCrud';
 import {
   onMounted,
@@ -14,15 +14,23 @@ import {
   useFetch,
   useAuthResponseErrorHandler,
   showError,
-  watch
+  watch,
 } from '#imports';
-import {AntTableRowTypes} from '#ui-module';
-import {PermissionId} from '../../permissions';
-import {type RoleClientType} from '../../glue/stores/role-crud';
-import {type RoleListingData} from '../../glue/components/role/roleTable';
+import {
+  AntTableRowTypes,
+} from '#ui-module';
+import {
+  PermissionId,
+} from '../../permissions';
+import {
+  type RoleClientType,
+} from '../../glue/stores/role-crud';
+import {
+  type RoleListingData,
+} from '../../glue/components/role/roleTable';
 
 defineProps<{
-  showLightVersion: boolean,
+  showLightVersion: boolean;
 }>();
 
 const route = useRoute();
@@ -36,7 +44,9 @@ const fetch = useFetch<RoleListingData>(
     query,
     watch: false,
     immediate: false,
-    onResponse({response}) {
+    onResponse({
+      response,
+    }) {
       switch (response.status) {
         case 200:
           break;
@@ -49,8 +59,8 @@ const fetch = useFetch<RoleListingData>(
       }
 
       listingStore.skeleton = false;
-    }
-  }
+    },
+  },
 );
 
 watch(fetch.data, (val) => listingStore.data = val);
@@ -75,8 +85,7 @@ const tableHeaders = [
     type: AntTableRowTypes.slot,
   },
 ];
-const selectedRow = computed(() =>
-  route.params.roleId ? fetch.data.value?.roles?.find((role) => role._id === route.params.roleId) : undefined);
+const selectedRow = computed(() => route.params.roleId ? fetch.data.value?.roles?.find((role) => role._id === route.params.roleId) : undefined);
 const roles = computed(() => {
   return fetch.data.value?.roles?.map((role) => {
     role.link = routingStore.routing.getDetailRoute(role._id);

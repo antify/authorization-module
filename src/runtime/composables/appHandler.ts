@@ -1,4 +1,6 @@
-import type {NavigationFailure, RouteLocationRaw} from '#vue-router';
+import type {
+  NavigationFailure, RouteLocationRaw,
+} from '#vue-router';
 
 /**
  * Client side app handler to configure and handle unauthorized, banned and permission errors.

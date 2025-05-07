@@ -1,28 +1,34 @@
 <script lang="ts" setup>
-import {onMounted, computed} from '#imports';
-import {useRoleInputStore} from '../stores/roleInput';
+import {
+  onMounted, computed,
+} from '#imports';
+import {
+  useRoleInputStore,
+} from '../stores/roleInput';
 
 const props = withDefaults(
   defineProps<{
     /**
      * Array of role id's
      */
-    modelValue: string[]
-    appId?: string
-    tenantId?: string
-    disabled?: boolean
-    skeleton?: boolean
+    modelValue: string[];
+    appId?: string;
+    tenantId?: string;
+    disabled?: boolean;
+    skeleton?: boolean;
   }>(),
   {
     disabled: false,
-    skeleton: false
-  }
+    skeleton: false,
+  },
 );
 const roleStore = useRoleInputStore();
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits([
+  'update:modelValue',
+]);
 const _modelValue = computed({
   get: () => props.modelValue,
-  set: (value: string[]) => emit('update:modelValue', value)
+  set: (value: string[]) => emit('update:modelValue', value),
 });
 
 onMounted(() => roleStore.execute());

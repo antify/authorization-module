@@ -1,4 +1,6 @@
-import {defineNitroPlugin} from '#imports';
+import {
+  defineNitroPlugin,
+} from '#imports';
 
 export default defineNitroPlugin((nitro) => {
   nitro.hooks.hook('request', async () => {

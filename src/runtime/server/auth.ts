@@ -1,24 +1,39 @@
-import {type Authorization, type JsonWebToken} from '../types';
-import {type H3Event, setCookie, deleteCookie} from 'h3';
-import {type Role} from './datasources/role';
-import {useRuntimeConfig} from '#imports';
+import {
+  type Authorization, type JsonWebToken,
+} from '../types';
+import {
+  type H3Event, setCookie, deleteCookie,
+} from 'h3';
+import {
+  type Role,
+} from './datasources/role';
+import {
+  useRuntimeConfig,
+} from '#imports';
 import {
   decodeJwt,
   jwtVerify,
   errors as joseErrors,
-  SignJWT
+  SignJWT,
 } from 'jose';
-import {useEventReader} from './utils';
-import {Guard} from '../guard';
+import {
+  useEventReader,
+} from './utils';
+import {
+  Guard,
+} from '../guard';
 
 // TODO:: support different algorithm's
 export const JWT_ALGORITHM = 'HS256';
 
 const authorizationToJwt = (authorization: Authorization, tenantId: string | null): JsonWebToken => {
-  function emitValuesFromRoles(roles: Role[]): { isAdmin: boolean, permissions: string[] } {
+  function emitValuesFromRoles(roles: Role[]): {
+    isAdmin: boolean;
+    permissions: string[];
+  } {
     return {
       isAdmin: roles.some(role => role.isAdmin),
-      permissions: roles.flatMap(role => role.permissions)
+      permissions: roles.flatMap(role => role.permissions),
     };
   }
 
@@ -27,7 +42,7 @@ const authorizationToJwt = (authorization: Authorization, tenantId: string | nul
     tenantId: tenantId,
     isBanned: authorization.isBanned,
     isAdmin: emitValuesFromRoles(authorization.roles).isAdmin,
-    permissions: emitValuesFromRoles(authorization.roles).permissions
+    permissions: emitValuesFromRoles(authorization.roles).permissions,
   };
 };
 
@@ -35,7 +50,7 @@ export const useAuth = () => {
   const {
     jwtExpiration,
     jwtSecret,
-    tokenCookieName
+    tokenCookieName,
   } = useRuntimeConfig().authorizationModule;
   const eventReader = useEventReader();
 
@@ -58,11 +73,13 @@ export const useAuth = () => {
       token: JsonWebToken,
       secret: string,
       expiration: number | string | Date,
-      issuedAt?: number | string | Date
+      issuedAt?: number | string | Date,
     ) {
       return await new SignJWT(token)
         .setExpirationTime(expiration)
-        .setProtectedHeader({alg: JWT_ALGORITHM})
+        .setProtectedHeader({
+          alg: JWT_ALGORITHM,
+        })
         .setIssuedAt(issuedAt)
         .sign(new TextEncoder().encode(secret));
     },
@@ -86,6 +103,6 @@ export const useAuth = () => {
       await jwtVerify(rawToken, new TextEncoder().encode(jwtSecret));
 
       return new Guard(decodeJwt(rawToken), eventReader.getTenantId(event));
-    }
+    },
   };
 };

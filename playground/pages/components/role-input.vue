@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-import {ref, useRouter} from '#imports';
+import {
+  ref, useRouter,
+} from '#imports';
 
 const selectedRoles1 = ref([]);
 const selectedRoles2 = ref([]);

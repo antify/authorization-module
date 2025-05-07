@@ -1,15 +1,25 @@
-import {TEST_TENANT_ID} from '../../../../playground/server/datasources/db/fixture-utils/tenant';
-import {Authorization} from '~/src/runtime/server';
-import {describe, test, expect, vi, beforeEach} from 'vitest';
+import {
+  TEST_TENANT_ID,
+} from '../../../../playground/server/datasources/db/fixture-utils/tenant';
+import {
+  Authorization,
+} from '~/src/runtime/server';
+import {
+  describe, test, expect, vi, beforeEach,
+} from 'vitest';
 import {
   changedToken,
   expiredToken,
   tokenWithoutExp,
   validToken,
-  wrongSecretToken
+  wrongSecretToken,
 } from '../../__tests__/testTokens';
-import {useAuth} from '../auth';
-import {createError as _createError, H3Event} from 'h3';
+import {
+  useAuth,
+} from '../auth';
+import {
+  createError as _createError, H3Event,
+} from 'h3';
 
 const {
   useEventReader,
@@ -25,8 +35,8 @@ vi.mock('#imports', () => {
       authorizationModule: {
         jwtSecret: '#a!SuperSecret123',
         jwtExpiration: 480,
-        tokenCookieName: 'token'
-      }
+        tokenCookieName: 'token',
+      },
     }),
   };
 });
@@ -42,7 +52,7 @@ vi.mock('h3', () => {
 
 vi.mock('../utils', () => {
   return {
-    useEventReader
+    useEventReader,
   };
 });
 
@@ -56,7 +66,7 @@ describe('Auth test', async () => {
       },
       getToken: () => {
         return rawToken;
-      }
+      },
     }));
 
     try {
@@ -73,7 +83,7 @@ describe('Auth test', async () => {
       },
       getToken: () => {
         return validToken;
-      }
+      },
     }));
 
     const guard = await useAuth().verify({} as H3Event);
@@ -115,10 +125,14 @@ describe('Auth test', async () => {
           _id: '661f73b3e90e013526837a00',
           name: 'foo',
           isAdmin: true,
-          permissions: ['CAN_TEST']
-        }
+          permissions: [
+            'CAN_TEST',
+          ],
+        },
       ],
-      allPermissions: ['CAN_TEST'],
+      allPermissions: [
+        'CAN_TEST',
+      ],
     };
 
     const token = (await useAuth()

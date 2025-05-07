@@ -5,27 +5,33 @@ import {
   useNuxtApp,
   useUiClient,
   ref,
-  computed
+  computed,
 } from '#imports';
-import {Grouped} from '#ui-module';
+import {
+  Grouped,
+} from '#ui-module';
 
 const guard = useGuard();
-const {$uiModule} = useNuxtApp();
+const {
+  $uiModule,
+} = useNuxtApp();
 const {
   data: users,
-  pending: pendingGetUsers
+  pending: pendingGetUsers,
 } = useFetch('/api/server-side/users', {
-  onResponse({response}) {
+  onResponse({
+    response,
+  }) {
     if (response.status === 200) {
       selectedUserId.value = response._data[0]._id;
     }
-  }
+  },
 });
 const selectedUserId = ref<string | null>(null);
 const userOptions = computed(() => {
   return (users.value || []).map((user) => ({
     value: user._id,
-    label: user.name
+    label: user.name,
   }));
 });
 const {
@@ -33,26 +39,30 @@ const {
   status: loginStatus,
 } = useFetch('/api/server-side/login', {
   body: {
-    userId: selectedUserId
+    userId: selectedUserId,
   },
   method: 'post',
   immediate: false,
   watch: false,
-  onResponse({response}) {
+  onResponse({
+    response,
+  }) {
     if (response.status === 200) {
       $uiModule.toaster.toastSuccess('Logged in successfully');
 
       // Give all watchers, which have an eye on the cookie, the chance to react
       guard.refresh();
     }
-  }
+  },
 });
 const skeleton = useUiClient().utils.createSkeleton(pendingGetUsers);
 </script>
 
 <template>
   <div class="flex flex-col	gap-5 p-2.5 bg-white h-full overflow-y-auto">
-    <div class="text-3xl">Server side playground</div>
+    <div class="text-3xl">
+      Server side playground
+    </div>
     <div>
       Test logging on server side by specific user. <br>
       It also demonstrates how to implement an

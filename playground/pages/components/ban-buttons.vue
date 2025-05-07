@@ -5,17 +5,21 @@ import {
   useUiClient,
   computed,
   ref,
-  watch
+  watch,
 } from '#imports';
-import {type Authorization} from '#authorization-module';
+import type {
+  Authorization,
+} from '../../../src/runtime/types';
 
 const {
   data: users,
-  pending: pendingGetUsers
+  pending: pendingGetUsers,
 } = useFetch('/api/pages/components/ban-buttons/users', {
   method: 'get',
   watch: false,
-  onResponse({response}) {
+  onResponse({
+    response,
+  }) {
     if (response.status === 500) {
       return showError(response._data);
     }
@@ -24,19 +28,19 @@ const {
       selectedUserId.value = response._data[0]._id;
       authorization.value = response._data[0].authorization;
     }
-  }
+  },
 });
 const selectedUserId = ref<string | null>(null);
 const userOptions = computed(() => {
   return (users.value || []).map((user) => ({
     value: user._id,
-    label: user.name
+    label: user.name,
   }));
 });
 const authorization = ref<Authorization>({
   _id: null,
   isBanned: null,
-  isSuperAdmin: null
+  isSuperAdmin: null,
 });
 const skeleton = useUiClient().utils.createSkeleton(pendingGetUsers);
 

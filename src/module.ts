@@ -6,12 +6,20 @@ import {
   addTypeTemplate,
   defineNuxtModule,
   addComponentsDir,
-  addServerHandler
+  addServerHandler,
 } from '@nuxt/kit';
-import {join, relative} from 'pathe';
-import type {Permission} from './runtime/types';
-import {PermissionId} from './runtime/permissions';
-import {object, string, number, array, mixed} from 'yup';
+import {
+  join, relative,
+} from 'pathe';
+import type {
+  Permission,
+} from './runtime/types';
+import {
+  PermissionId,
+} from './runtime/permissions';
+import {
+  object, string, number, array, mixed,
+} from 'yup';
 
 export type ModuleOptions = {
   /**
@@ -70,13 +78,11 @@ const optionsValidator = object().shape({
   databaseHandler: string().nullable().default(null),
   tokenCookieName: string().required('Token cookie name is required').default('antt'),
   tenantIdCookieName: string().required('TenantId cookie name is required').default('antten'),
-  permissions: array().of(
-    object().shape({
-      id: string().required(),
-      name: string().required(),
-    })
-  ).default([]),
-  appHandlerFactoryPath: string().required('App handler factory path is required')
+  permissions: array().of(object().shape({
+    id: string().required(),
+    name: string().required(),
+  })).default([]),
+  appHandlerFactoryPath: string().required('App handler factory path is required'),
 });
 
 // https://github.com/nuxt/content/blob/main/src/module.ts
@@ -109,50 +115,57 @@ export default defineNuxtModule<ModuleOptions>({
       throw new Error(`Invalid options for authorization-module:\n${e.message}`);
     }
 
-    const _options = await optionsValidator.cast(options, {stripUnknown: true});
+    const _options = await optionsValidator.cast(options, {
+      stripUnknown: true,
+    });
 
     await installModule('@pinia/nuxt');
 
-    const {resolve} = createResolver(import.meta.url);
+    const {
+      resolve,
+    } = createResolver(import.meta.url);
     const runtimeDir = resolve('runtime');
     const typesBuildDir = join(nuxt.options.buildDir, 'types');
 
     nuxt.options.build.transpile.push(runtimeDir);
-    nuxt.options.alias['#authorization-module'] = resolve(runtimeDir, 'server');
+    // nuxt.options.alias['#authorization-module'] = resolve(runtimeDir, 'server');
 
     nuxt.options.runtimeConfig.authorizationModule = {
       ..._options,
-      permissions: [..._options.permissions, ...[
-        {
-          id: PermissionId.CAN_BAN_AUTHORIZATION,
-          name: 'Can ban authorization'
-        },
-        {
-          id: PermissionId.CAN_UNBAN_AUTHORIZATION,
-          name: 'Can unban authorization'
-        },
-        {
-          id: PermissionId.CAN_UPDATE_ROLE,
-          name: 'Can update role'
-        },
-        {
-          id: PermissionId.CAN_DELETE_ROLE,
-          name: 'Can delete role'
-        },
-        {
-          id: PermissionId.CAN_CREATE_ROLE,
-          name: 'Can create role'
-        },
-        {
-          id: PermissionId.CAN_READ_ROLE,
-          name: 'Can read role'
-        }
-      ]]
+      permissions: [
+        ..._options.permissions,
+        ...[
+          {
+            id: PermissionId.CAN_BAN_AUTHORIZATION,
+            name: 'Can ban authorization',
+          },
+          {
+            id: PermissionId.CAN_UNBAN_AUTHORIZATION,
+            name: 'Can unban authorization',
+          },
+          {
+            id: PermissionId.CAN_UPDATE_ROLE,
+            name: 'Can update role',
+          },
+          {
+            id: PermissionId.CAN_DELETE_ROLE,
+            name: 'Can delete role',
+          },
+          {
+            id: PermissionId.CAN_CREATE_ROLE,
+            name: 'Can create role',
+          },
+          {
+            id: PermissionId.CAN_READ_ROLE,
+            name: 'Can read role',
+          },
+        ],
+      ],
     };
 
     nuxt.options.runtimeConfig.public.authorizationModule = {
       tokenCookieName: _options.tokenCookieName,
-      tenantIdCookieName: _options.tenantIdCookieName
+      tenantIdCookieName: _options.tenantIdCookieName,
     };
 
     // nuxt.hook('modules:done', async () => {
@@ -187,8 +200,8 @@ export default defineNuxtModule<ModuleOptions>({
         "declare module '#authorization-module-database-handler' {",
         `  const default: typeof import("${relative(typesBuildDir, databaseHandlerPath || '')}")['default']`,
         '}',
-        'export {}'
-      ].join('\n')
+        'export {}',
+      ].join('\n'),
     });
 
     const template = addTypeTemplate({
@@ -206,23 +219,27 @@ export default defineNuxtModule<ModuleOptions>({
         // "		'authorizationModule:register-permissions': () => void | Promise<void>",
         // "	}",
         // "}",
-        'export {}'
+        'export {}',
       ].join('\n'),
     });
 
     nuxt.hook('prepare:types', (options) => {
       if (databaseHandlerPath) {
-        options.references.push({path: databaseHandlerTemplate.dst});
+        options.references.push({
+          path: databaseHandlerTemplate.dst,
+        });
       }
 
-      options.references.push({path: template.dst});
+      options.references.push({
+        path: template.dst,
+      });
     });
 
     await addComponentsDir({
       path: resolve(runtimeDir, 'components'),
       pathPrefix: false,
       prefix: 'AuthorizationModule',
-      global: true
+      global: true,
     });
 
     if (_options.databaseHandler) {
@@ -230,45 +247,45 @@ export default defineNuxtModule<ModuleOptions>({
         path: resolve(runtimeDir, 'maybe-components'),
         pathPrefix: false,
         prefix: 'AuthorizationModule',
-        global: true
+        global: true,
       });
 
       // TODO:: Test why this make problems on using this module in an other module
       addServerHandler({
         route: '/api/authorization-module/maybe-components/ban-authorization-button/change-ban-status',
         method: 'post',
-        handler: resolve(runtimeDir, 'server', 'api', 'maybe-components', 'ban-authorization-button', 'change-ban-status.post')
+        handler: resolve(runtimeDir, 'server', 'api', 'maybe-components', 'ban-authorization-button', 'change-ban-status.post'),
       });
 
       addServerHandler({
         route: '/api/authorization-module/stores/role-input',
         method: 'get',
-        handler: resolve(runtimeDir, 'server', 'api', 'stores', 'role-input', 'index.get')
+        handler: resolve(runtimeDir, 'server', 'api', 'stores', 'role-input', 'index.get'),
       });
 
       // Role crud api endpoints
       addServerHandler({
         route: '/api/authorization-module/components/role-crud/role-table',
         method: 'get',
-        handler: resolve(runtimeDir, 'server', 'api', 'components', 'role-crud', 'role-table', 'index.get')
+        handler: resolve(runtimeDir, 'server', 'api', 'components', 'role-crud', 'role-table', 'index.get'),
       });
 
       addServerHandler({
         route: '/api/authorization-module/stores/role-crud/:roleId',
         method: 'get',
-        handler: resolve(runtimeDir, 'server', 'api', 'stores', 'role-crud', '[roleId].get')
+        handler: resolve(runtimeDir, 'server', 'api', 'stores', 'role-crud', '[roleId].get'),
       });
 
       addServerHandler({
         route: '/api/authorization-module/stores/role-crud',
         method: 'post',
-        handler: resolve(runtimeDir, 'server', 'api', 'stores', 'role-crud', 'index.post')
+        handler: resolve(runtimeDir, 'server', 'api', 'stores', 'role-crud', 'index.post'),
       });
 
       addServerHandler({
         route: '/api/authorization-module/stores/role-crud/:roleId',
         method: 'delete',
-        handler: resolve(runtimeDir, 'server', 'api', 'stores', 'role-crud', '[roleId].delete')
+        handler: resolve(runtimeDir, 'server', 'api', 'stores', 'role-crud', '[roleId].delete'),
       });
     }
 
@@ -276,21 +293,21 @@ export default defineNuxtModule<ModuleOptions>({
     addImports({
       name: 'default',
       as: 'appHandlerFactory',
-      from: resolve(nuxt.options.rootDir, _options.appHandlerFactoryPath)
+      from: resolve(nuxt.options.rootDir, _options.appHandlerFactoryPath),
     });
 
     // TODO:: only register in dev mode!
     addServerHandler({
       route: '/api/authorization-module/dev/jwt-form/create-jwt',
       method: 'post',
-      handler: resolve(runtimeDir, 'server', 'api', 'dev', 'jwt-form', 'create-jwt.post')
+      handler: resolve(runtimeDir, 'server', 'api', 'dev', 'jwt-form', 'create-jwt.post'),
     });
 
     // TODO:: only register in dev mode!
     addServerHandler({
       route: '/api/authorization-module/dev/jwt-form/app-data',
       method: 'get',
-      handler: resolve(runtimeDir, 'server', 'api', 'dev', 'jwt-form', 'app-data.get')
+      handler: resolve(runtimeDir, 'server', 'api', 'dev', 'jwt-form', 'app-data.get'),
     });
-  }
+  },
 });

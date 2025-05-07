@@ -1,14 +1,29 @@
 import defineDatabaseHandler from '#authorization-module-database-handler';
-import {createError, defineEventHandler, readBody} from '#imports';
-import {type DatabaseHandler} from '../../../databaseHandler';
-import {PermissionId} from '../../../../permissions';
-import {isLoggedInHandler} from '../../../handlers';
-import {useEventReader} from '../../../utils';
-import {object, string} from 'yup';
+import {
+  createError, defineEventHandler, readBody,
+} from '#imports';
+import {
+  type DatabaseHandler,
+} from '../../../databaseHandler';
+import {
+  PermissionId,
+} from '../../../../permissions';
+import {
+  isLoggedInHandler,
+} from '../../../handlers';
+import {
+  useEventReader,
+} from '../../../utils';
+import {
+  object, string,
+} from 'yup';
 
 const requestSchema = object({
   authorizationId: string().required(),
-  action: string().oneOf(['ban', 'unban']).required(),
+  action: string().oneOf([
+    'ban',
+    'unban',
+  ]).required(),
   tenantId: string().nullable(),
 });
 
@@ -20,7 +35,7 @@ export default defineEventHandler(async (event) => {
   if (!guard.hasPermissionTo(body.action === 'ban' ? PermissionId.CAN_BAN_AUTHORIZATION : PermissionId.CAN_UNBAN_AUTHORIZATION)) {
     throw createError({
       statusCode: 403,
-      statusMessage: 'Forbidden'
+      statusMessage: 'Forbidden',
     });
   }
 
@@ -34,7 +49,7 @@ export default defineEventHandler(async (event) => {
 
   if (!authorization) {
     return {
-      notFound: true
+      notFound: true,
     };
   }
 
@@ -44,6 +59,6 @@ export default defineEventHandler(async (event) => {
 
   return {
     _id: authorization._id,
-    isBanned: authorization.isBanned
+    isBanned: authorization.isBanned,
   };
 });

@@ -1,16 +1,24 @@
-import {decodeJwt} from 'jose';
-import {Guard} from '../guard';
-import type {JsonWebToken} from '../types';
-import {refreshCookie, useCookie, useRuntimeConfig, computed} from '#imports';
+import {
+  decodeJwt,
+} from 'jose';
+import {
+  Guard,
+} from '../guard';
+import type {
+  JsonWebToken,
+} from '../types';
+import {
+  refreshCookie, useCookie, useRuntimeConfig, computed,
+} from '#imports';
 
 export const useGuard = () => {
   const {
     tokenCookieName,
-    tenantIdCookieName
+    tenantIdCookieName,
   } = useRuntimeConfig().public.authorizationModule;
   const rawToken = useCookie(tokenCookieName);
   const _tenantId = useCookie<string | null>(tenantIdCookieName, {
-    default: () => null
+    default: () => null,
   });
   const token = computed({
     get(): JsonWebToken | null {
@@ -20,7 +28,7 @@ export const useGuard = () => {
     set() {
       throw new Error('Logic Error: Do not set the token directly. Use the logout method instead ' +
         'or make a login requests and call the refresh function afterwards.');
-    }
+    },
   });
 
   // TODO:: validate token content with yup
@@ -58,6 +66,6 @@ export const useGuard = () => {
     },
     getTenantId(): string | null {
       return _tenantId.value;
-    }
+    },
   };
 };

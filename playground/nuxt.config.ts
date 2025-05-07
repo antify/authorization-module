@@ -1,17 +1,21 @@
-import {PermissionId} from './glue/permissions';
-import type {Permission} from '#authorization-module/types';
+import {
+  PermissionId,
+} from './glue/permissions';
+import type {
+  Permission,
+} from '#authorization-module';
 
 export default defineNuxtConfig({
   ssr: false,
 
   imports: {
-    autoImport: false
+    autoImport: false,
   },
 
   modules: [
     '@antify/ui-module',
     '@antify/database-module',
-    '../src/module'
+    '../src/module',
   ],
 
   authorizationModule: {
@@ -21,31 +25,39 @@ export default defineNuxtConfig({
     permissions: [
       {
         id: PermissionId.CAN_READ_SECRET_DATA,
-        name: 'Can read secret data in playground'
-      }
+        name: 'Can read secret data in playground',
+      },
     ],
+  },
+
+  hooks: {
+    'authorization-module:add-permissions': () => {
+      return [
+        {
+          id: 'CAN_READ_ANOTHER_SECRET_DATA',
+          name: 'Can read another secret data',
+        },
+      ] as Permission[];
+    },
+  },
+
+  databaseModule: {
+    configPath: './database.config.ts',
   },
 
   app: {
     pageTransition: {
       name: 'fade',
-      mode: 'out-in'
+      mode: 'out-in',
     },
     layoutTransition: {
       name: 'fade',
-      mode: 'out-in'
-    }
+      mode: 'out-in',
+    },
   },
 
-  hooks: {
-    'authorization-module:add-permissions': () => {
-      return [{
-        id: 'CAN_READ_ANOTHER_SECRET_DATA',
-        name: 'Can read another secret data',
-      }] as Permission[];
-    }
+  devtools: {
+    enabled: true,
   },
-
-  devtools: {enabled: true},
-  compatibilityDate: '2024-07-29'
+  compatibilityDate: '2024-07-29',
 });

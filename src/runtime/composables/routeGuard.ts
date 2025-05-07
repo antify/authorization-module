@@ -26,10 +26,10 @@ import {
  *
  * @param permissions => Permissions required to access the page
  */
-export const useRouteGuard = (
-  permissions?: string[] | string
-) => {
-  const {$uiModule} = useNuxtApp();
+export const useRouteGuard = (permissions?: string[] | string) => {
+  const {
+    $uiModule,
+  } = useNuxtApp();
   const unauthorizedMessage = 'Unauthorized - Configure a loginPageRoute in app handler \nto automatically redirect unauthorized users to login page.';
   const jailMessage = 'Banned - Configure a jailPageRoute in app handler \nto automatically redirect banned users to jail page.';
   const invalidPermissionsMessage = 'Unauthorized - You do not have the required permissions to access this page.\nPlease contact your administrator.';
@@ -52,7 +52,7 @@ export const useRouteGuard = (
     // On initial page load
     return abortNavigation({
       statusCode: 401,
-      message: unauthorizedMessage
+      message: unauthorizedMessage,
     });
   }
 
@@ -72,7 +72,7 @@ export const useRouteGuard = (
     // On initial page load
     return abortNavigation({
       statusCode: 403,
-      message: jailMessage
+      message: jailMessage,
     });
   }
 
@@ -84,7 +84,7 @@ export const useRouteGuard = (
     // On initial page load
     return abortNavigation({
       statusCode: 403,
-      message: invalidPermissionsMessage
+      message: invalidPermissionsMessage,
     });
   }
 };

@@ -1,4 +1,6 @@
-import type {JsonWebToken} from './types';
+import type {
+  JsonWebToken,
+} from './types';
 
 /**
  * Using one guard for client and server side to ensure the same logic is used.
@@ -6,7 +8,7 @@ import type {JsonWebToken} from './types';
 export class Guard {
   constructor(
     protected token: JsonWebToken | null,
-    protected tenantId: string | null
+    protected tenantId: string | null,
   ) {
   }
 
@@ -76,15 +78,9 @@ export class Guard {
     }
 
     if (Array.isArray(permission)) {
-      return (this.token?.permissions || []).some((permissionItem) =>
-        permission.some(
-          (permissionToFind) => permissionToFind === permissionItem
-        )
-      );
+      return (this.token?.permissions || []).some((permissionItem) => permission.some((permissionToFind) => permissionToFind === permissionItem));
     }
 
-    return (this.token?.permissions || []).some(
-      (permissionItem) => permissionItem === permission
-    );
+    return (this.token?.permissions || []).some((permissionItem) => permissionItem === permission);
   }
 }

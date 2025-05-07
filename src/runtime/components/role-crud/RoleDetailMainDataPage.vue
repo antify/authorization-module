@@ -1,16 +1,27 @@
 <script setup lang="ts">
-import type {ResponsePermissionType} from '~/src/runtime/glue/stores/role-crud/[roleId].get';
-import {useRoleDetailStore} from '../../stores/roleCrud';
-import {roleServerSchema} from '../../glue/stores/role-crud';
-import {computed, onMounted, useUiClient} from '#imports';
-import {Schema} from 'yup';
+import type {
+  ResponsePermissionType,
+} from '~/src/runtime/glue/stores/role-crud/[roleId].get';
+import {
+  useRoleDetailStore,
+} from '../../stores/roleCrud';
+import {
+  roleServerSchema,
+} from '../../glue/stores/role-crud';
+import {
+  computed, onMounted, useUiClient,
+} from '#imports';
+import {
+  Schema,
+} from 'yup';
 
 const permissionDisableTooltip = 'Admin role has all permissions. Mark this role as non-admin to select permissions manually.';
 const roleDetailStore = useRoleDetailStore();
-const name = useUiClient().utils.useFormField(async () =>
-  await (roleServerSchema.fields.name as Schema)
-    .validate(roleDetailStore.entity.name, {strict: true, abortEarly: false})
-);
+const name = useUiClient().utils.useFormField(async () => await (roleServerSchema.fields.name as Schema)
+  .validate(roleDetailStore.entity.name, {
+    strict: true,
+    abortEarly: false,
+  }));
 
 onMounted(() => {
   roleDetailStore.forms.mainData.push(name);
@@ -20,7 +31,7 @@ const appsPermissionsCheckboxes = computed(() => {
   return roleDetailStore.allPermissions
     .map((item: ResponsePermissionType) => ({
       value: item.id,
-      label: item.name
+      label: item.name,
     }));
 });
 
@@ -36,7 +47,8 @@ function unselectAll() {
 <template>
   <form
     class="p-2.5"
-    @submit.prevent="roleDetailStore.save">
+    @submit.prevent="roleDetailStore.save"
+  >
     <AntCard class="w-full">
       <AntFormGroup>
         <AntFormGroup direction="row">

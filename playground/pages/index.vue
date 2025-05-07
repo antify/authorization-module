@@ -1,31 +1,41 @@
 <script lang="ts" setup>
-import {PermissionId} from '~/glue/permissions';
+import {
+  PermissionId,
+} from '../glue/permissions';
 import {
   ref,
   useGuard,
   useFetch,
-  useAuthResponseErrorHandler
+  useAuthResponseErrorHandler,
 } from '#imports';
-import {TagState, AntTagSize} from '#ui-module';
+import {
+  TagState, AntTagSize,
+} from '#ui-module';
 
 const guard = ref(useGuard());
 const statusCode = ref<null | number>(null);
 const handleResponseErrors = ref(false);
-const {execute, data} = useFetch('/api/pages/get-secret-data', {
+const {
+  execute, data,
+} = useFetch('/api/pages/get-secret-data', {
   immediate: false,
-  onResponse({response}) {
+  onResponse({
+    response,
+  }) {
     statusCode.value = response.status;
 
     if (handleResponseErrors.value) {
       useAuthResponseErrorHandler(response);
     }
-  }
+  },
 });
 </script>
 
 <template>
   <div class="flex flex-col	gap-5 p-2.5 bg-white h-full overflow-y-auto">
-    <div class="text-3xl">Authorization module playground</div>
+    <div class="text-3xl">
+      Authorization module playground
+    </div>
     <div>
       With this page, you can test if the guard work client- and server side correctly. <br>
     </div>
@@ -71,7 +81,9 @@ const {execute, data} = useFetch('/api/pages/get-secret-data', {
           />
 
           <AntField label="Do a protected request">
-            <AntActionButton @click="() => execute()">Submit request</AntActionButton>
+            <AntActionButton @click="() => execute()">
+              Submit request
+            </AntActionButton>
           </AntField>
 
           <AntField

@@ -4,15 +4,19 @@ import {
   onMounted,
   useAuthResponseErrorHandler,
   useGuard,
-  useUiClient
+  useUiClient,
 } from '#imports';
 import {
   useRoleRoutingStore,
   useRoleDetailStore,
-  useDeleteRoleStore
+  useDeleteRoleStore,
 } from '../../stores/roleCrud';
-import {PermissionId} from '../../permissions';
-import {TabItemState} from '#ui-module';
+import {
+  PermissionId,
+} from '../../permissions';
+import {
+  TabItemState,
+} from '#ui-module';
 
 const routingStore = useRoleRoutingStore();
 const detailStore = useRoleDetailStore();
@@ -25,8 +29,8 @@ const tabItems = computed(() => ([
     id: 'main-data',
     label: 'Main data',
     to: routingStore.routing.getDetailRoute(roleId),
-    state: detailStore.forms.mainData.some(field => field.errors.length > 0) ? TabItemState.danger : TabItemState.base
-  }
+    state: detailStore.forms.mainData.some(field => field.errors.length > 0) ? TabItemState.danger : TabItemState.base,
+  },
 ]));
 
 onMounted(() => {

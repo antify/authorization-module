@@ -1,41 +1,50 @@
 <script lang='ts' setup>
-import type {JsonWebToken, Permission} from '../../types';
-import {format, getUnixTime} from 'date-fns';
+import type {
+  JsonWebToken, Permission,
+} from '../../types';
+import {
+  format, getUnixTime,
+} from 'date-fns';
 import {
   useGuard,
   useFetch,
-  useUiClient,
   ref,
   computed,
   watch,
-  onMounted
+  onMounted,
 } from '#imports';
-import {AntDateInputTypes} from '#ui-module';
+import {
+  AntDateInputTypes,
+} from '#ui-module';
 
 const props = withDefaults(defineProps<{
-  open: boolean
-  defaultToken?: Partial<JsonWebToken>
+  open: boolean;
+  defaultToken?: Partial<JsonWebToken>;
 }>(), {
-  defaultToken: () => ({})
+  defaultToken: () => ({}),
 });
-const emit = defineEmits(['update:open']);
+const emit = defineEmits([
+  'update:open',
+]);
 const guard = useGuard();
 const token = ref<JsonWebToken>(createToken());
 
-const {status, execute} = useFetch(
+const {
+  status, execute,
+} = useFetch(
   '/api/authorization-module/dev/jwt-form/create-jwt',
   {
     method: 'POST',
     body: token,
     immediate: false,
-    watch: false
-  }
+    watch: false,
+  },
 );
 const {
   status: statusGetAppData,
-  data: appData
+  data: appData,
 } = useFetch('/api/authorization-module/dev/jwt-form/app-data', {
-  method: 'get'
+  method: 'get',
 });
 const allPermissions = computed(() => {
   return appData.value?.permissions || [];
@@ -47,7 +56,7 @@ const _open = computed({
   },
   set(val) {
     emit('update:open', val);
-  }
+  },
 });
 const iat = computed({
   get() {
@@ -60,7 +69,7 @@ const iat = computed({
   },
   set(val) {
     token.value.iat = getUnixTime(new Date(val));
-  }
+  },
 });
 const exp = computed({
   get() {
@@ -73,13 +82,13 @@ const exp = computed({
   },
   set(val) {
     token.value.exp = getUnixTime(new Date(val));
-  }
+  },
 });
 const permissions = computed(() => {
   return allPermissions.value
     .map((item: Permission) => ({
       value: item.id,
-      label: item.name
+      label: item.name,
     }));
 });
 
@@ -119,9 +128,9 @@ function createToken(data: Partial<JsonWebToken> = {}): JsonWebToken {
       tenantId: null,
       isBanned: false,
       isAdmin: false,
-      permissions: []
+      permissions: [],
     },
-    ...data
+    ...data,
   };
 }
 

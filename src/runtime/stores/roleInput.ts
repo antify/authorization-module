@@ -1,14 +1,19 @@
 import {
+  watch,
   useFetch,
-  showError
+  showError,
+  useAuthResponseErrorHandler,
 } from '#imports';
-import {defineStore} from 'pinia';
+import {
+  defineStore,
+} from 'pinia';
 
 export const useRoleInputStore = defineStore('authorization-module-role-input', () => {
   const {
     data,
     execute,
-    status
+    status,
+    error,
   } = useFetch(
     '/api/authorization-module/stores/role-input',
     {
@@ -16,20 +21,21 @@ export const useRoleInputStore = defineStore('authorization-module-role-input', 
       immediate: false,
       dedupe: 'defer',
       headers: {
-        Accept: 'application/json'
+        Accept: 'application/json',
       },
-      onResponse({response}) {
-        // TODO:: remove if https://github.com/antify/ui-module/issues/45 is implemented
-        if (response.status === 500) {
-          showError(response._data);
-        }
-      }
-    }
+      onResponse({
+        response,
+      }) {
+        useAuthResponseErrorHandler(response);
+      },
+    },
   );
+
+  watch(error, (e) => showError(e));
 
   return {
     data,
     execute,
-    status
+    status,
   };
 });
