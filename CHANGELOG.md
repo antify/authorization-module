@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.1](https://github.com/antify/authorization-module/compare/v3.1.0...v3.1.1) (2025-05-07)
+
+
+### Bug Fixes
+
+* Fix type exporting ([7157e06](https://github.com/antify/authorization-module/commit/7157e06d374b9b4e3fe76701b7a7d2aeabab3833))
+
 ## [3.1.0](https://github.com/antify/authorization-module/compare/v3.0.0...v3.1.0) (2025-05-07)
 
 ### [2.3.3](https://github.com/antify/authorization-module/compare/v2.3.2...v2.3.3) (2025-04-08)
