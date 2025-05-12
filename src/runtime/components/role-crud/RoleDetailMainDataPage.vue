@@ -83,7 +83,7 @@ function unselectAll() {
                 :disabled="roleDetailStore.entity.isAdmin"
                 @click="selectAll"
               >
-                Select all
+                Alle auswählen
 
                 <template
                   v-if="roleDetailStore.entity.isAdmin"
@@ -99,7 +99,7 @@ function unselectAll() {
                 :disabled="roleDetailStore.entity.isAdmin"
                 @click="unselectAll"
               >
-                Unselect all
+                Alle abwählen
 
                 <template
                   v-if="roleDetailStore.entity.isAdmin"

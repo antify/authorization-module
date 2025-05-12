@@ -11,6 +11,9 @@ import {
 import {
   TagState, AntTagSize,
 } from '#ui-module';
+import {
+  AntActionButton,
+} from '@antify/default-template';
 
 const guard = ref(useGuard());
 const statusCode = ref<null | number>(null);

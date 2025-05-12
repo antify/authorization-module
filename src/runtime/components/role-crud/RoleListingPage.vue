@@ -14,6 +14,11 @@ import {
 import {
   PermissionId,
 } from '../../permissions';
+import {
+  AntCrud,
+  AntCrudTableFilter,
+  AntCrudTableNav,
+} from '@antify/default-template';
 
 const props = defineProps<{
   detailRouteName: string;

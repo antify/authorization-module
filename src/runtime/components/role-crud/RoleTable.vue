@@ -28,6 +28,11 @@ import {
 import {
   type RoleListingData,
 } from '../../glue/components/role/roleTable';
+import {
+  AntDeleteDialog,
+  AntEditButton,
+  AntDeleteButton,
+} from '@antify/default-template';
 
 defineProps<{
   showLightVersion: boolean;

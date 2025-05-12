@@ -10,6 +10,9 @@ import {
 import {
   Grouped,
 } from '#ui-module';
+import {
+  AntActionButton,
+} from '@antify/default-template';
 
 const guard = useGuard();
 const {

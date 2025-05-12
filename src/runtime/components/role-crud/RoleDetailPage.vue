@@ -2,9 +2,7 @@
 import {
   computed,
   onMounted,
-  useAuthResponseErrorHandler,
   useGuard,
-  useUiClient,
 } from '#imports';
 import {
   useRoleRoutingStore,
@@ -17,6 +15,11 @@ import {
 import {
   TabItemState,
 } from '#ui-module';
+import {
+  AntCrudDetail,
+  AntCrudDetailNav,
+  AntCrudDetailActions,
+} from '@antify/default-template';
 
 const routingStore = useRoleRoutingStore();
 const detailStore = useRoleDetailStore();
@@ -27,7 +30,8 @@ const tabItems = computed(() => ([
   {
     // TODO:: remove id if @antify/ui-module #11 is solved
     id: 'main-data',
-    label: 'Main data',
+    // TODO:: translate
+    label: 'Stammdaten',
     to: routingStore.routing.getDetailRoute(roleId),
     state: detailStore.forms.mainData.some(field => field.errors.length > 0) ? TabItemState.danger : TabItemState.base,
   },

@@ -19,6 +19,9 @@ import {
 import {
   State,
 } from '#ui-module';
+import {
+  AntActionButton,
+} from '@antify/default-template';
 
 const emit = defineEmits([
   'update:modelValue',
