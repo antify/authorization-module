@@ -170,15 +170,16 @@ export default defineNuxtModule<ModuleOptions>({
 
     nuxt.hook('modules:done', async () => {
       // TODO:: type hook
-      // @ts-ignore
-    	const permissions = await nuxt.callHook('authorization-module:add-permissions') as Permission[] || [];
+      const permissions: Permission[] = [];
+      //
+      await nuxt.callHook('authorization-module:add-permissions', permissions);
 
       //@ts-ignore
-    	nuxt.options.runtimeConfig.authorizationModule.permissions = [
+      nuxt.options.runtimeConfig.authorizationModule.permissions = [
         // @ts-ignore
-    		...nuxt.options.runtimeConfig.authorizationModule.permissions,
-    		...permissions
-    	];
+        ...nuxt.options.runtimeConfig.authorizationModule.permissions,
+        ...permissions,
+      ];
     });
 
     const databaseHandlerPath = _options.databaseHandler ? resolve(nuxt.options.rootDir, _options.databaseHandler) : null;
