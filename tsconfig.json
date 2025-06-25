@@ -1,8 +1,12 @@
 {
   "extends": "./playground/.nuxt/tsconfig.json",
   "compilerOptions": {
-    "useUnknownInCatchVariables": false
+    "useUnknownInCatchVariables": false,
+    "types": ["@types/node"]
   },
+  "include": [
+    "types"
+  ],
   "exclude": [
     "dist",
     "playground"
