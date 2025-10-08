@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.3.0](https://github.com/antify/authorization-module/compare/v3.2.5...v3.3.0) (2025-10-08)
+
+
+### Features
+
+* Upgrade @antify/ui-module to 2.13.20 ([db7acea](https://github.com/antify/authorization-module/commit/db7aceaea20cf465ac09e443b5a3527f19238207))
+
 ### [3.2.5](https://github.com/antify/authorization-module/compare/v3.2.4...v3.2.5) (2025-09-10)
 
 ### 3.2.4 (2025-06-25)
