@@ -28,7 +28,7 @@
     "test": "vitest run"
   },
   "peerDependencies": {
-    "@antify/ui-module": "^2.13.13",
+    "@antify/ui-module": "^2.13.20",
     "@antify/default-template": "^0.0.16"
   },
   "dependencies": {

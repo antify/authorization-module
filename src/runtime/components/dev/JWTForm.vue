@@ -145,7 +145,7 @@ onMounted(() => setTokenValue());
 
 <template>
   <AntModal
-    v-model:open="_open"
+    v-if="_open"
     title="Generate JWT"
     fullscreen
   >
