@@ -17,7 +17,7 @@ import {
   watch,
 } from '#imports';
 import {
-  AntTableRowTypes,
+  AntTableRowTypes, Size,
 } from '#ui-module';
 import {
   PermissionId,
@@ -34,9 +34,14 @@ import {
   AntDeleteButton,
 } from '@antify/default-template';
 
-defineProps<{
+withDefaults(defineProps<{
   showLightVersion: boolean;
-}>();
+  canUpdate?: boolean;
+  canDelete?: boolean;
+}>(), {
+  canUpdate: true,
+  canDelete: true,
+});
 
 const route = useRoute();
 const router = useRouter();
@@ -114,6 +119,19 @@ async function deleteEntity() {
     entityToDelete.value = null;
   }
 }
+
+const handleEditClick = (entity: {
+  _id: string;
+}) => {
+  if (!props.canUpdate) return;
+
+  const routeConfig = routingStore.routing.getDetailSubRoute(
+    entity._id,
+    'main-data',
+  );
+
+  router.push(routeConfig);
+};
 </script>
 
 <template>
@@ -131,14 +149,15 @@ async function deleteEntity() {
       >
         <AntEditButton
           icon-variant
-          :to="routingStore.routing.getDetailRoute(element._id)"
-          size="xs"
+          :can-edit="canUpdate"
+          @click="handleEditClick(element)"
+          :size="Size.xs"
         />
 
         <AntDeleteButton
           icon-variant
-          size="xs"
-          :can-delete="guard.hasPermissionTo(PermissionId.CAN_DELETE_ROLE)"
+          :size="Size.xs"
+          :can-delete="canDelete"
           @click="() => openDeleteEntity(element)"
         />
       </div>

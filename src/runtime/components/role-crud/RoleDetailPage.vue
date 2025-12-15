@@ -21,6 +21,16 @@ import {
   AntCrudDetailActions,
 } from '@antify/default-template';
 
+withDefaults(defineProps<{
+  canCreate?: boolean;
+  canUpdate?: boolean;
+  canDelete?: boolean;
+}>(), {
+  canCreate: true,
+  canUpdate: true,
+  canDelete: true,
+});
+
 const routingStore = useRoleRoutingStore();
 const detailStore = useRoleDetailStore();
 const deleteStore = useDeleteRoleStore();
@@ -58,7 +68,7 @@ onMounted(() => {
         :get-entity-name="() => `${detailStore.entity.name}`"
         :delete-button-disabled="detailStore.formDisabled"
         :show-delete-button="!routingStore.routing.isCreatePage.value"
-        :can-delete="guard.hasPermissionTo(PermissionId.CAN_DELETE_ROLE)"
+        :can-delete="canDelete"
         @delete="() => deleteStore.execute(detailStore.entity._id as string)"
       />
     </template>
@@ -69,6 +79,7 @@ onMounted(() => {
       <AntCrudDetailActions
         :skeleton="detailStore.skeleton"
         :disabled="detailStore.formDisabled"
+        :can-save="canUpdate || canCreate"
         @back="() => routingStore.routing.goToListingPage()"
         @save="() => detailStore.save()"
         @save-and-new="() => detailStore.saveAndNew()"

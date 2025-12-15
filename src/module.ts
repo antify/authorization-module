@@ -128,7 +128,7 @@ export default defineNuxtModule<ModuleOptions>({
     const typesBuildDir = join(nuxt.options.buildDir, 'types');
 
     nuxt.options.build.transpile.push(runtimeDir);
-    // nuxt.options.alias['#authorization-module'] = resolve(runtimeDir, 'server');
+    nuxt.options.alias['#authorization-module'] = resolve(runtimeDir, 'server');
 
     nuxt.options.runtimeConfig.authorizationModule = {
       ..._options,
@@ -214,6 +214,7 @@ export default defineNuxtModule<ModuleOptions>({
         `  const isAuthorizedHandler: typeof import('${relative(typesBuildDir, join(runtimeDir, 'server', 'handlers'))}')['isAuthorizedHandler']`,
         `  const useEventReader: typeof import('${relative(typesBuildDir, join(runtimeDir, 'server', 'utils'))}')['useEventReader']`,
         `  export * from '${relative(typesBuildDir, join(runtimeDir, 'types'))}'`,
+        `  export * from '${relative(typesBuildDir, join(runtimeDir, 'index'))}'`,
         '}',
         // "declare module '@nuxt/schema' {",
         // "	export interface RuntimeNuxtHooks {",

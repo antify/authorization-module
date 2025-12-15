@@ -20,18 +20,24 @@ import {
   AntCrudTableNav,
 } from '@antify/default-template';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   detailRouteName: string;
   listingRouteName: string;
   getDetailRouteParams?: () => RouteParams;
   getListingRouteParams?: () => RouteParams;
   entityIdentifier?: string;
   createEntityIdentifier?: string;
-}>();
+  canCreate?: boolean;
+  canUpdate?: boolean;
+  canDelete?: boolean;
+}>(), {
+  canCreate: true,
+  canUpdate: true,
+  canDelete: true,
+});
 const routingStore = useRoleRoutingStore();
 const listingStore = useRoleListingStore();
 const detailStore = useRoleDetailStore();
-const guard = useGuard();
 
 routingStore.options = props;
 
@@ -47,7 +53,7 @@ function onCreate() {
       <AntCrudTableFilter
         :full-width="routingStore.routing.isListingPage.value"
         :skeleton="listingStore.skeleton"
-        :can-delete="guard.hasPermissionTo(PermissionId.CAN_DELETE_ROLE)"
+        :can-create="canCreate"
         :show-filter="false"
         @search="() => listingStore.refresh()"
         @create="onCreate"
@@ -55,7 +61,10 @@ function onCreate() {
     </template>
 
     <template #table-section>
-      <RoleTable :show-light-version="routingStore.routing.isDetailPage.value" />
+      <RoleTable
+        :can-update="canUpdate"
+        :can-delete="canDelete"
+        :show-light-version="routingStore.routing.isDetailPage.value" />
     </template>
 
     <template #table-nav-section>
