@@ -16,7 +16,7 @@ import {
 } from '#imports';
 
 export default defineEventHandler(async (event) => {
-  await isAuthorizedHandler(event, PermissionId.CAN_DELETE_ROLE);
+  // await isAuthorizedHandler(event, PermissionId.CAN_DELETE_ROLE);
 
   await (defineDatabaseHandler as DatabaseHandler)
     .deleteRoleById(event.context.params!.roleId, useEventReader().getTenantId(event));

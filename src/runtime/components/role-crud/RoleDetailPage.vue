@@ -10,32 +10,36 @@ import {
   useDeleteRoleStore,
 } from '../../stores/roleCrud';
 import {
-  PermissionId,
-} from '../../permissions';
-import {
-  TabItemState,
+  TabItemState, InputState, AntTooltip
 } from '#ui-module';
 import {
   AntCrudDetail,
   AntCrudDetailNav,
   AntCrudDetailActions,
+  AntSaveButton,
+  AntSaveAndNewButton
 } from '@antify/default-template';
 
 withDefaults(defineProps<{
   canCreate?: boolean;
   canUpdate?: boolean;
   canDelete?: boolean;
+  createTooltipMessage?: string;
+  updateTooltipMessage?: string;
+  deleteTooltipMessage?: string;
 }>(), {
   canCreate: true,
   canUpdate: true,
   canDelete: true,
+  createTooltipMessage: 'TOOLTIP_MOCK',
+  updateTooltipMessage: 'TOOLTIP_MOCK',
+  deleteTooltipMessage: 'TOOLTIP_MOCK',
 });
 
 const routingStore = useRoleRoutingStore();
 const detailStore = useRoleDetailStore();
 const deleteStore = useDeleteRoleStore();
 const roleId = routingStore.routing.getEntityId();
-const guard = useGuard();
 const tabItems = computed(() => ([
   {
     // TODO:: remove id if @antify/ui-module #11 is solved
@@ -76,6 +80,7 @@ onMounted(() => {
     <slot />
 
     <template #footer>
+
       <AntCrudDetailActions
         :skeleton="detailStore.skeleton"
         :disabled="detailStore.formDisabled"
@@ -83,7 +88,43 @@ onMounted(() => {
         @back="() => routingStore.routing.goToListingPage()"
         @save="() => detailStore.save()"
         @save-and-new="() => detailStore.saveAndNew()"
-      />
+      >
+        <template #buttons-right>
+          <AntTooltip :state="InputState.base">
+            <AntSaveAndNewButton
+              :skeleton="detailStore.skeleton"
+              :disabled="detailStore.formDisabled || !(canUpdate || canCreate)"
+              :can-save="canUpdate || canCreate"
+              @click="() => detailStore.saveAndNew()"
+            />
+            <template
+              v-if="!(canUpdate || canCreate)"
+              #content
+            >
+              <div>
+                {{ !canCreate ? createTooltipMessage : updateTooltipMessage }}
+              </div>
+            </template>
+          </AntTooltip>
+
+          <AntTooltip :state="InputState.base">
+            <AntSaveButton
+              :skeleton="detailStore.skeleton"
+              :disabled="detailStore.formDisabled || !(canUpdate || canCreate)"
+              :can-save="canUpdate || canCreate"
+              @click="() => detailStore.save()"
+            />
+            <template
+              v-if="!(canUpdate || canCreate)"
+              #content
+            >
+              <div>
+                {{ !canCreate ? createTooltipMessage : updateTooltipMessage }}
+              </div>
+            </template>
+          </AntTooltip>
+        </template>
+        </AntCrudDetailActions>
     </template>
   </AntCrudDetail>
 </template>

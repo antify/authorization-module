@@ -17,11 +17,8 @@ import {
   watch,
 } from '#imports';
 import {
-  AntTableRowTypes, Size,
+  AntTableRowTypes, Size, InputState, AntTooltip, AntTable,
 } from '#ui-module';
-import {
-  PermissionId,
-} from '../../permissions';
 import {
   type RoleClientType,
 } from '../../glue/stores/role-crud';
@@ -38,9 +35,13 @@ withDefaults(defineProps<{
   showLightVersion: boolean;
   canUpdate?: boolean;
   canDelete?: boolean;
+  updateTooltipMessage?: string;
+  deleteTooltipMessage?: string;
 }>(), {
   canUpdate: true,
   canDelete: true,
+  updateTooltipMessage: 'TOOLTIP_MOCK',
+  deleteTooltipMessage: 'TOOLTIP_MOCK',
 });
 
 const route = useRoute();
@@ -79,7 +80,6 @@ listingStore._refresh = fetch.refresh;
 listingStore.skeleton = true;
 
 const routingStore = useRoleRoutingStore();
-const guard = useGuard();
 const deleteDialogOpen = ref(false);
 const entityToDelete = ref<RoleClientType | null>(null);
 const tableHeaders = [
@@ -147,19 +147,41 @@ const handleEditClick = (entity: {
         v-if="header.identifier === 'actions'"
         class="flex justify-end gap-2.5"
       >
-        <AntEditButton
-          icon-variant
-          :can-edit="canUpdate"
-          @click="handleEditClick(element)"
-          :size="Size.xs"
-        />
+        <AntTooltip :state="InputState.base">
+          <AntEditButton
+            icon-variant
+            :size="Size.xs"
+            :disabled="!canUpdate"
+            @click="handleEditClick(element)"
+          />
 
-        <AntDeleteButton
-          icon-variant
-          :size="Size.xs"
-          :can-delete="canDelete"
-          @click="() => openDeleteEntity(element)"
-        />
+          <template
+            v-if="!canUpdate"
+            #content
+          >
+            <div>
+              {{ updateTooltipMessage }}
+            </div>
+          </template>
+        </AntTooltip>
+
+        <AntTooltip :state="InputState.base">
+          <AntDeleteButton
+            icon-variant
+            :size="Size.xs"
+            :disabled="!canDelete"
+            @click="() => openDeleteEntity(element)"
+          />
+
+          <template
+            v-if="!canDelete"
+            #content
+          >
+            <div>
+              {{ deleteTooltipMessage }}
+            </div>
+          </template>
+        </AntTooltip>
       </div>
     </template>
   </AntTable>

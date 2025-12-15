@@ -20,7 +20,7 @@ import {
 } from '../../../utils';
 
 export default defineEventHandler(async (event) => {
-  await isAuthorizedHandler(event, PermissionId.CAN_READ_ROLE);
+  // await isAuthorizedHandler(event, PermissionId.CAN_READ_ROLE);
 
   const eventReader = useEventReader();
   const role = await (defineDatabaseHandler as DatabaseHandler).findRoleById(

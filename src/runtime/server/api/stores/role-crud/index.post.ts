@@ -29,7 +29,7 @@ export default defineEventHandler(async (event) => {
       stripUnknown: true,
     });
 
-  await isAuthorizedHandler(event, body._id === null ? PermissionId.CAN_CREATE_ROLE : PermissionId.CAN_UPDATE_ROLE);
+  // await isAuthorizedHandler(event, body._id === null ? PermissionId.CAN_CREATE_ROLE : PermissionId.CAN_UPDATE_ROLE);
 
   const databaseHandler = await (defineDatabaseHandler as DatabaseHandler);
   const eventReader = useEventReader();

@@ -9,16 +9,14 @@ import type {
   RouteParams,
 } from '#vue-router';
 import {
-  useGuard,
-} from '#imports';
-import {
-  PermissionId,
-} from '../../permissions';
-import {
   AntCrud,
   AntCrudTableFilter,
   AntCrudTableNav,
+  AntCreateButton
 } from '@antify/default-template';
+import {
+  InputState, AntTooltip
+} from '#ui-module';
 
 const props = withDefaults(defineProps<{
   detailRouteName: string;
@@ -30,10 +28,16 @@ const props = withDefaults(defineProps<{
   canCreate?: boolean;
   canUpdate?: boolean;
   canDelete?: boolean;
+  createTooltipMessage?: string;
+  updateTooltipMessage?: string;
+  deleteTooltipMessage?: string;
 }>(), {
   canCreate: true,
   canUpdate: true,
   canDelete: true,
+  createTooltipMessage: 'TOOLTIP_MOCK',
+  updateTooltipMessage: 'TOOLTIP_MOCK',
+  deleteTooltipMessage: 'TOOLTIP_MOCK',
 });
 const routingStore = useRoleRoutingStore();
 const listingStore = useRoleListingStore();
@@ -57,13 +61,33 @@ function onCreate() {
         :show-filter="false"
         @search="() => listingStore.refresh()"
         @create="onCreate"
-      />
+      >
+      <template #buttons>
+        <AntTooltip :state="InputState.base">
+          <AntCreateButton
+            :skeleton="listingStore.skeleton"
+            :disabled="!canCreate"
+            @click="onCreate"
+          />
+          <template
+            v-if="!canCreate"
+            #content
+          >
+            <div>
+              {{ createTooltipMessage }}
+            </div>
+          </template>
+        </AntTooltip>
+      </template>
+      </AntCrudTableFilter>
     </template>
 
     <template #table-section>
       <RoleTable
         :can-update="canUpdate"
+        :update-tooltip-message="updateTooltipMessage"
         :can-delete="canDelete"
+        :delete-tooltip-message="deleteTooltipMessage"
         :show-light-version="routingStore.routing.isDetailPage.value" />
     </template>
 
