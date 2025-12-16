@@ -124,9 +124,9 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.runtimeConfig.authorizationModule = {
       ..._options,
       // TODO - i was commited it - because it's not influence on our count of permissions - or dublicated something
-      // permissions: [
-      //   ..._options.permissions,
-      // ],
+      permissions: [
+        ..._options.permissions,
+      ],
 
     };
 
@@ -135,17 +135,20 @@ export default defineNuxtModule<ModuleOptions>({
       tenantIdCookieName: _options.tenantIdCookieName,
     };
 
+    interface AuthRuntimeConfig {
+      permissions?: Permission[];
+    }
+
     nuxt.hook('modules:done', async () => {
-      // TODO:: type hook
-      let permissions: Permission[] = [];
+      let permissionsFromHooks: Permission[] = [];
+      permissionsFromHooks = await nuxt.callHook('authorization-module:add-permissions', permissionsFromHooks);
+      const authConfig = nuxt.options.runtimeConfig.authorizationModule as AuthRuntimeConfig;
+      const currentPermissions = (authConfig.permissions || []) as Permission[];
+      const permissionsToAdd = (permissionsFromHooks || []) as Permission[];
 
-      permissions = await nuxt.callHook('authorization-module:add-permissions', permissions);
-
-      //@ts-ignore
-      nuxt.options.runtimeConfig.authorizationModule.permissions = [
-        // @ts-ignore
-        ...nuxt.options.runtimeConfig.authorizationModule.permissions,
-        ...permissions,
+      authConfig.permissions = [
+        ...currentPermissions,
+        ...permissionsToAdd,
       ];
     });
 
