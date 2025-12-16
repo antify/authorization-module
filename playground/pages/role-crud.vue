@@ -21,6 +21,8 @@ definePageMeta({
 
 const guard = useGuard();
 const canCreate = computed(() => guard.hasPermissionTo(PermissionId.CAN_CREATE_ROLE));
+const canUpdate = computed(() => guard.hasPermissionTo(PermissionId.CAN_UPDATE_ROLE));
+const canDelete = computed(() => guard.hasPermissionTo(PermissionId.CAN_DELETE_ROLE));
 
 </script>
 
@@ -32,11 +34,11 @@ const canCreate = computed(() => guard.hasPermissionTo(PermissionId.CAN_CREATE_R
     :get-detail-route="(roleId) => ({ name: detailRouteName, params: { roleId } })"
     :get-listing-route="() => ({ name: listingRouteName })"
     :can-create = "canCreate"
-    :can-update = "true"
-    :can-delete = "true"
-    :create-tooltip-message = "'Not Enough Permissions for using'"
-    :update-tooltip-message = "'Not Enough Permissions for using'"
-    :delete-tooltip-message = "'Not Enough Permissions for using'"
+    :can-update = "canUpdate"
+    :can-delete = "canDelete"
+    :create-tooltip-message = "'Not Enough Permissions for Create'"
+    :update-tooltip-message = "'Not Enough Permissions for Update'"
+    :delete-tooltip-message = "'Not Enough Permissions for Delete'"
   >
     <NuxtPage />
   </AuthorizationModuleRoleListingPage>
