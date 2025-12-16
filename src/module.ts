@@ -14,9 +14,7 @@ import {
 import type {
   Permission,
 } from './runtime/types';
-import {
-  PermissionId,
-} from './runtime/permissions';
+
 import {
   object, string, number, array, mixed,
 } from 'yup';
@@ -56,20 +54,13 @@ export type ModuleOptions = {
   tenantIdCookieName?: string;
 
   /**
-   * List of permissions, that are available in the system.
-   * This list can get extended by other modules.
-   *
-   * It is required to show it in role CRUD.
-   */
-  permissions?: Permission[];
-
-  /**
    * Client side factory to create app handlers for different app contexts.
    * With an app handler, you can manage what should happen if a user has no permissions or is unauthorized.
    *
    * Must return a defineAppHandlerFactory() function.
    */
   appHandlerFactoryPath: string;
+  permissions?: Permission[];
 };
 
 const optionsValidator = object().shape({
@@ -132,35 +123,11 @@ export default defineNuxtModule<ModuleOptions>({
 
     nuxt.options.runtimeConfig.authorizationModule = {
       ..._options,
-      permissions: [
-        ..._options.permissions,
-        ...[
-          {
-            id: PermissionId.CAN_BAN_AUTHORIZATION,
-            name: 'Can ban authorization',
-          },
-          {
-            id: PermissionId.CAN_UNBAN_AUTHORIZATION,
-            name: 'Can unban authorization',
-          },
-          {
-            id: PermissionId.CAN_UPDATE_ROLE,
-            name: 'Can update role',
-          },
-          {
-            id: PermissionId.CAN_DELETE_ROLE,
-            name: 'Can delete role',
-          },
-          {
-            id: PermissionId.CAN_CREATE_ROLE,
-            name: 'Can create role',
-          },
-          {
-            id: PermissionId.CAN_READ_ROLE,
-            name: 'Can read role',
-          },
-        ],
-      ],
+      // TODO - i was commited it - because it's not influence on our count of permissions - or dublicated something
+      // permissions: [
+      //   ..._options.permissions,
+      // ],
+
     };
 
     nuxt.options.runtimeConfig.public.authorizationModule = {
@@ -170,9 +137,9 @@ export default defineNuxtModule<ModuleOptions>({
 
     nuxt.hook('modules:done', async () => {
       // TODO:: type hook
-      const permissions: Permission[] = [];
-      //
-      await nuxt.callHook('authorization-module:add-permissions', permissions);
+      let permissions: Permission[] = [];
+
+      permissions = await nuxt.callHook('authorization-module:add-permissions', permissions);
 
       //@ts-ignore
       nuxt.options.runtimeConfig.authorizationModule.permissions = [

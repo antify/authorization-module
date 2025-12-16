@@ -3,12 +3,6 @@ import {
   type DatabaseHandler,
 } from '../../../databaseHandler';
 import {
-  isAuthorizedHandler,
-} from '../../../handlers';
-import {
-  PermissionId,
-} from '../../../../permissions';
-import {
   useEventReader,
 } from '../../../utils';
 import {
@@ -16,8 +10,6 @@ import {
 } from '#imports';
 
 export default defineEventHandler(async (event) => {
-  await isAuthorizedHandler(event, PermissionId.CAN_READ_ROLE);
-
   const eventReader = useEventReader();
 
   return (await (defineDatabaseHandler as DatabaseHandler)

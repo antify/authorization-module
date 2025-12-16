@@ -1,5 +1,5 @@
 import {
-  PermissionId,
+  permissions,
 } from './glue/permissions';
 import type {
   Permission,
@@ -22,12 +22,7 @@ export default defineNuxtConfig({
     jwtSecret: '#a!SuperSecret123',
     databaseHandler: './server/datasources/db/databaseHandler',
     appHandlerFactoryPath: './appHandlerFactory',
-    permissions: [
-      {
-        id: PermissionId.CAN_READ_SECRET_DATA,
-        name: 'Can read secret data in playground',
-      },
-    ],
+    permissions: permissions,
   },
 
   hooks: {

@@ -9,7 +9,6 @@ import {
   ref,
   useRoute,
   computed,
-  useGuard,
   useRouter,
   useFetch,
   useAuthResponseErrorHandler,
@@ -40,8 +39,8 @@ withDefaults(defineProps<{
 }>(), {
   canUpdate: true,
   canDelete: true,
-  updateTooltipMessage: 'TOOLTIP_MOCK',
-  deleteTooltipMessage: 'TOOLTIP_MOCK',
+  updateTooltipMessage: '(Berechtigungsfehler)',
+  deleteTooltipMessage: '(Berechtigungsfehler)',
 });
 
 const route = useRoute();

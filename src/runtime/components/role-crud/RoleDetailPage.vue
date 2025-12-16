@@ -2,7 +2,6 @@
 import {
   computed,
   onMounted,
-  useGuard,
 } from '#imports';
 import {
   useRoleRoutingStore,
@@ -31,9 +30,9 @@ withDefaults(defineProps<{
   canCreate: true,
   canUpdate: true,
   canDelete: true,
-  createTooltipMessage: 'TOOLTIP_MOCK',
-  updateTooltipMessage: 'TOOLTIP_MOCK',
-  deleteTooltipMessage: 'TOOLTIP_MOCK',
+  createTooltipMessage: '(Berechtigungsfehler)',
+  updateTooltipMessage: '(Berechtigungsfehler)',
+  deleteTooltipMessage: '(Berechtigungsfehler)',
 });
 
 const routingStore = useRoleRoutingStore();

@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import {
-  definePageMeta, useRouteGuard,
+  computed,
+  definePageMeta, useGuard, useRouteGuard,
 } from '#imports';
 import {
   PermissionId,
-} from '../../src/runtime/permissions';
+} from '../glue/permissions';
 
 const listingRouteName = 'role-crud';
 const detailRouteName = 'role-crud-roleId';
@@ -17,6 +18,10 @@ definePageMeta({
     },
   ],
 });
+
+const guard = useGuard();
+const canCreate = computed(() => guard.hasPermissionTo(PermissionId.CAN_CREATE_ROLE));
+
 </script>
 
 <template>
@@ -26,6 +31,12 @@ definePageMeta({
     :entity-identifier="'roleId'"
     :get-detail-route="(roleId) => ({ name: detailRouteName, params: { roleId } })"
     :get-listing-route="() => ({ name: listingRouteName })"
+    :can-create = "canCreate"
+    :can-update = "true"
+    :can-delete = "true"
+    :create-tooltip-message = "'Not Enough Permissions for using'"
+    :update-tooltip-message = "'Not Enough Permissions for using'"
+    :delete-tooltip-message = "'Not Enough Permissions for using'"
   >
     <NuxtPage />
   </AuthorizationModuleRoleListingPage>
