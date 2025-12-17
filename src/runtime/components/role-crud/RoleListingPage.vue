@@ -35,9 +35,9 @@ const props = withDefaults(defineProps<{
   canCreate: true,
   canUpdate: true,
   canDelete: true,
-  createTooltipMessage: '(Berechtigungsfehler)',
-  updateTooltipMessage: '(Berechtigungsfehler)',
-  deleteTooltipMessage: '(Berechtigungsfehler)',
+  createTooltipMessage: undefined,
+  updateTooltipMessage: undefined,
+  deleteTooltipMessage: undefined,
 });
 const routingStore = useRoleRoutingStore();
 const listingStore = useRoleListingStore();

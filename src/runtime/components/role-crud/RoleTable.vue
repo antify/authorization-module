@@ -39,8 +39,8 @@ withDefaults(defineProps<{
 }>(), {
   canUpdate: true,
   canDelete: true,
-  updateTooltipMessage: '(Berechtigungsfehler)',
-  deleteTooltipMessage: '(Berechtigungsfehler)',
+  updateTooltipMessage: undefined,
+  deleteTooltipMessage: undefined,
 });
 
 const route = useRoute();
