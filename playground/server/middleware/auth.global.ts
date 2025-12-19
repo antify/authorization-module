@@ -82,12 +82,6 @@ export default defineEventHandler(async (event) => {
   });
 
   if (!rule) {
-    return;
-  }
-
-  let requiredPermission: string | string[];
-
-  if (!rule) {
     throw createError({
       statusCode: 401,
       statusMessage: 'Access Denied',
