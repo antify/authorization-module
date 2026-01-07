@@ -27,14 +27,6 @@ onMounted(() => {
   roleDetailStore.forms.mainData.push(name);
 });
 
-const appsPermissionsCheckboxes = computed(() => {
-  return roleDetailStore.allPermissions
-    .map((item: ResponsePermissionType) => ({
-      value: item.id,
-      label: item.name,
-    }));
-});
-
 function selectAll() {
   roleDetailStore.entity.permissions = roleDetailStore.allPermissions.map(permission => permission.id);
 }
@@ -42,6 +34,46 @@ function selectAll() {
 function unselectAll() {
   roleDetailStore.entity.permissions = [];
 }
+
+const groupedPermissions = computed(() => {
+  const groups: Record<string, ResponsePermissionType[]> = {};
+
+  roleDetailStore.allPermissions.forEach((permission: ResponsePermissionType) => {
+
+    const groupName = permission.group || 'Sonstiges';
+    if (!groups[groupName]) {
+      groups[groupName] = [];
+    }
+    groups[groupName].push(permission);
+  });
+
+  return groups;
+});
+
+function isGroupSelected(permissionsInGroup: ResponsePermissionType[]): boolean {
+  if (permissionsInGroup.length === 0) return false;
+  return permissionsInGroup.every(p => roleDetailStore.entity.permissions.includes(p.id));
+}
+
+function toggleGroup(permissionsInGroup: ResponsePermissionType[]) {
+  const groupIds = permissionsInGroup.map(p => p.id);
+  const currentlySelected = roleDetailStore.entity.permissions;
+
+  if (isGroupSelected(permissionsInGroup)) {
+    roleDetailStore.entity.permissions = currentlySelected.filter(
+      id => !groupIds.includes(id)
+    );
+  } else {
+    const newSelection = [...currentlySelected];
+    groupIds.forEach(id => {
+      if (!newSelection.includes(id)) {
+        newSelection.push(id);
+      }
+    });
+    roleDetailStore.entity.permissions = newSelection;
+  }
+}
+
 </script>
 
 <template>
@@ -111,12 +143,37 @@ function unselectAll() {
             </div>
           </AntField>
 
-          <AntCheckboxGroup
-            v-model="roleDetailStore.entity.permissions"
-            :skeleton="roleDetailStore.skeleton"
-            :checkboxes="appsPermissionsCheckboxes"
-            :disabled="roleDetailStore.entity.isAdmin"
-          />
+          <div class="mt-4">
+            <div v-for="(permissionsInGroup, groupName, index) in groupedPermissions" :key="groupName">
+              <hr v-if="index > 0" class="my-6 border-gray-200" />
+
+              <div class="mb-4">
+                <AntCheckbox
+                  :model-value="isGroupSelected(permissionsInGroup)"
+                  :disabled="roleDetailStore.entity.isAdmin"
+                  :skeleton="roleDetailStore.skeleton"
+                  active-color-class="text-primary-600"
+                  @update:model-value="toggleGroup(permissionsInGroup)"
+                >
+                  <span class="text-sm font-bold text-gray-800 uppercase tracking-wider">
+                    {{ groupName }}
+                  </span>
+                </AntCheckbox>
+              </div>
+
+              <div class="ml-6"> <AntCheckboxGroup
+                v-model="roleDetailStore.entity.permissions"
+                :skeleton="roleDetailStore.skeleton"
+                :checkboxes="permissionsInGroup.map(item => ({
+                  value: item.id,
+                  label: item.name
+                }))"
+                :disabled="roleDetailStore.entity.isAdmin"
+              />
+              </div>
+            </div>
+          </div>
+
         </div>
       </AntFormGroup>
     </AntCard>

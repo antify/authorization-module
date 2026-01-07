@@ -141,6 +141,21 @@ watch(() => props.open, (val) => {
 });
 
 onMounted(() => setTokenValue());
+
+const groupedPermissions = computed(() => {
+  const groups: Record<string, Permission[]> = {};
+
+  allPermissions.value.forEach((permission) => {
+    const groupName = permission.group || 'Sonstiges';
+    if (!groups[groupName]) {
+      groups[groupName] = [];
+    }
+    groups[groupName].push(permission);
+  });
+
+  return groups;
+});
+
 </script>
 
 <template>
@@ -201,11 +216,21 @@ onMounted(() => setTokenValue());
             </div>
           </AntField>
 
-          <AntCheckboxGroup
-            v-model="token.permissions"
-            :skeleton="skeleton"
-            :checkboxes="permissions"
-          />
+          <div class="w-full space-y-6 mt-2">
+            <div v-for="(items, groupName, index) in groupedPermissions" :key="groupName">
+              <hr v-if="index > 0" class="mb-4 border-neutral-200" />
+
+              <h4 class="mb-3 text-sm font-semibold text-gray-700 uppercase tracking-wider">
+                {{ groupName }}
+              </h4>
+
+              <AntCheckboxGroup
+                v-model="token.permissions"
+                :skeleton="skeleton"
+                :checkboxes="items.map(i => ({ value: i.id, label: i.name }))"
+              />
+            </div>
+          </div>
         </div>
       </AntFormGroup>
 

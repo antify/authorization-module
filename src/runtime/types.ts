@@ -5,7 +5,9 @@ import type {
 export type Permission = {
   id: string;
   name: string;
+  group?: string;
 };
+
 export type JsonWebToken = {
   id?: string; // TODO:: really optional?
   tenantId: string | null;

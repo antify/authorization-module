@@ -5,6 +5,7 @@ import {
 export const responsePermissionSchema = object({
   id: string().defined(),
   name: string().defined(),
+  group: string().optional(),
 });
 
 export const responseSchema = mixed().oneOf([

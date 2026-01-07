@@ -73,6 +73,7 @@ const optionsValidator = object().shape({
   permissions: array().of(object().shape({
     id: string().required(),
     name: string().required(),
+    group: string().optional(),
   })).default([]),
   appHandlerFactoryPath: string().required('App handler factory path is required'),
 });
