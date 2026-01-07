@@ -1,15 +1,13 @@
 import {
-  isAuthorizedHandler,
+  isAuthorizedHandler, isLoggedInHandler
 } from '#authorization-module';
-import {
-  createError,
-} from '#imports';
 import {
   PermissionId,
 } from '../../glue/permissions';
 import {
-  defineEventHandler, readBody, H3Event
+  readBody, H3Event
 } from 'h3';
+import { createSecurityMiddleware } from '#imports';
 
 interface SecurityRule {
   pattern: RegExp;
@@ -63,30 +61,36 @@ const SECURITY_RULES: SecurityRule[] = [
     method: 'GET',
     handler: async (event: H3Event) => isAuthorizedHandler(event, PermissionId.CAN_READ_ROLE),
   },
+  {
+    pattern: /^\/api\/authorization-module\/stores\/role-crud\/([a-z0-9]+)$/,
+    method: 'GET',
+    handler: async (event: H3Event) => isAuthorizedHandler(event, PermissionId.CAN_READ_ROLE),
+  },
+  {
+    pattern: /^\/api\/authorization-module\/dev\/jwt-form\/app-data$/,
+    method: 'GET',
+    handler: async () => {},
+  },
+  {
+    pattern: /^\/api\/authorization-module\/dev\/jwt-form\/create-jwt$/,
+    method: 'POST',
+    handler: async () => {},
+  },
+  {
+    pattern: /^\/api\/server-side\/users$/,
+    method: 'GET',
+    handler: async (event: H3Event) => isLoggedInHandler(event),
+  },
+  {
+    pattern: /^\/api\/server-side\/login$/,
+    method: 'POST',
+    handler: async (event: H3Event) => isLoggedInHandler(event),
+  },
+  {
+    pattern: /^\/api\/pages\/components\/ban-buttons\/users$/,
+    method: 'GET',
+    handler: async (event: H3Event) => isLoggedInHandler(event),
+  },
 ];
 
-export default defineEventHandler(async (event) => {
-  const path = event.path.split('?')[0];
-
-  if (!path.startsWith('/api/')) {
-    return;
-  }
-
-  const method = event.method;
-
-  const rule = SECURITY_RULES.find((r) => {
-    const pathMatch = r.pattern.test(path);
-    const methodMatch = !r.method || r.method === method;
-
-    return pathMatch && methodMatch;
-  });
-
-  if (!rule) {
-    throw createError({
-      statusCode: 401,
-      statusMessage: 'Access Denied',
-    });
-  }
-
-  await rule.handler(event);
-});
+export default createSecurityMiddleware(SECURITY_RULES);

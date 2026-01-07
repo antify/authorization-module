@@ -7,6 +7,7 @@ import {
   defineNuxtModule,
   addComponentsDir,
   addServerHandler,
+  addServerImports
 } from '@nuxt/kit';
 import {
   join, relative,
@@ -213,6 +214,11 @@ export default defineNuxtModule<ModuleOptions>({
       prefix: 'AuthorizationModule',
       global: true,
     });
+
+    addServerImports([{
+      name: 'createSecurityMiddleware',
+      from: resolve('./runtime/server/utils/auth-wrapper')
+    }])
 
     if (_options.databaseHandler) {
       await addComponentsDir({
