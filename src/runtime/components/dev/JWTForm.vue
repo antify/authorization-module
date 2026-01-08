@@ -217,17 +217,23 @@ const groupedPermissions = computed(() => {
           </AntField>
 
           <div class="w-full space-y-6 mt-2">
-            <div v-for="(items, groupName, index) in groupedPermissions" :key="groupName">
-              <hr v-if="index > 0" class="mb-4 border-neutral-200" />
+            <div
+              v-for="(permissionsInGroup, groupName, index) in groupedPermissions"
+              :key="groupName"
+            >
+              <hr
+                v-if="index > 0"
+                class="mb-4 border-neutral-200"
+              >
 
-              <h4 class="mb-3 text-sm font-semibold text-gray-700 uppercase tracking-wider">
+              <h4 class="mb-2 uppercase">
                 {{ groupName }}
               </h4>
 
               <AntCheckboxGroup
                 v-model="token.permissions"
                 :skeleton="skeleton"
-                :checkboxes="items.map(i => ({ value: i.id, label: i.name }))"
+                :checkboxes="permissionsInGroup.map(i => ({ value: i.id, label: i.name }))"
               />
             </div>
           </div>

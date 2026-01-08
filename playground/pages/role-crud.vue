@@ -33,12 +33,12 @@ const canDelete = computed(() => guard.hasPermissionTo(PermissionId.CAN_DELETE_R
     :entity-identifier="'roleId'"
     :get-detail-route="(roleId) => ({ name: detailRouteName, params: { roleId } })"
     :get-listing-route="() => ({ name: listingRouteName })"
-    :can-create = "canCreate"
-    :can-update = "canUpdate"
-    :can-delete = "canDelete"
-    :create-tooltip-message = "'Not Enough Permissions for Create'"
-    :update-tooltip-message = "'Not Enough Permissions for Update'"
-    :delete-tooltip-message = "'Not Enough Permissions for Delete'"
+    :can-create="canCreate"
+    :can-update="canUpdate"
+    :can-delete="canDelete"
+    :create-tooltip-message="'Not Enough Permissions for Create'"
+    :update-tooltip-message="'Not Enough Permissions for Update'"
+    :delete-tooltip-message="'Not Enough Permissions for Delete'"
   >
     <NuxtPage />
   </AuthorizationModuleRoleListingPage>

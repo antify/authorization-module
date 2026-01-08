@@ -1,4 +1,6 @@
-import {defineAppHandlerFactory} from '#imports';
+import {
+  defineAppHandlerFactory,
+} from '#imports';
 
 export default defineAppHandlerFactory((tenantId) => ({
   onUnauthorized: () => {
@@ -6,5 +8,5 @@ export default defineAppHandlerFactory((tenantId) => ({
   },
   onBanned: () => {
     console.error('Banned - Called from appHandlerFactory');
-  }
+  },
 }));

@@ -1,12 +1,16 @@
-import { defineEventHandler, createError, H3Event } from 'h3'
+import {
+  defineEventHandler,
+  createError,
+  type H3Event,
+} from 'h3';
 
-interface SecurityRule {
+export interface SecurityRule {
   pattern: RegExp;
   method?: string;
-  handler: (event: H3Event) => Promise<any>;
+  handler?: (event: H3Event) => Promise<void> | void;
 }
 
-export const createSecurityMiddleware = (rules: SecurityRule[]) => {
+export const defineSecurityMiddleware = (rules: SecurityRule[]) => {
   return defineEventHandler(async (event) => {
     const path = event.path.split('?')[0];
 
@@ -19,6 +23,7 @@ export const createSecurityMiddleware = (rules: SecurityRule[]) => {
     const rule = rules.find((r) => {
       const pathMatch = r.pattern.test(path);
       const methodMatch = !r.method || r.method === method;
+
       return pathMatch && methodMatch;
     });
 
@@ -29,6 +34,8 @@ export const createSecurityMiddleware = (rules: SecurityRule[]) => {
       });
     }
 
-    await rule.handler(event);
+    if (rule.handler) {
+      await rule.handler(event);
+    }
   });
-}
+};

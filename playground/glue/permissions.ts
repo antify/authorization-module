@@ -38,22 +38,22 @@ export const permissions: Permission[] = [
   // === ROLE MANAGEMENT ===
   {
     id: PermissionId.CAN_READ_ROLE,
-    name: 'Rollenverwaltung: Kann Rollen einsehen',
+    name: 'Kann Rollen einsehen',
     group: 'Rollenverwaltung',
   },
   {
     id: PermissionId.CAN_CREATE_ROLE,
-    name: 'Rollenverwaltung: Kann neue Rollen erstellen',
+    name: 'Kann neue Rollen erstellen',
     group: 'Rollenverwaltung',
   },
   {
     id: PermissionId.CAN_UPDATE_ROLE,
-    name: 'Rollenverwaltung: Kann Rollen bearbeiten',
+    name: 'Kann Rollen bearbeiten',
     group: 'Rollenverwaltung',
   },
   {
     id: PermissionId.CAN_DELETE_ROLE,
-    name: 'Rollenverwaltung: Kann Rollen löschen',
+    name: 'Kann Rollen löschen',
     group: 'Rollenverwaltung',
   },
 ];

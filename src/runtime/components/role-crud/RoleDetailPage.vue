@@ -9,14 +9,14 @@ import {
   useDeleteRoleStore,
 } from '../../stores/roleCrud';
 import {
-  TabItemState, InputState, AntTooltip
+  TabItemState, InputState, AntTooltip,
 } from '#ui-module';
 import {
   AntCrudDetail,
   AntCrudDetailNav,
   AntCrudDetailActions,
   AntSaveButton,
-  AntSaveAndNewButton
+  AntSaveAndNewButton,
 } from '@antify/default-template';
 
 withDefaults(defineProps<{
@@ -79,7 +79,6 @@ onMounted(() => {
     <slot />
 
     <template #footer>
-
       <AntCrudDetailActions
         :skeleton="detailStore.skeleton"
         :disabled="detailStore.formDisabled"
@@ -123,7 +122,7 @@ onMounted(() => {
             </template>
           </AntTooltip>
         </template>
-        </AntCrudDetailActions>
+      </AntCrudDetailActions>
     </template>
   </AntCrudDetail>
 </template>

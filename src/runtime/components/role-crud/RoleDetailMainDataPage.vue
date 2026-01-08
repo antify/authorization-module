@@ -52,6 +52,7 @@ const groupedPermissions = computed(() => {
 
 function isGroupSelected(permissionsInGroup: ResponsePermissionType[]): boolean {
   if (permissionsInGroup.length === 0) return false;
+
   return permissionsInGroup.every(p => roleDetailStore.entity.permissions.includes(p.id));
 }
 
@@ -60,11 +61,11 @@ function toggleGroup(permissionsInGroup: ResponsePermissionType[]) {
   const currentlySelected = roleDetailStore.entity.permissions;
 
   if (isGroupSelected(permissionsInGroup)) {
-    roleDetailStore.entity.permissions = currentlySelected.filter(
-      id => !groupIds.includes(id)
-    );
+    roleDetailStore.entity.permissions = currentlySelected.filter(id => !groupIds.includes(id));
   } else {
-    const newSelection = [...currentlySelected];
+    const newSelection = [
+      ...currentlySelected,
+    ];
     groupIds.forEach(id => {
       if (!newSelection.includes(id)) {
         newSelection.push(id);
@@ -143,37 +144,43 @@ function toggleGroup(permissionsInGroup: ResponsePermissionType[]) {
             </div>
           </AntField>
 
-          <div class="mt-4">
-            <div v-for="(permissionsInGroup, groupName, index) in groupedPermissions" :key="groupName">
-              <hr v-if="index > 0" class="my-6 border-gray-200" />
+          <div class="mt-2 mb-2">
+            <div
+              v-for="(permissionsInGroup, groupName, index) in groupedPermissions"
+              :key="groupName"
+            >
+              <hr
+                v-if="index > 0"
+                class="my-4 border-gray-200"
+              >
 
               <div class="mb-4">
                 <AntCheckbox
                   :model-value="isGroupSelected(permissionsInGroup)"
                   :disabled="roleDetailStore.entity.isAdmin"
                   :skeleton="roleDetailStore.skeleton"
-                  active-color-class="text-primary-600"
+                  active-color-class="text-primary-500"
                   @update:model-value="toggleGroup(permissionsInGroup)"
                 >
-                  <span class="text-sm font-bold text-gray-800 uppercase tracking-wider">
+                  <span class="mb-2 uppercase">
                     {{ groupName }}
                   </span>
                 </AntCheckbox>
               </div>
 
-              <div class="ml-6"> <AntCheckboxGroup
-                v-model="roleDetailStore.entity.permissions"
-                :skeleton="roleDetailStore.skeleton"
-                :checkboxes="permissionsInGroup.map(item => ({
-                  value: item.id,
-                  label: item.name
-                }))"
-                :disabled="roleDetailStore.entity.isAdmin"
-              />
+              <div class="ml-6">
+                <AntCheckboxGroup
+                  v-model="roleDetailStore.entity.permissions"
+                  :skeleton="roleDetailStore.skeleton"
+                  :checkboxes="permissionsInGroup.map(item => ({
+                    value: item.id,
+                    label: item.name
+                  }))"
+                  :disabled="roleDetailStore.entity.isAdmin"
+                />
               </div>
             </div>
           </div>
-
         </div>
       </AntFormGroup>
     </AntCard>

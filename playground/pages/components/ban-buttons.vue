@@ -10,7 +10,9 @@ import {
 import type {
   Authorization,
 } from '../../../src/runtime/types';
-import {PermissionId} from "../../glue/permissions";
+import {
+  PermissionId,
+} from '../../glue/permissions';
 
 const guard = useGuard();
 const canBan = computed(() => guard.hasPermissionTo(PermissionId.CAN_BAN_AUTHORIZATION));

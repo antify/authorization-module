@@ -12,10 +12,10 @@ import {
   AntCrud,
   AntCrudTableFilter,
   AntCrudTableNav,
-  AntCreateButton
+  AntCreateButton,
 } from '@antify/default-template';
 import {
-  InputState, AntTooltip
+  InputState, AntTooltip,
 } from '#ui-module';
 
 const props = withDefaults(defineProps<{
@@ -62,23 +62,23 @@ function onCreate() {
         @search="() => listingStore.refresh()"
         @create="onCreate"
       >
-      <template #buttons>
-        <AntTooltip :state="InputState.base">
-          <AntCreateButton
-            :skeleton="listingStore.skeleton"
-            :disabled="!canCreate"
-            @click="onCreate"
-          />
-          <template
-            v-if="!canCreate"
-            #content
-          >
-            <div>
-              {{ createTooltipMessage }}
-            </div>
-          </template>
-        </AntTooltip>
-      </template>
+        <template #buttons>
+          <AntTooltip :state="InputState.base">
+            <AntCreateButton
+              :skeleton="listingStore.skeleton"
+              :disabled="!canCreate"
+              @click="onCreate"
+            />
+            <template
+              v-if="!canCreate"
+              #content
+            >
+              <div>
+                {{ createTooltipMessage }}
+              </div>
+            </template>
+          </AntTooltip>
+        </template>
       </AntCrudTableFilter>
     </template>
 
@@ -88,7 +88,8 @@ function onCreate() {
         :update-tooltip-message="updateTooltipMessage"
         :can-delete="canDelete"
         :delete-tooltip-message="deleteTooltipMessage"
-        :show-light-version="routingStore.routing.isDetailPage.value" />
+        :show-light-version="routingStore.routing.isDetailPage.value"
+      />
     </template>
 
     <template #table-nav-section>

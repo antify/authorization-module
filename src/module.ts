@@ -7,7 +7,7 @@ import {
   defineNuxtModule,
   addComponentsDir,
   addServerHandler,
-  addServerImports
+  addServerImports,
 } from '@nuxt/kit';
 import {
   join, relative,
@@ -17,17 +17,17 @@ import type {
 } from './runtime/types';
 
 import {
-  object, string, number, array, mixed,
+  object, string, number, array,
 } from 'yup';
 
 export type ModuleOptions = {
   /**
-   * Secret to hash the json web token
+   * Secret to hash the JSON web token
    */
   jwtSecret: string;
 
   /**
-   * Expiration time in minutes for the json web token.
+   * Expiration time in minutes for the JSON web token.
    * Default is 8 hours (480 minutes)
    */
   jwtExpiration?: number;
@@ -187,6 +187,7 @@ export default defineNuxtModule<ModuleOptions>({
         `  const useEventReader: typeof import('${relative(typesBuildDir, join(runtimeDir, 'server', 'utils'))}')['useEventReader']`,
         `  export * from '${relative(typesBuildDir, join(runtimeDir, 'types'))}'`,
         `  export * from '${relative(typesBuildDir, join(runtimeDir, 'index'))}'`,
+        `  export { SecurityRule } from '${relative(typesBuildDir, join(runtimeDir, 'server', 'utils', 'auth-wrapper'))}'`,
         '}',
         // "declare module '@nuxt/schema' {",
         // "	export interface RuntimeNuxtHooks {",
@@ -216,10 +217,12 @@ export default defineNuxtModule<ModuleOptions>({
       global: true,
     });
 
-    addServerImports([{
-      name: 'createSecurityMiddleware',
-      from: resolve('./runtime/server/utils/auth-wrapper')
-    }])
+    addServerImports([
+      {
+        name: 'defineSecurityMiddleware',
+        from: resolve('./runtime/server/utils/auth-wrapper'),
+      },
+    ]);
 
     if (_options.databaseHandler) {
       await addComponentsDir({
