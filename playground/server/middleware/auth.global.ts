@@ -1,5 +1,8 @@
 import {
-  isAuthorizedHandler, isLoggedInHandler, SecurityRule,
+  isAuthorizedHandler, isLoggedInHandler,
+} from '#authorization-module';
+import type {
+  SecurityRule,
 } from '#authorization-module';
 import {
   PermissionId,
