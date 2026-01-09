@@ -187,7 +187,6 @@ export default defineNuxtModule<ModuleOptions>({
         `  const useEventReader: typeof import('${relative(typesBuildDir, join(runtimeDir, 'server', 'utils'))}')['useEventReader']`,
         `  export * from '${relative(typesBuildDir, join(runtimeDir, 'types'))}'`,
         `  export * from '${relative(typesBuildDir, join(runtimeDir, 'index'))}'`,
-        `  export { SecurityRule } from '${relative(typesBuildDir, join(runtimeDir, 'server', 'utils', 'auth-wrapper'))}'`,
         '}',
         // "declare module '@nuxt/schema' {",
         // "	export interface RuntimeNuxtHooks {",
