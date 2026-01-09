@@ -19,41 +19,41 @@ export enum PermissionId {
 export const permissions: Permission[] = [
   {
     id: PermissionId.CAN_READ_SECRET_DATA,
-    name: 'Kann geheime Daten in der Playground-Umgebung einsehen',
-    group: 'Allgemein',
+    name: 'Can view secret data in the playground environment',
+    group: 'General',
   },
 
   // === BAN & UNBAN ===
   {
     id: PermissionId.CAN_BAN_AUTHORIZATION,
-    name: 'Kann Benutzerkonten sperren (Bannen)',
-    group: 'Benutzerverwaltung',
+    name: 'Can ban user accounts',
+    group: 'User Management',
   },
   {
     id: PermissionId.CAN_UNBAN_AUTHORIZATION,
-    name: 'Kann Benutzerkonten entsperren (Entbannen)',
-    group: 'Benutzerverwaltung',
+    name: 'Can unban user accounts',
+    group: 'User Management',
   },
 
   // === ROLE MANAGEMENT ===
   {
     id: PermissionId.CAN_READ_ROLE,
-    name: 'Kann Rollen einsehen',
-    group: 'Rollenverwaltung',
+    name: 'Can view roles',
+    group: 'Role Management',
   },
   {
     id: PermissionId.CAN_CREATE_ROLE,
-    name: 'Kann neue Rollen erstellen',
-    group: 'Rollenverwaltung',
+    name: 'Can create new roles',
+    group: 'Role Management',
   },
   {
     id: PermissionId.CAN_UPDATE_ROLE,
-    name: 'Kann Rollen bearbeiten',
-    group: 'Rollenverwaltung',
+    name: 'Can edit roles',
+    group: 'Role Management',
   },
   {
     id: PermissionId.CAN_DELETE_ROLE,
-    name: 'Kann Rollen löschen',
-    group: 'Rollenverwaltung',
+    name: 'Can delete roles',
+    group: 'Role Management',
   },
 ];
