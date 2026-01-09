@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {
   PermissionId,
-} from '../glue/permissions';
+} from '#shared';
 import {
   ref,
   useGuard,

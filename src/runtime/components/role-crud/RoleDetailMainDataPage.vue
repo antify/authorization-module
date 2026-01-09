@@ -15,6 +15,12 @@ import {
   Schema,
 } from 'yup';
 
+const props = withDefaults(defineProps<{
+  unknownGroupLabel?: string;
+}>(), {
+  unknownGroupLabel: 'Others',
+});
+
 const permissionDisableTooltip = 'Admin role has all permissions. Mark this role as non-admin to select permissions manually.';
 const roleDetailStore = useRoleDetailStore();
 const name = useUiClient().utils.useFormField(async () => await (roleServerSchema.fields.name as Schema)
@@ -39,11 +45,12 @@ const groupedPermissions = computed(() => {
   const groups: Record<string, ResponsePermissionType[]> = {};
 
   roleDetailStore.allPermissions.forEach((permission: ResponsePermissionType) => {
+    const groupName = permission.group || props.unknownGroupLabel;
 
-    const groupName = permission.group || 'Sonstiges';
     if (!groups[groupName]) {
       groups[groupName] = [];
     }
+
     groups[groupName].push(permission);
   });
 
@@ -51,7 +58,9 @@ const groupedPermissions = computed(() => {
 });
 
 function isGroupSelected(permissionsInGroup: ResponsePermissionType[]): boolean {
-  if (permissionsInGroup.length === 0) return false;
+  if (permissionsInGroup.length === 0) {
+    return false;
+  }
 
   return permissionsInGroup.every(p => roleDetailStore.entity.permissions.includes(p.id));
 }
@@ -66,11 +75,13 @@ function toggleGroup(permissionsInGroup: ResponsePermissionType[]) {
     const newSelection = [
       ...currentlySelected,
     ];
+
     groupIds.forEach(id => {
       if (!newSelection.includes(id)) {
         newSelection.push(id);
       }
     });
+
     roleDetailStore.entity.permissions = newSelection;
   }
 }

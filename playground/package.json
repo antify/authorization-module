@@ -1,4 +1,7 @@
 {
   "private": true,
-  "name": "authorization-module-playground"
+  "name": "authorization-module-playground",
+  "imports": {
+    "#shared": "./shared/permissions.ts"
+  }
 }

@@ -5,7 +5,7 @@ import {
 } from '#imports';
 import {
   PermissionId,
-} from '../glue/permissions';
+} from '#shared';
 
 const listingRouteName = 'role-crud';
 const detailRouteName = 'role-crud-roleId';
@@ -36,9 +36,9 @@ const canDelete = computed(() => guard.hasPermissionTo(PermissionId.CAN_DELETE_R
     :can-create="canCreate"
     :can-update="canUpdate"
     :can-delete="canDelete"
-    :create-tooltip-message="'Not Enough Permissions for Create'"
-    :update-tooltip-message="'Not Enough Permissions for Update'"
-    :delete-tooltip-message="'Not Enough Permissions for Delete'"
+    :create-tooltip-message="'Insufficient permissions to Create'"
+    :update-tooltip-message="'Insufficient permissions to Update'"
+    :delete-tooltip-message="'Insufficient permissions to Delete'"
   >
     <NuxtPage />
   </AuthorizationModuleRoleListingPage>

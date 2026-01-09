@@ -6,7 +6,7 @@ import type {
 } from '#authorization-module';
 import {
   PermissionId,
-} from '../../glue/permissions';
+} from '#shared';
 import {
   readBody, H3Event,
 } from 'h3';

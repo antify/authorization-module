@@ -19,7 +19,7 @@ export enum PermissionId {
 export const permissions: Permission[] = [
   {
     id: PermissionId.CAN_READ_SECRET_DATA,
-    name: 'Can view secret data in the playground environment',
+    name: 'Can read another secret data',
     group: 'General',
   },
 

@@ -133,18 +133,6 @@ const handleEditClick = (entity: {
   router.push(routeConfig);
 };
 
-// const handleEditClick = (entity: { _id: string }) => {
-//   if (!props.canUpdate) return;
-//
-//   const routeConfig = routingStore.routing.getDetailSubRoute(
-//     entity._id,
-//     'main-data',
-//   );
-//
-//   const path = `/role-crud/${entity._id}`;
-//
-//   router.push(path);
-// };
 </script>
 
 <template>

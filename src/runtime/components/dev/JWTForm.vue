@@ -20,8 +20,10 @@ import {
 const props = withDefaults(defineProps<{
   open: boolean;
   defaultToken?: Partial<JsonWebToken>;
+  unknownGroupLabel?: string;
 }>(), {
   defaultToken: () => ({}),
+  unknownGroupLabel: 'Others',
 });
 const emit = defineEmits([
   'update:open',
@@ -146,10 +148,12 @@ const groupedPermissions = computed(() => {
   const groups: Record<string, Permission[]> = {};
 
   allPermissions.value.forEach((permission) => {
-    const groupName = permission.group || 'Sonstiges';
+    const groupName = permission.group || props.unknownGroupLabel;
+
     if (!groups[groupName]) {
       groups[groupName] = [];
     }
+
     groups[groupName].push(permission);
   });
 

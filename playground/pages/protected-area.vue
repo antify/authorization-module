@@ -4,7 +4,7 @@ import {
 } from '#imports';
 import {
   PermissionId,
-} from '../glue/permissions';
+} from '#shared';
 
 definePageMeta({
   middleware: [
