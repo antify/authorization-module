@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {
   PermissionId,
-} from '#shared';
+} from '../shared/permissions';
 import {
   ref,
   useGuard,

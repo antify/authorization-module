@@ -6,7 +6,7 @@ import type {
 } from '#authorization-module';
 import {
   PermissionId,
-} from '#shared';
+} from '../../shared/permissions';
 import {
   readBody, H3Event,
 } from 'h3';

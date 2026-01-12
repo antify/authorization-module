@@ -1,22 +1,15 @@
 import {
   permissions,
-} from '#shared';
+} from './shared/permissions';
 import type {
   Permission,
 } from '#authorization-module';
-import {
-  fileURLToPath,
-} from 'node:url';
 
 export default defineNuxtConfig({
   ssr: false,
 
   imports: {
     autoImport: false,
-  },
-
-  alias: {
-    '#shared': fileURLToPath(new URL('./shared/permissions.ts', import.meta.url)),
   },
 
   modules: [

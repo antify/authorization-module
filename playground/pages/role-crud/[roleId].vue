@@ -4,7 +4,7 @@ import {
 } from '#imports';
 import {
   PermissionId,
-} from '#shared';
+} from '../../shared/permissions';
 
 definePageMeta({
   pageTransition: {
