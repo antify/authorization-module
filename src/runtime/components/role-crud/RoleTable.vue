@@ -123,8 +123,6 @@ const handleEditClick = (entity: {
   _id: string;
 }) => {
 
-  if (!props.canUpdate) return;
-
   const routeConfig = routingStore.routing.getDetailSubRoute(
     entity._id,
     'main-data',
@@ -152,7 +150,6 @@ const handleEditClick = (entity: {
           <AntEditButton
             icon-variant
             :size="Size.xs"
-            :disabled="!canUpdate"
             @click="handleEditClick(element)"
           />
 
