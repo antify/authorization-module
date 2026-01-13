@@ -69,9 +69,10 @@ onMounted(() => {
         :tab-items="tabItems"
         :skeleton="detailStore.skeleton"
         :get-entity-name="() => `${detailStore.entity.name}`"
-        :delete-button-disabled="detailStore.formDisabled"
+        :delete-button-disabled="detailStore.formDisabled || canDelete"
         :show-delete-button="!routingStore.routing.isCreatePage.value"
         :can-delete="canDelete"
+        :delete-tooltip-message="deleteTooltipMessage"
         @delete="() => deleteStore.execute(detailStore.entity._id as string)"
       />
     </template>

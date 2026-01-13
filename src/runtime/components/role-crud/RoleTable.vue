@@ -146,40 +146,19 @@ const handleEditClick = (entity: {
         v-if="header.identifier === 'actions'"
         class="flex justify-end gap-2.5"
       >
-        <AntTooltip :state="InputState.base">
-          <AntEditButton
-            icon-variant
-            :size="Size.xs"
-            @click="handleEditClick(element)"
-          />
+        <AntEditButton
+          icon-variant
+          :size="Size.xs"
+          @click="handleEditClick(element)"
+        />
 
-          <template
-            v-if="!canUpdate"
-            #content
-          >
-            <div>
-              {{ updateTooltipMessage }}
-            </div>
-          </template>
-        </AntTooltip>
-
-        <AntTooltip :state="InputState.base">
-          <AntDeleteButton
-            icon-variant
-            :size="Size.xs"
-            :disabled="!canDelete"
-            @click="() => openDeleteEntity(element)"
-          />
-
-          <template
-            v-if="!canDelete"
-            #content
-          >
-            <div>
-              {{ deleteTooltipMessage }}
-            </div>
-          </template>
-        </AntTooltip>
+        <AntDeleteButton
+          icon-variant
+          :size="Size.xs"
+          :disabled="!canDelete"
+          :delete-tooltip-message="deleteTooltipMessage"
+          @click="() => openDeleteEntity(element)"
+        />
       </div>
     </template>
   </AntTable>

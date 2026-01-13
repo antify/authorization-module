@@ -17,6 +17,9 @@ import {
 import {
   InputState, AntTooltip,
 } from '#ui-module';
+import {
+  State, AntButton,
+} from '@antify/ui';
 
 const props = withDefaults(defineProps<{
   detailRouteName: string;
@@ -63,21 +66,20 @@ function onCreate() {
         @create="onCreate"
       >
         <template #buttons>
-          <AntTooltip :state="InputState.base">
-            <AntCreateButton
-              :skeleton="listingStore.skeleton"
-              :disabled="!canCreate"
-              @click="onCreate"
-            />
-            <template
-              v-if="!canCreate"
-              #content
-            >
-              <div>
+          <AntButton
+            :state="State.primary"
+            :skeleton="listingStore.skeleton"
+            :disabled="!canCreate"
+            @click="onCreate"
+          >
+            Erstellen
+
+            <template #tooltip-content>
+              <div v-if="!canCreate">
                 {{ createTooltipMessage }}
               </div>
             </template>
-          </AntTooltip>
+          </AntButton>
         </template>
       </AntCrudTableFilter>
     </template>
