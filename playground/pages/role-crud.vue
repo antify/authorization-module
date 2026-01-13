@@ -5,7 +5,7 @@ import {
 } from '#imports';
 import {
   PermissionId,
-} from '../shared/permissions';
+} from '#shared/permissions';
 
 const listingRouteName = 'role-crud';
 const detailRouteName = 'role-crud-roleId';

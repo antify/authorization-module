@@ -12,7 +12,7 @@ import type {
 } from '../../../src/runtime/types';
 import {
   PermissionId,
-} from '../../shared/permissions';
+} from '#shared/permissions';
 
 const guard = useGuard();
 const canBan = computed(() => guard.hasPermissionTo(PermissionId.CAN_BAN_AUTHORIZATION));
