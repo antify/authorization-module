@@ -84,46 +84,12 @@ onMounted(() => {
         :skeleton="detailStore.skeleton"
         :disabled="detailStore.formDisabled"
         :can-save="canUpdate || canCreate"
+        :save-tooltip-message="!canCreate ? updateTooltipMessage : createTooltipMessage"
+        :save-and-new-tooltip-message="!canCreate ? updateTooltipMessage : createTooltipMessage"
         @back="() => routingStore.routing.goToListingPage()"
         @save="() => detailStore.save()"
         @save-and-new="() => detailStore.saveAndNew()"
-      >
-        <template #buttons-right>
-          <AntTooltip :state="InputState.base">
-            <AntSaveAndNewButton
-              :skeleton="detailStore.skeleton"
-              :disabled="detailStore.formDisabled || !(canUpdate || canCreate)"
-              :can-save="canUpdate || canCreate"
-              @click="() => detailStore.saveAndNew()"
-            />
-            <template
-              v-if="!(canUpdate || canCreate)"
-              #content
-            >
-              <div>
-                {{ !canCreate ? createTooltipMessage : updateTooltipMessage }}
-              </div>
-            </template>
-          </AntTooltip>
-
-          <AntTooltip :state="InputState.base">
-            <AntSaveButton
-              :skeleton="detailStore.skeleton"
-              :disabled="detailStore.formDisabled || !(canUpdate || canCreate)"
-              :can-save="canUpdate || canCreate"
-              @click="() => detailStore.save()"
-            />
-            <template
-              v-if="!(canUpdate || canCreate)"
-              #content
-            >
-              <div>
-                {{ !canCreate ? createTooltipMessage : updateTooltipMessage }}
-              </div>
-            </template>
-          </AntTooltip>
-        </template>
-      </AntCrudDetailActions>
+      />
     </template>
   </AntCrudDetail>
 </template>

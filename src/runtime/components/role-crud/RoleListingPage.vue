@@ -62,26 +62,10 @@ function onCreate() {
         :skeleton="listingStore.skeleton"
         :can-create="canCreate"
         :show-filter="false"
+        :create-tooltip-message="createTooltipMessage"
         @search="() => listingStore.refresh()"
         @create="onCreate"
-      >
-        <template #buttons>
-          <AntButton
-            :state="State.primary"
-            :skeleton="listingStore.skeleton"
-            :disabled="!canCreate"
-            @click="onCreate"
-          >
-            Erstellen
-
-            <template #tooltip-content>
-              <div v-if="!canCreate">
-                {{ createTooltipMessage }}
-              </div>
-            </template>
-          </AntButton>
-        </template>
-      </AntCrudTableFilter>
+      />
     </template>
 
     <template #table-section>

@@ -9,11 +9,11 @@ importers:
   .:
     dependencies:
       '@antify/default-template':
-        specifier: ^0.0.16
-        version: 0.0.16(@antify/ui@4.0.0(@fortawesome/fontawesome-svg-core@6.7.2)(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(tailwindcss@4.0.7)(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))(vue@3.5.13(typescript@5.8.2)))(typescript@5.8.2)
+        specifier: ^0.0.20
+        version: 0.0.20(@antify/ui@4.1.19(@fortawesome/fontawesome-svg-core@6.7.2)(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(tailwindcss@4.0.7)(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))(vue@3.5.13(typescript@5.8.2)))(typescript@5.8.2)
       '@antify/ui-module':
-        specifier: ^2.13.20
-        version: 2.13.20(@fortawesome/fontawesome-svg-core@6.7.2)(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(magicast@0.3.5)(tailwindcss@4.0.7)(typescript@5.8.2)(vite@6.2.1(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.0))(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))
+        specifier: ^2.13.34
+        version: 2.13.34(@fortawesome/fontawesome-svg-core@6.7.2)(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(magicast@0.3.5)(tailwindcss@4.0.7)(typescript@5.8.2)(vite@6.2.1(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.0))(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))
       '@fortawesome/free-solid-svg-icons':
         specifier: ^6.7.2
         version: 6.7.2
@@ -112,16 +112,16 @@ packages:
     resolution: {integrity: sha512-gPnFiyk29/91SnS4bo3RNwhuW/8+qSZhITYt6GYG/mKZmZuX3qwcJ11QmlSbzeU9ggdBgEuCltlBcWvK5aOHFw==}
     engines: {node: ^22.14.0, pnpm: '>=8'}
 
-  '@antify/default-template@0.0.16':
-    resolution: {integrity: sha512-aqYHe9KIGS1NunMbOPVL7MFWL34HrXDs8FYs+uyEMGtw9+GKnxqEnDxViLglcQ3trho242fSsidgIcKTUlmwIw==}
+  '@antify/default-template@0.0.20':
+    resolution: {integrity: sha512-J5jZQmWNFiqqOAJFV3MO7b4wrTh01Oned5KBxAfeU6lcoEXfuljloVDC1T/23ZeCLnZc2TtIgxBdnohOttv2mA==}
     peerDependencies:
       '@antify/ui': 3.1.24
 
-  '@antify/ui-module@2.13.20':
-    resolution: {integrity: sha512-44R39cH8q8YS0Kx37f2bL3C3yKuEALLQKUXGVua5qekhpPL/X0cl6llsQHTdUlj9TemQmy1T7H+LhmHs4ujXkw==}
+  '@antify/ui-module@2.13.34':
+    resolution: {integrity: sha512-+IftBtzl4u8id9/7VFytfsAL1Oqu+mkkRaTaGFU/GijRfOCpUe+3cu52DIybiGuEOfvydAVizAJ/58vohuNwpA==}
 
-  '@antify/ui@4.0.0':
-    resolution: {integrity: sha512-yFxYMoxdcpKKVQksHMmtIX6RGL4q9a59xMkuBSXyJYxPbRwBn356v16NieQ5Qmf87E92MryhGuuPpSq8w+boaw==}
+  '@antify/ui@4.1.19':
+    resolution: {integrity: sha512-GbY+UEg9ih9myMX0I7FEJE5rb3ZL4S8rzqS7kKThiApEwd1Ft05W8ddZkDU97Q6pye8l1Y7SXN6B76uzxXTyWg==}
     engines: {node: ^22.14.0, pnpm: '>=10.10.0'}
     peerDependencies:
       tailwindcss: 4.0.7
@@ -5906,9 +5906,9 @@ snapshots:
       - socks
       - supports-color
 
-  '@antify/default-template@0.0.16(@antify/ui@4.0.0(@fortawesome/fontawesome-svg-core@6.7.2)(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(tailwindcss@4.0.7)(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))(vue@3.5.13(typescript@5.8.2)))(typescript@5.8.2)':
+  '@antify/default-template@0.0.20(@antify/ui@4.1.19(@fortawesome/fontawesome-svg-core@6.7.2)(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(tailwindcss@4.0.7)(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))(vue@3.5.13(typescript@5.8.2)))(typescript@5.8.2)':
     dependencies:
-      '@antify/ui': 4.0.0(@fortawesome/fontawesome-svg-core@6.7.2)(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(tailwindcss@4.0.7)(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))(vue@3.5.13(typescript@5.8.2))
+      '@antify/ui': 4.1.19(@fortawesome/fontawesome-svg-core@6.7.2)(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(tailwindcss@4.0.7)(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))(vue@3.5.13(typescript@5.8.2))
       '@fortawesome/free-solid-svg-icons': 6.7.2
       '@vueuse/core': 13.1.0(vue@3.5.13(typescript@5.8.2))
       vue: 3.5.13(typescript@5.8.2)
@@ -5916,9 +5916,9 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@antify/ui-module@2.13.20(@fortawesome/fontawesome-svg-core@6.7.2)(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(magicast@0.3.5)(tailwindcss@4.0.7)(typescript@5.8.2)(vite@6.2.1(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.0))(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))':
+  '@antify/ui-module@2.13.34(@fortawesome/fontawesome-svg-core@6.7.2)(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(magicast@0.3.5)(tailwindcss@4.0.7)(typescript@5.8.2)(vite@6.2.1(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.0))(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))':
     dependencies:
-      '@antify/ui': 4.0.0(@fortawesome/fontawesome-svg-core@6.7.2)(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(tailwindcss@4.0.7)(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))(vue@3.5.13(typescript@5.8.2))
+      '@antify/ui': 4.1.19(@fortawesome/fontawesome-svg-core@6.7.2)(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(tailwindcss@4.0.7)(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))(vue@3.5.13(typescript@5.8.2))
       '@fortawesome/vue-fontawesome': 3.0.8(@fortawesome/fontawesome-svg-core@6.7.2)(vue@3.5.13(typescript@5.8.2))
       '@nuxt/kit': 3.16.2(magicast@0.3.5)
       '@tailwindcss/vite': 4.0.7(vite@6.2.1(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.0))
@@ -5934,7 +5934,7 @@ snapshots:
       - vite
       - vue-router
 
-  '@antify/ui@4.0.0(@fortawesome/fontawesome-svg-core@6.7.2)(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(tailwindcss@4.0.7)(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))(vue@3.5.13(typescript@5.8.2))':
+  '@antify/ui@4.1.19(@fortawesome/fontawesome-svg-core@6.7.2)(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(tailwindcss@4.0.7)(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))(vue@3.5.13(typescript@5.8.2))':
     dependencies:
       '@floating-ui/vue': 1.1.6(vue@3.5.13(typescript@5.8.2))
       '@fortawesome/free-regular-svg-icons': 6.7.2
@@ -8586,6 +8586,10 @@ snapshots:
     dependencies:
       acorn: 8.14.1
 
+  acorn-jsx@5.3.2(acorn@8.15.0):
+    dependencies:
+      acorn: 8.15.0
+
   acorn@8.14.1: {}
 
   acorn@8.15.0: {}
@@ -9508,8 +9512,8 @@ snapshots:
 
   espree@9.6.1:
     dependencies:
-      acorn: 8.14.1
-      acorn-jsx: 5.3.2(acorn@8.14.1)
+      acorn: 8.15.0
+      acorn-jsx: 5.3.2(acorn@8.15.0)
       eslint-visitor-keys: 3.4.3
 
   esquery@1.6.0:
@@ -12125,14 +12129,14 @@ snapshots:
 
   unimport@4.2.0:
     dependencies:
-      acorn: 8.14.1
+      acorn: 8.15.0
       escape-string-regexp: 5.0.0
       estree-walker: 3.0.3
       local-pkg: 1.1.1
       magic-string: 0.30.17
       mlly: 1.7.4
       pathe: 2.0.3
-      picomatch: 4.0.2
+      picomatch: 4.0.3
       pkg-types: 2.1.0
       scule: 1.3.0
       strip-literal: 3.0.0
