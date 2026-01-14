@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.3.1](https://github.com/antify/authorization-module/compare/v3.3.0...v3.3.1) (2026-01-14)
+
+
+### Bug Fixes
+
+* Set auto focus for name input ([711e758](https://github.com/antify/authorization-module/commit/711e75816484c3803d79f75bb57832a178a088e4))
+
 ## [3.3.0](https://github.com/antify/authorization-module/compare/v3.2.5...v3.3.0) (2025-10-08)
 
 
