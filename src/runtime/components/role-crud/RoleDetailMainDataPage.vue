@@ -9,7 +9,7 @@ import {
   roleServerSchema,
 } from '../../glue/stores/role-crud';
 import {
-  computed, onMounted, useUiClient,
+  computed, onMounted, ref, useUiClient,
 } from '#imports';
 import {
   Schema,
@@ -28,6 +28,7 @@ const name = useUiClient().utils.useFormField(async () => await (roleServerSchem
     strict: true,
     abortEarly: false,
   }));
+const nameInputRef = ref<HTMLInputElement | null>(null);
 
 onMounted(() => {
   roleDetailStore.forms.mainData.push(name);
@@ -86,6 +87,7 @@ function toggleGroup(permissionsInGroup: ResponsePermissionType[]) {
   }
 }
 
+onMounted(() => nameInputRef.value?.focus());
 </script>
 
 <template>
@@ -99,6 +101,7 @@ function toggleGroup(permissionsInGroup: ResponsePermissionType[]) {
           <div class="w-1/2">
             <AntTextInput
               v-model="roleDetailStore.entity.name"
+              v-model:input-ref="nameInputRef"
               label="Name"
               :skeleton="roleDetailStore.skeleton"
               :disabled="roleDetailStore.formDisabled"
