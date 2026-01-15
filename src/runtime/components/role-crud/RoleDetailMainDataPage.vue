@@ -15,6 +15,12 @@ import {
   Schema,
 } from 'yup';
 
+const props = withDefaults(defineProps<{
+  unknownGroupLabel?: string;
+}>(), {
+  unknownGroupLabel: 'Others',
+});
+
 const permissionDisableTooltip = 'Admin role has all permissions. Mark this role as non-admin to select permissions manually.';
 const roleDetailStore = useRoleDetailStore();
 const name = useUiClient().utils.useFormField(async () => await (roleServerSchema.fields.name as Schema)
@@ -28,20 +34,57 @@ onMounted(() => {
   roleDetailStore.forms.mainData.push(name);
 });
 
-const appsPermissionsCheckboxes = computed(() => {
-  return roleDetailStore.allPermissions
-    .map((item: ResponsePermissionType) => ({
-      value: item.id,
-      label: item.name,
-    }));
-});
-
 function selectAll() {
   roleDetailStore.entity.permissions = roleDetailStore.allPermissions.map(permission => permission.id);
 }
 
 function unselectAll() {
   roleDetailStore.entity.permissions = [];
+}
+
+const groupedPermissions = computed(() => {
+  const groups: Record<string, ResponsePermissionType[]> = {};
+
+  roleDetailStore.allPermissions.forEach((permission: ResponsePermissionType) => {
+    const groupName = permission.group || props.unknownGroupLabel;
+
+    if (!groups[groupName]) {
+      groups[groupName] = [];
+    }
+
+    groups[groupName].push(permission);
+  });
+
+  return groups;
+});
+
+function isGroupSelected(permissionsInGroup: ResponsePermissionType[]): boolean {
+  if (permissionsInGroup.length === 0) {
+    return false;
+  }
+
+  return permissionsInGroup.every(p => roleDetailStore.entity.permissions.includes(p.id));
+}
+
+function toggleGroup(permissionsInGroup: ResponsePermissionType[]) {
+  const groupIds = permissionsInGroup.map(p => p.id);
+  const currentlySelected = roleDetailStore.entity.permissions;
+
+  if (isGroupSelected(permissionsInGroup)) {
+    roleDetailStore.entity.permissions = currentlySelected.filter(id => !groupIds.includes(id));
+  } else {
+    const newSelection = [
+      ...currentlySelected,
+    ];
+
+    groupIds.forEach(id => {
+      if (!newSelection.includes(id)) {
+        newSelection.push(id);
+      }
+    });
+
+    roleDetailStore.entity.permissions = newSelection;
+  }
 }
 
 onMounted(() => nameInputRef.value?.focus());
@@ -115,12 +158,43 @@ onMounted(() => nameInputRef.value?.focus());
             </div>
           </AntField>
 
-          <AntCheckboxGroup
-            v-model="roleDetailStore.entity.permissions"
-            :skeleton="roleDetailStore.skeleton"
-            :checkboxes="appsPermissionsCheckboxes"
-            :disabled="roleDetailStore.entity.isAdmin"
-          />
+          <div class="mt-2 mb-2">
+            <div
+              v-for="(permissionsInGroup, groupName, index) in groupedPermissions"
+              :key="groupName"
+            >
+              <hr
+                v-if="index > 0"
+                class="my-4 border-gray-200"
+              >
+
+              <div class="mb-4">
+                <AntCheckbox
+                  :model-value="isGroupSelected(permissionsInGroup)"
+                  :disabled="roleDetailStore.entity.isAdmin"
+                  :skeleton="roleDetailStore.skeleton"
+                  active-color-class="text-primary-500"
+                  @update:model-value="toggleGroup(permissionsInGroup)"
+                >
+                  <span class="mb-2 uppercase">
+                    {{ groupName }}
+                  </span>
+                </AntCheckbox>
+              </div>
+
+              <div class="ml-6">
+                <AntCheckboxGroup
+                  v-model="roleDetailStore.entity.permissions"
+                  :skeleton="roleDetailStore.skeleton"
+                  :checkboxes="permissionsInGroup.map(item => ({
+                    value: item.id,
+                    label: item.name
+                  }))"
+                  :disabled="roleDetailStore.entity.isAdmin"
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </AntFormGroup>
     </AntCard>

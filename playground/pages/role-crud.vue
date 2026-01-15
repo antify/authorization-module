@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import {
-  definePageMeta, useRouteGuard,
+  computed,
+  definePageMeta, useGuard, useRouteGuard,
 } from '#imports';
 import {
   PermissionId,
-} from '../../src/runtime/permissions';
+} from '#shared/permissions';
 
 const listingRouteName = 'role-crud';
 const detailRouteName = 'role-crud-roleId';
@@ -17,6 +18,12 @@ definePageMeta({
     },
   ],
 });
+
+const guard = useGuard();
+const canCreate = computed(() => guard.hasPermissionTo(PermissionId.CAN_CREATE_ROLE));
+const canUpdate = computed(() => guard.hasPermissionTo(PermissionId.CAN_UPDATE_ROLE));
+const canDelete = computed(() => guard.hasPermissionTo(PermissionId.CAN_DELETE_ROLE));
+
 </script>
 
 <template>
@@ -26,6 +33,12 @@ definePageMeta({
     :entity-identifier="'roleId'"
     :get-detail-route="(roleId) => ({ name: detailRouteName, params: { roleId } })"
     :get-listing-route="() => ({ name: listingRouteName })"
+    :can-create="canCreate"
+    :can-update="canUpdate"
+    :can-delete="canDelete"
+    :create-tooltip-message="'Insufficient permissions to Create'"
+    :update-tooltip-message="'Insufficient permissions to Update'"
+    :delete-tooltip-message="'Insufficient permissions to Delete'"
   >
     <NuxtPage />
   </AuthorizationModuleRoleListingPage>

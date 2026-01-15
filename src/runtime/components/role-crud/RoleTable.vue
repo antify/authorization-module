@@ -9,7 +9,6 @@ import {
   ref,
   useRoute,
   computed,
-  useGuard,
   useRouter,
   useFetch,
   useAuthResponseErrorHandler,
@@ -17,11 +16,8 @@ import {
   watch,
 } from '#imports';
 import {
-  AntTableRowTypes,
+  AntTableRowTypes, Size, InputState, AntTooltip, AntTable,
 } from '#ui-module';
-import {
-  PermissionId,
-} from '../../permissions';
 import {
   type RoleClientType,
 } from '../../glue/stores/role-crud';
@@ -34,9 +30,18 @@ import {
   AntDeleteButton,
 } from '@antify/default-template';
 
-defineProps<{
+const props = withDefaults(defineProps<{
   showLightVersion: boolean;
-}>();
+  canUpdate?: boolean;
+  canDelete?: boolean;
+  updateTooltipMessage?: string;
+  deleteTooltipMessage?: string;
+}>(), {
+  canUpdate: true,
+  canDelete: true,
+  updateTooltipMessage: undefined,
+  deleteTooltipMessage: undefined,
+});
 
 const route = useRoute();
 const router = useRouter();
@@ -74,7 +79,6 @@ listingStore._refresh = fetch.refresh;
 listingStore.skeleton = true;
 
 const routingStore = useRoleRoutingStore();
-const guard = useGuard();
 const deleteDialogOpen = ref(false);
 const entityToDelete = ref<RoleClientType | null>(null);
 const tableHeaders = [
@@ -114,6 +118,19 @@ async function deleteEntity() {
     entityToDelete.value = null;
   }
 }
+
+const handleEditClick = (entity: {
+  _id: string;
+}) => {
+
+  const routeConfig = routingStore.routing.getDetailSubRoute(
+    entity._id,
+    'main-data',
+  );
+
+  router.push(routeConfig);
+};
+
 </script>
 
 <template>
@@ -131,14 +148,15 @@ async function deleteEntity() {
       >
         <AntEditButton
           icon-variant
-          :to="routingStore.routing.getDetailRoute(element._id)"
-          size="xs"
+          :size="Size.xs"
+          @click="handleEditClick(element)"
         />
 
         <AntDeleteButton
           icon-variant
-          size="xs"
-          :can-delete="guard.hasPermissionTo(PermissionId.CAN_DELETE_ROLE)"
+          :size="Size.xs"
+          :disabled="!canDelete"
+          :delete-tooltip-message="deleteTooltipMessage"
           @click="() => openDeleteEntity(element)"
         />
       </div>

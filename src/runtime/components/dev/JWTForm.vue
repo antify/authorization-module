@@ -20,8 +20,10 @@ import {
 const props = withDefaults(defineProps<{
   open: boolean;
   defaultToken?: Partial<JsonWebToken>;
+  unknownGroupLabel?: string;
 }>(), {
   defaultToken: () => ({}),
+  unknownGroupLabel: 'Others',
 });
 const emit = defineEmits([
   'update:open',
@@ -141,6 +143,50 @@ watch(() => props.open, (val) => {
 });
 
 onMounted(() => setTokenValue());
+
+const groupedPermissions = computed(() => {
+  const groups: Record<string, Permission[]> = {};
+
+  allPermissions.value.forEach((permission) => {
+    const groupName = permission.group || props.unknownGroupLabel;
+
+    if (!groups[groupName]) {
+      groups[groupName] = [];
+    }
+
+    groups[groupName].push(permission);
+  });
+
+  return groups;
+});
+
+function isGroupSelected(permissionsInGroup: Permission[]): boolean {
+  if (permissionsInGroup.length === 0) return false;
+
+  return permissionsInGroup.every(p => token.value.permissions.includes(p.id));
+}
+
+function toggleGroup(permissionsInGroup: Permission[]) {
+  const groupIds = permissionsInGroup.map(p => p.id);
+  const currentlySelected = [
+    ...token.value.permissions,
+  ];
+
+  if (isGroupSelected(permissionsInGroup)) {
+    token.value.permissions = currentlySelected.filter(id => !groupIds.includes(id));
+  } else {
+    const newSelection = [
+      ...currentlySelected,
+    ];
+    groupIds.forEach(id => {
+      if (!newSelection.includes(id)) {
+        newSelection.push(id);
+      }
+    });
+    token.value.permissions = newSelection;
+  }
+}
+
 </script>
 
 <template>
@@ -201,11 +247,43 @@ onMounted(() => setTokenValue());
             </div>
           </AntField>
 
-          <AntCheckboxGroup
-            v-model="token.permissions"
-            :skeleton="skeleton"
-            :checkboxes="permissions"
-          />
+          <div class="w-full space-y-6 mt-2">
+            <div
+              v-for="(permissionsInGroup, groupName, index) in groupedPermissions"
+              :key="groupName"
+            >
+              <hr
+                v-if="index > 0"
+                class="mb-4 border-neutral-200"
+              >
+
+              <div class="mb-4">
+                <AntCheckbox
+                  :model-value="isGroupSelected(permissionsInGroup)"
+                  :disabled="token.isAdmin"
+                  :skeleton="skeleton"
+                  active-color-class="text-primary-500"
+                  @update:model-value="toggleGroup(permissionsInGroup)"
+                >
+                  <span class="mb-2 uppercase">
+                    {{ groupName }}
+                  </span>
+                </AntCheckbox>
+              </div>
+
+              <div class="ml-6">
+                <AntCheckboxGroup
+                  v-model="token.permissions"
+                  :skeleton="skeleton"
+                  :disabled="token.isAdmin"
+                  :checkboxes="permissionsInGroup.map(item => ({
+                    value: item.id,
+                    label: item.name
+                  }))"
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </AntFormGroup>
 

@@ -2,7 +2,6 @@
 import {
   computed,
   onMounted,
-  useGuard,
 } from '#imports';
 import {
   useRoleRoutingStore,
@@ -10,22 +9,36 @@ import {
   useDeleteRoleStore,
 } from '../../stores/roleCrud';
 import {
-  PermissionId,
-} from '../../permissions';
-import {
-  TabItemState,
+  TabItemState, InputState, AntTooltip,
 } from '#ui-module';
 import {
   AntCrudDetail,
   AntCrudDetailNav,
   AntCrudDetailActions,
+  AntSaveButton,
+  AntSaveAndNewButton,
 } from '@antify/default-template';
+
+withDefaults(defineProps<{
+  canCreate?: boolean;
+  canUpdate?: boolean;
+  canDelete?: boolean;
+  createTooltipMessage?: string;
+  updateTooltipMessage?: string;
+  deleteTooltipMessage?: string;
+}>(), {
+  canCreate: true,
+  canUpdate: true,
+  canDelete: true,
+  createTooltipMessage: undefined,
+  updateTooltipMessage: undefined,
+  deleteTooltipMessage: undefined,
+});
 
 const routingStore = useRoleRoutingStore();
 const detailStore = useRoleDetailStore();
 const deleteStore = useDeleteRoleStore();
 const roleId = routingStore.routing.getEntityId();
-const guard = useGuard();
 const tabItems = computed(() => ([
   {
     // TODO:: remove id if @antify/ui-module #11 is solved
@@ -58,7 +71,8 @@ onMounted(() => {
         :get-entity-name="() => `${detailStore.entity.name}`"
         :delete-button-disabled="detailStore.formDisabled"
         :show-delete-button="!routingStore.routing.isCreatePage.value"
-        :can-delete="guard.hasPermissionTo(PermissionId.CAN_DELETE_ROLE)"
+        :can-delete="canDelete"
+        :delete-tooltip-message="deleteTooltipMessage"
         @delete="() => deleteStore.execute(detailStore.entity._id as string)"
       />
     </template>
@@ -69,6 +83,9 @@ onMounted(() => {
       <AntCrudDetailActions
         :skeleton="detailStore.skeleton"
         :disabled="detailStore.formDisabled"
+        :can-save="canUpdate || canCreate"
+        :save-tooltip-message="!canCreate ? updateTooltipMessage : createTooltipMessage"
+        :save-and-new-tooltip-message="!canCreate ? updateTooltipMessage : createTooltipMessage"
         @back="() => routingStore.routing.goToListingPage()"
         @save="() => detailStore.save()"
         @save-and-new="() => detailStore.saveAndNew()"

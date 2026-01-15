@@ -12,3 +12,7 @@ export type Authorization = {
   isAdmin: boolean;
   allPermissions: string[];
 };
+
+export type {
+  SecurityRule,
+} from './utils/auth-wrapper';

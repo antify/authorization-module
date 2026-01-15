@@ -3,7 +3,7 @@ import {
 } from '../fixture-utils/role';
 import {
   PermissionId,
-} from '../../../../../src/runtime/permissions';
+} from '../../../../shared/permissions';
 import {
   defineFixture,
 } from '@antify/database';

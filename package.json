@@ -28,8 +28,8 @@
     "test": "vitest run"
   },
   "peerDependencies": {
-    "@antify/ui-module": "^2.13.20",
-    "@antify/default-template": "^0.0.16"
+    "@antify/ui-module": "^2.13.34",
+    "@antify/default-template": "^0.0.20"
   },
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.7.2",

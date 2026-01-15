@@ -9,29 +9,42 @@ import type {
   RouteParams,
 } from '#vue-router';
 import {
-  useGuard,
-} from '#imports';
-import {
-  PermissionId,
-} from '../../permissions';
-import {
   AntCrud,
   AntCrudTableFilter,
   AntCrudTableNav,
+  AntCreateButton,
 } from '@antify/default-template';
+import {
+  InputState, AntTooltip,
+} from '#ui-module';
+import {
+  State, AntButton,
+} from '@antify/ui';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   detailRouteName: string;
   listingRouteName: string;
   getDetailRouteParams?: () => RouteParams;
   getListingRouteParams?: () => RouteParams;
   entityIdentifier?: string;
   createEntityIdentifier?: string;
-}>();
+  canCreate?: boolean;
+  canUpdate?: boolean;
+  canDelete?: boolean;
+  createTooltipMessage?: string;
+  updateTooltipMessage?: string;
+  deleteTooltipMessage?: string;
+}>(), {
+  canCreate: true,
+  canUpdate: true,
+  canDelete: true,
+  createTooltipMessage: undefined,
+  updateTooltipMessage: undefined,
+  deleteTooltipMessage: undefined,
+});
 const routingStore = useRoleRoutingStore();
 const listingStore = useRoleListingStore();
 const detailStore = useRoleDetailStore();
-const guard = useGuard();
 
 routingStore.options = props;
 
@@ -47,15 +60,22 @@ function onCreate() {
       <AntCrudTableFilter
         :full-width="routingStore.routing.isListingPage.value"
         :skeleton="listingStore.skeleton"
-        :can-delete="guard.hasPermissionTo(PermissionId.CAN_DELETE_ROLE)"
+        :can-create="canCreate"
         :show-filter="false"
+        :create-tooltip-message="createTooltipMessage"
         @search="() => listingStore.refresh()"
         @create="onCreate"
       />
     </template>
 
     <template #table-section>
-      <RoleTable :show-light-version="routingStore.routing.isDetailPage.value" />
+      <RoleTable
+        :can-update="canUpdate"
+        :update-tooltip-message="updateTooltipMessage"
+        :can-delete="canDelete"
+        :delete-tooltip-message="deleteTooltipMessage"
+        :show-light-version="routingStore.routing.isDetailPage.value"
+      />
     </template>
 
     <template #table-nav-section>

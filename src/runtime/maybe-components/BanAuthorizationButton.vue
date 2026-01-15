@@ -14,9 +14,6 @@ import type {
   ChangeBanStatusRequestBody,
 } from '~/src/runtime/glue/maybe-components/ban-authorization-button/types';
 import {
-  PermissionId,
-} from '../permissions';
-import {
   State,
 } from '#ui-module';
 import {
@@ -38,6 +35,8 @@ const props = withDefaults(defineProps<{
   areYouSureToBanDialogMessage?: string;
   areYouSureToUnbanDialogMessage?: string;
   entityName?: string;
+  canBan?:boolean;
+  canUnban?:boolean;
 }>(), {
   label: 'Ban',
   description: 'Ban the user from this application. This will prevent the user from logging in.',
@@ -109,8 +108,8 @@ const hasPermission = computed(() => {
   }
 
   return _modelValue.value.isBanned ?
-    guard.hasPermissionTo(PermissionId.CAN_UNBAN_AUTHORIZATION) :
-    guard.hasPermissionTo(PermissionId.CAN_BAN_AUTHORIZATION);
+    props.canUnban :
+    props.canBan;
 });
 </script>
 

@@ -1,13 +1,10 @@
 import defineDatabaseHandler from '#authorization-module-database-handler';
 import {
-  createError, defineEventHandler, readBody,
+  defineEventHandler, readBody,
 } from '#imports';
 import {
   type DatabaseHandler,
 } from '../../../databaseHandler';
-import {
-  PermissionId,
-} from '../../../../permissions';
 import {
   isLoggedInHandler,
 } from '../../../handlers';
@@ -31,13 +28,6 @@ export default defineEventHandler(async (event) => {
   const body = await requestSchema.validate(await readBody(event));
   const guard = await isLoggedInHandler(event);
   const eventReader = useEventReader();
-
-  if (!guard.hasPermissionTo(body.action === 'ban' ? PermissionId.CAN_BAN_AUTHORIZATION : PermissionId.CAN_UNBAN_AUTHORIZATION)) {
-    throw createError({
-      statusCode: 403,
-      statusMessage: 'Forbidden',
-    });
-  }
 
   if (body.authorizationId === guard.getId()) {
     throw new Error(`You can not ${body.action} yourself`);

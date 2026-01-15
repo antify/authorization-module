@@ -1,11 +1,5 @@
 import defineDatabaseHandler from '#authorization-module-database-handler';
 import {
-  isAuthorizedHandler,
-} from '../../../../handlers';
-import {
-  PermissionId,
-} from '../../../../../permissions';
-import {
   defineEventHandler,
   getQuery,
 } from '#imports';
@@ -22,8 +16,6 @@ import {
 } from '../../../../utils';
 
 export default defineEventHandler(async (event) => {
-  await isAuthorizedHandler(event, PermissionId.CAN_READ_ROLE);
-
   const {
     p, ipp,
   } = await object({

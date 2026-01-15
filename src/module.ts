@@ -7,6 +7,7 @@ import {
   defineNuxtModule,
   addComponentsDir,
   addServerHandler,
+  addServerImports,
 } from '@nuxt/kit';
 import {
   join, relative,
@@ -14,21 +15,19 @@ import {
 import type {
   Permission,
 } from './runtime/types';
+
 import {
-  PermissionId,
-} from './runtime/permissions';
-import {
-  object, string, number, array, mixed,
+  object, string, number, array,
 } from 'yup';
 
 export type ModuleOptions = {
   /**
-   * Secret to hash the json web token
+   * Secret to hash the JSON web token
    */
   jwtSecret: string;
 
   /**
-   * Expiration time in minutes for the json web token.
+   * Expiration time in minutes for the JSON web token.
    * Default is 8 hours (480 minutes)
    */
   jwtExpiration?: number;
@@ -56,20 +55,13 @@ export type ModuleOptions = {
   tenantIdCookieName?: string;
 
   /**
-   * List of permissions, that are available in the system.
-   * This list can get extended by other modules.
-   *
-   * It is required to show it in role CRUD.
-   */
-  permissions?: Permission[];
-
-  /**
    * Client side factory to create app handlers for different app contexts.
    * With an app handler, you can manage what should happen if a user has no permissions or is unauthorized.
    *
    * Must return a defineAppHandlerFactory() function.
    */
   appHandlerFactoryPath: string;
+  permissions?: Permission[];
 };
 
 const optionsValidator = object().shape({
@@ -81,6 +73,7 @@ const optionsValidator = object().shape({
   permissions: array().of(object().shape({
     id: string().required(),
     name: string().required(),
+    group: string().optional(),
   })).default([]),
   appHandlerFactoryPath: string().required('App handler factory path is required'),
 });
@@ -128,39 +121,10 @@ export default defineNuxtModule<ModuleOptions>({
     const typesBuildDir = join(nuxt.options.buildDir, 'types');
 
     nuxt.options.build.transpile.push(runtimeDir);
-    // nuxt.options.alias['#authorization-module'] = resolve(runtimeDir, 'server');
+    nuxt.options.alias['#authorization-module'] = resolve(runtimeDir, 'server');
 
     nuxt.options.runtimeConfig.authorizationModule = {
       ..._options,
-      permissions: [
-        ..._options.permissions,
-        ...[
-          {
-            id: PermissionId.CAN_BAN_AUTHORIZATION,
-            name: 'Can ban authorization',
-          },
-          {
-            id: PermissionId.CAN_UNBAN_AUTHORIZATION,
-            name: 'Can unban authorization',
-          },
-          {
-            id: PermissionId.CAN_UPDATE_ROLE,
-            name: 'Can update role',
-          },
-          {
-            id: PermissionId.CAN_DELETE_ROLE,
-            name: 'Can delete role',
-          },
-          {
-            id: PermissionId.CAN_CREATE_ROLE,
-            name: 'Can create role',
-          },
-          {
-            id: PermissionId.CAN_READ_ROLE,
-            name: 'Can read role',
-          },
-        ],
-      ],
     };
 
     nuxt.options.runtimeConfig.public.authorizationModule = {
@@ -168,17 +132,22 @@ export default defineNuxtModule<ModuleOptions>({
       tenantIdCookieName: _options.tenantIdCookieName,
     };
 
-    nuxt.hook('modules:done', async () => {
-      // TODO:: type hook
-      const permissions: Permission[] = [];
-      //
-      await nuxt.callHook('authorization-module:add-permissions', permissions);
+    interface AuthRuntimeConfig {
+      permissions?: Permission[];
+    }
 
-      //@ts-ignore
-      nuxt.options.runtimeConfig.authorizationModule.permissions = [
-        // @ts-ignore
-        ...nuxt.options.runtimeConfig.authorizationModule.permissions,
-        ...permissions,
+    nuxt.hook('modules:done', async () => {
+      let permissionsFromHooks: Permission[] = [];
+
+      permissionsFromHooks = await nuxt.callHook('authorization-module:add-permissions', permissionsFromHooks);
+
+      const authConfig = nuxt.options.runtimeConfig.authorizationModule as AuthRuntimeConfig;
+      const currentPermissions = (authConfig.permissions || []) as Permission[];
+      const permissionsToAdd = (permissionsFromHooks || []) as Permission[];
+
+      authConfig.permissions = [
+        ...currentPermissions,
+        ...permissionsToAdd,
       ];
     });
 
@@ -214,6 +183,7 @@ export default defineNuxtModule<ModuleOptions>({
         `  const isAuthorizedHandler: typeof import('${relative(typesBuildDir, join(runtimeDir, 'server', 'handlers'))}')['isAuthorizedHandler']`,
         `  const useEventReader: typeof import('${relative(typesBuildDir, join(runtimeDir, 'server', 'utils'))}')['useEventReader']`,
         `  export * from '${relative(typesBuildDir, join(runtimeDir, 'types'))}'`,
+        `  export * from '${relative(typesBuildDir, join(runtimeDir, 'index'))}'`,
         '}',
         // "declare module '@nuxt/schema' {",
         // "	export interface RuntimeNuxtHooks {",
@@ -242,6 +212,13 @@ export default defineNuxtModule<ModuleOptions>({
       prefix: 'AuthorizationModule',
       global: true,
     });
+
+    addServerImports([
+      {
+        name: 'defineSecurityMiddleware',
+        from: resolve('./runtime/server/utils/auth-wrapper'),
+      },
+    ]);
 
     if (_options.databaseHandler) {
       await addComponentsDir({

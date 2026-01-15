@@ -5,11 +5,18 @@ import {
   useUiClient,
   computed,
   ref,
-  watch,
+  watch, useGuard,
 } from '#imports';
 import type {
   Authorization,
 } from '../../../src/runtime/types';
+import {
+  PermissionId,
+} from '#shared/permissions';
+
+const guard = useGuard();
+const canBan = computed(() => guard.hasPermissionTo(PermissionId.CAN_BAN_AUTHORIZATION));
+const canUnban = computed(() => guard.hasPermissionTo(PermissionId.CAN_UNBAN_AUTHORIZATION));
 
 const {
   data: users,
@@ -78,6 +85,8 @@ watch(selectedUserId, (val) => {
           v-model="authorization"
           :skeleton="skeleton"
           :disabled="!authorization"
+          :can-ban="canBan"
+          :can-unban="canUnban"
         />
       </AntFormGroup>
     </AntFormGroup>
