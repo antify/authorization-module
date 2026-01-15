@@ -9,7 +9,7 @@ import {
   roleServerSchema,
 } from '../../glue/stores/role-crud';
 import {
-  computed, onMounted, ref, useUiClient,
+  computed, onMounted, ref, useUiClient, watch,
 } from '#imports';
 import {
   Schema,
@@ -87,7 +87,13 @@ function toggleGroup(permissionsInGroup: ResponsePermissionType[]) {
   }
 }
 
-onMounted(() => nameInputRef.value?.focus());
+watch(nameInputRef, (val) => {
+  if (!val) {
+    return;
+  }
+
+  val.focus();
+});
 </script>
 
 <template>
