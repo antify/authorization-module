@@ -29,7 +29,7 @@ const jwtModalOpen = ref(false);
 
 <template>
   <div
-    class="fixed p-1.5 bg-neutral-100 border border-neutral-300 rounded-full flex items-center justify-center cursor-pointer hover:drop-shadow-lg transition-all"
+    class="fixed z-50 p-1.5 bg-neutral-100 border border-neutral-300 rounded-full flex items-center justify-center cursor-pointer hover:drop-shadow-lg transition-all"
     :class="{'top-2.5 right-2.5': position === 'top-right', 'bottom-2.5 right-2.5': position === 'bottom-right', 'bottom-2.5 left-2.5': position === 'bottom-left', 'top-2.5 left-2.5': position === 'top-left'}"
     @click="() => jwtModalOpen = !jwtModalOpen"
   >
