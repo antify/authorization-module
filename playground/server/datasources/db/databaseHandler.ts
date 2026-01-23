@@ -135,8 +135,11 @@ export default defineDatabaseHandler({
     }
 
     if (pagination?.page !== undefined || pagination?.itemsPerPage !== undefined) {
+      const countDocuments = await RoleModel.countDocuments(query);
+      const pages = Math.ceil(countDocuments / pagination.itemsPerPage);
+
       return RoleModel.find(query)
-        .skip((pagination.page - 1) * pagination.itemsPerPage)
+        .skip(((pagination.page > pages || pagination.page <= 0 ? 1 : pagination.page) - 1) * pagination.itemsPerPage)
         .limit(pagination.itemsPerPage)
         .collation({
           locale: 'en',
