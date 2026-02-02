@@ -17,8 +17,10 @@ import {
 
 const props = withDefaults(defineProps<{
   unknownGroupLabel?: string;
+  leadingTooltipMessage?: string;
 }>(), {
   unknownGroupLabel: 'Others',
+  leadingTooltipMessage: 'Um alle Rechte auswählen zu können, müssen Sie folgende Rechte aktivieren:',
 });
 
 const permissionDisableTooltip = 'Admin role has all permissions. Mark this role as non-admin to select permissions manually.';
@@ -88,10 +90,10 @@ function toggleGroup(permissionsInGroup: ResponsePermissionType[]) {
 }
 
 function isLeadingPermissionSelected(permissionsInGroup: ResponsePermissionType[]): boolean {
-  const leading = permissionsInGroup.find(p => p.isLeading);
-  if (!leading) return true;
+  const leadingPermissions = permissionsInGroup.filter(p => p.isLeading);
+  if (leadingPermissions.length === 0) return true;
 
-  return roleDetailStore.entity.permissions.includes(leading.id);
+  return leadingPermissions.every(p => roleDetailStore.entity.permissions.includes(p.id));
 }
 
 watch(() => roleDetailStore.entity.permissions, (newPermissions) => {
@@ -102,15 +104,16 @@ watch(() => roleDetailStore.entity.permissions, (newPermissions) => {
 
   for (const groupName in groupedPermissions.value) {
     const group = groupedPermissions.value[groupName];
-    const leading = group.find(p => p.isLeading);
 
-    if (leading && !newPermissions.includes(leading.id)) {
-      const otherGroupIds = group.filter(p => !p.isLeading).map(p => p.id);
+    const allLeadsSelected = isLeadingPermissionSelected(group);
 
-      const hasDependents = otherGroupIds.some(id => permissionsToUpdate.includes(id));
+    if (!allLeadsSelected) {
+      const dependentIds = group.filter(p => !p.isLeading).map(p => p.id);
 
-      if (hasDependents) {
-        permissionsToUpdate = permissionsToUpdate.filter(id => !otherGroupIds.includes(id));
+      const hasSelectedDependents = dependentIds.some(id => permissionsToUpdate.includes(id));
+
+      if (hasSelectedDependents) {
+        permissionsToUpdate = permissionsToUpdate.filter(id => !dependentIds.includes(id));
         changed = true;
       }
     }
@@ -223,20 +226,37 @@ watch(nameInputRef, (val) => {
                   </span>
                 </AntCheckbox>
               </div>
-
               <div class="ml-6">
-                <AntCheckboxGroup
-                  v-model="roleDetailStore.entity.permissions"
-                  :skeleton="roleDetailStore.skeleton"
-                  :disabled="roleDetailStore.entity.isAdmin"
-                  :checkboxes="permissionsInGroup.map(item => {
-                    return {
-                      value: item.id,
-                      label: item.name,
-                      disabled: !item.isLeading && !isLeadingPermissionSelected(permissionsInGroup)
-                    };
-                  })"
-                />
+                <AntTooltip
+                  :disabled="roleDetailStore.entity.isAdmin || isLeadingPermissionSelected(permissionsInGroup)"
+                >
+                  <AntCheckboxGroup
+                    v-model="roleDetailStore.entity.permissions"
+                    :skeleton="roleDetailStore.skeleton"
+                    :disabled="roleDetailStore.entity.isAdmin"
+                    :checkboxes="permissionsInGroup.map(item => {
+                      return {
+                        value: item.id,
+                        label: item.name,
+                        disabled: !item.isLeading && !isLeadingPermissionSelected(permissionsInGroup)
+                      };
+                    })"
+                  />
+
+                  <template #content>
+                    <div>
+                      {{ leadingTooltipMessage }}
+                      <ul class="mt-1 list-disc pl-4 text-sm">
+                        <li
+                          v-for="p in permissionsInGroup.filter(p => p.isLeading && !roleDetailStore.entity.permissions.includes(p.id))"
+                          :key="p.id"
+                        >
+                          {{ p.name }}
+                        </li>
+                      </ul>
+                    </div>
+                  </template>
+                </AntTooltip>
               </div>
             </div>
           </div>

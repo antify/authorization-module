@@ -46,6 +46,7 @@ export const permissions: Permission[] = [
     id: PermissionId.CAN_CREATE_ROLE,
     name: 'Can create new roles',
     group: 'Role Management',
+    isLeading: true,
   },
   {
     id: PermissionId.CAN_UPDATE_ROLE,

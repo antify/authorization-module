@@ -136,14 +136,6 @@ function createToken(data: Partial<JsonWebToken> = {}): JsonWebToken {
   };
 }
 
-watch(() => props.open, (val) => {
-  if (val) {
-    setTokenValue();
-  }
-});
-
-onMounted(() => setTokenValue());
-
 const groupedPermissions = computed(() => {
   const groups: Record<string, Permission[]> = {};
 
@@ -186,6 +178,45 @@ function toggleGroup(permissionsInGroup: Permission[]) {
     token.value.permissions = newSelection;
   }
 }
+
+function isLeadingPermissionSelected(permissionsInGroup: Permission[]): boolean {
+  const leadingPermissions = permissionsInGroup.filter(p => p.isLeading);
+  if (leadingPermissions.length === 0) return true;
+
+  return leadingPermissions.every(p => token.value.permissions.includes(p.id));
+}
+
+watch(() => token.value.permissions, (newPermissions) => {
+  let permissionsToUpdate = [
+    ...newPermissions,
+  ];
+  let changed = false;
+
+  for (const groupName in groupedPermissions.value) {
+    const group = groupedPermissions.value[groupName];
+    if (!isLeadingPermissionSelected(group)) {
+      const dependentIds = group.filter(p => !p.isLeading).map(p => p.id);
+      const hasSelectedDependents = dependentIds.some(id => permissionsToUpdate.includes(id));
+
+      if (hasSelectedDependents) {
+        permissionsToUpdate = permissionsToUpdate.filter(id => !dependentIds.includes(id));
+        changed = true;
+      }
+    }
+  }
+
+  if (changed) token.value.permissions = permissionsToUpdate;
+}, {
+  deep: true,
+});
+
+watch(() => props.open, (val) => {
+  if (val) {
+    setTokenValue();
+  }
+});
+
+onMounted(() => setTokenValue());
 
 </script>
 
@@ -278,7 +309,8 @@ function toggleGroup(permissionsInGroup: Permission[]) {
                   :disabled="token.isAdmin"
                   :checkboxes="permissionsInGroup.map(item => ({
                     value: item.id,
-                    label: item.name
+                    label: item.name,
+                    disabled: !item.isLeading && !isLeadingPermissionSelected(permissionsInGroup)
                   }))"
                 />
               </div>
