@@ -17,10 +17,10 @@ import {
 
 const props = withDefaults(defineProps<{
   unknownGroupLabel?: string;
-  leadingTooltipMessage?: string;
+  dependencyTooltipMessage?: string;
 }>(), {
   unknownGroupLabel: 'Others',
-  leadingTooltipMessage: 'Um alle Rechte auswählen zu können, müssen Sie folgende Rechte aktivieren:',
+  dependencyTooltipMessage: 'Um alle Rechte auswählen zu können, müssen Sie folgende Rechte aktivieren:',
 });
 
 const permissionDisableTooltip = 'Admin role has all permissions. Mark this role as non-admin to select permissions manually.';
@@ -271,14 +271,14 @@ watch(nameInputRef, (val) => {
                         value: item.id,
                         label: item.name,
                         disabled: isDisabled,
-                        title: isDisabled ? `${props.leadingTooltipMessage} ${missingDeps.join(', ')}` : ''
+                        title: isDisabled ? `${props.dependencyTooltipMessage} ${missingDeps.join(', ')}` : ''
                       };
                     })"
                   />
 
                   <template #content>
                     <div>
-                      {{ leadingTooltipMessage }}
+                      {{ dependencyTooltipMessage }}
                       <ul class="mt-1 list-disc pl-4 text-sm">
                         <li
                           v-for="missingName in [
