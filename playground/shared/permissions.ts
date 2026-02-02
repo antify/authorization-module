@@ -40,6 +40,7 @@ export const permissions: Permission[] = [
     id: PermissionId.CAN_READ_ROLE,
     name: 'Can view roles',
     group: 'Role Management',
+    isLeading: true,
   },
   {
     id: PermissionId.CAN_CREATE_ROLE,

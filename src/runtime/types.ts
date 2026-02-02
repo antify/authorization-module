@@ -6,6 +6,7 @@ export type Permission = {
   id: string;
   name: string;
   group?: string;
+  isLeading?: boolean;
 };
 
 export type JsonWebToken = {

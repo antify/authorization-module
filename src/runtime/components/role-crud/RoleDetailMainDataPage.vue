@@ -68,7 +68,9 @@ function isGroupSelected(permissionsInGroup: ResponsePermissionType[]): boolean 
 
 function toggleGroup(permissionsInGroup: ResponsePermissionType[]) {
   const groupIds = permissionsInGroup.map(p => p.id);
-  const currentlySelected = roleDetailStore.entity.permissions;
+  const currentlySelected = [
+    ...roleDetailStore.entity.permissions,
+  ];
 
   if (isGroupSelected(permissionsInGroup)) {
     roleDetailStore.entity.permissions = currentlySelected.filter(id => !groupIds.includes(id));
@@ -76,16 +78,50 @@ function toggleGroup(permissionsInGroup: ResponsePermissionType[]) {
     const newSelection = [
       ...currentlySelected,
     ];
-
     groupIds.forEach(id => {
       if (!newSelection.includes(id)) {
         newSelection.push(id);
       }
     });
-
     roleDetailStore.entity.permissions = newSelection;
   }
 }
+
+function isLeadingPermissionSelected(permissionsInGroup: ResponsePermissionType[]): boolean {
+  const leading = permissionsInGroup.find(p => p.isLeading);
+  if (!leading) return true;
+
+  return roleDetailStore.entity.permissions.includes(leading.id);
+}
+
+watch(() => roleDetailStore.entity.permissions, (newPermissions) => {
+  let permissionsToUpdate = [
+    ...newPermissions,
+  ];
+  let changed = false;
+
+  for (const groupName in groupedPermissions.value) {
+    const group = groupedPermissions.value[groupName];
+    const leading = group.find(p => p.isLeading);
+
+    if (leading && !newPermissions.includes(leading.id)) {
+      const otherGroupIds = group.filter(p => !p.isLeading).map(p => p.id);
+
+      const hasDependents = otherGroupIds.some(id => permissionsToUpdate.includes(id));
+
+      if (hasDependents) {
+        permissionsToUpdate = permissionsToUpdate.filter(id => !otherGroupIds.includes(id));
+        changed = true;
+      }
+    }
+  }
+
+  if (changed) {
+    roleDetailStore.entity.permissions = permissionsToUpdate;
+  }
+}, {
+  deep: true,
+});
 
 watch(nameInputRef, (val) => {
   if (!val) {
@@ -192,11 +228,14 @@ watch(nameInputRef, (val) => {
                 <AntCheckboxGroup
                   v-model="roleDetailStore.entity.permissions"
                   :skeleton="roleDetailStore.skeleton"
-                  :checkboxes="permissionsInGroup.map(item => ({
-                    value: item.id,
-                    label: item.name
-                  }))"
                   :disabled="roleDetailStore.entity.isAdmin"
+                  :checkboxes="permissionsInGroup.map(item => {
+                    return {
+                      value: item.id,
+                      label: item.name,
+                      disabled: !item.isLeading && !isLeadingPermissionSelected(permissionsInGroup)
+                    };
+                  })"
                 />
               </div>
             </div>
