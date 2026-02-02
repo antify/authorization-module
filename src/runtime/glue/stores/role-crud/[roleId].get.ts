@@ -6,7 +6,7 @@ export const responsePermissionSchema = object({
   id: string().defined(),
   name: string().defined(),
   group: string().optional(),
-  isLeading: boolean().optional(),
+  dependsOn: mixed<string | string[]>().optional(),
 });
 
 export const responseSchema = mixed().oneOf([

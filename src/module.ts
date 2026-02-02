@@ -17,7 +17,7 @@ import type {
 } from './runtime/types';
 
 import {
-  object, string, number, array, boolean,
+  object, string, number, array, mixed,
 } from 'yup';
 
 export type ModuleOptions = {
@@ -74,7 +74,7 @@ const optionsValidator = object().shape({
     id: string().required(),
     name: string().required(),
     group: string().optional(),
-    isLeading: boolean().optional(),
+    dependsOn: mixed<string | string[]>().optional(),
   })).default([]),
   appHandlerFactoryPath: string().required('App handler factory path is required'),
 });

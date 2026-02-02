@@ -89,37 +89,63 @@ function toggleGroup(permissionsInGroup: ResponsePermissionType[]) {
   }
 }
 
-function isLeadingPermissionSelected(permissionsInGroup: ResponsePermissionType[]): boolean {
-  const leadingPermissions = permissionsInGroup.filter(p => p.isLeading);
-  if (leadingPermissions.length === 0) return true;
+function areDependenciesSatisfied(permission: ResponsePermissionType): boolean {
+  if (!permission.dependsOn) return true;
 
-  return leadingPermissions.every(p => roleDetailStore.entity.permissions.includes(p.id));
+  const deps = Array.isArray(permission.dependsOn)
+    ? permission.dependsOn
+    : [
+      permission.dependsOn,
+    ];
+
+  return deps.every(depId => roleDetailStore.entity.permissions.includes(depId));
+}
+
+function getMissingDependencies(permission: ResponsePermissionType): string[] {
+  if (!permission.dependsOn) return [];
+
+  const deps = Array.isArray(permission.dependsOn) ? permission.dependsOn : [
+    permission.dependsOn,
+  ];
+
+  return deps
+    .filter(depId => !roleDetailStore.entity.permissions.includes(depId))
+    .map(depId => {
+      const depLabel = roleDetailStore.allPermissions.find(p => p.id === depId);
+
+      return depLabel ? depLabel.name : depId;
+    });
 }
 
 watch(() => roleDetailStore.entity.permissions, (newPermissions) => {
   let permissionsToUpdate = [
     ...newPermissions,
   ];
-  let changed = false;
+  let changed = true;
+  let totalChanged = false;
 
-  for (const groupName in groupedPermissions.value) {
-    const group = groupedPermissions.value[groupName];
+  while (changed) {
+    changed = false;
+    const countBefore = permissionsToUpdate.length;
 
-    const allLeadsSelected = isLeadingPermissionSelected(group);
+    permissionsToUpdate = permissionsToUpdate.filter(id => {
+      const perm = roleDetailStore.allPermissions.find(p => p.id === id);
+      if (!perm || !perm.dependsOn) return true;
 
-    if (!allLeadsSelected) {
-      const dependentIds = group.filter(p => !p.isLeading).map(p => p.id);
+      const deps = Array.isArray(perm.dependsOn) ? perm.dependsOn : [
+        perm.dependsOn,
+      ];
 
-      const hasSelectedDependents = dependentIds.some(id => permissionsToUpdate.includes(id));
+      return deps.every(depId => permissionsToUpdate.includes(depId));
+    });
 
-      if (hasSelectedDependents) {
-        permissionsToUpdate = permissionsToUpdate.filter(id => !dependentIds.includes(id));
-        changed = true;
-      }
+    if (permissionsToUpdate.length !== countBefore) {
+      changed = true;
+      totalChanged = true;
     }
   }
 
-  if (changed) {
+  if (totalChanged) {
     roleDetailStore.entity.permissions = permissionsToUpdate;
   }
 }, {
@@ -228,17 +254,24 @@ watch(nameInputRef, (val) => {
               </div>
               <div class="ml-6">
                 <AntTooltip
-                  :disabled="roleDetailStore.entity.isAdmin || isLeadingPermissionSelected(permissionsInGroup)"
+                  :disabled="
+                    roleDetailStore.entity.isAdmin ||
+                      permissionsInGroup.every(p => areDependenciesSatisfied(p))
+                  "
                 >
                   <AntCheckboxGroup
                     v-model="roleDetailStore.entity.permissions"
                     :skeleton="roleDetailStore.skeleton"
                     :disabled="roleDetailStore.entity.isAdmin"
                     :checkboxes="permissionsInGroup.map(item => {
+                      const missingDeps = getMissingDependencies(item);
+                      const isDisabled = missingDeps.length > 0;
+
                       return {
                         value: item.id,
                         label: item.name,
-                        disabled: !item.isLeading && !isLeadingPermissionSelected(permissionsInGroup)
+                        disabled: isDisabled,
+                        title: isDisabled ? `${props.leadingTooltipMessage} ${missingDeps.join(', ')}` : ''
                       };
                     })"
                   />
@@ -248,10 +281,12 @@ watch(nameInputRef, (val) => {
                       {{ leadingTooltipMessage }}
                       <ul class="mt-1 list-disc pl-4 text-sm">
                         <li
-                          v-for="p in permissionsInGroup.filter(p => p.isLeading && !roleDetailStore.entity.permissions.includes(p.id))"
-                          :key="p.id"
+                          v-for="missingName in [
+                            ...new Set(permissionsInGroup.flatMap(p => getMissingDependencies(p)))
+                          ]"
+                          :key="missingName"
                         >
-                          {{ p.name }}
+                          {{ missingName }}
                         </li>
                       </ul>
                     </div>
