@@ -28,19 +28,11 @@ const props = withDefaults(defineProps<{
   getListingRouteParams?: () => RouteParams;
   entityIdentifier?: string;
   createEntityIdentifier?: string;
-  canCreate?: boolean;
-  canUpdate?: boolean;
-  canDelete?: boolean;
-  createTooltipMessage?: string;
-  updateTooltipMessage?: string;
-  deleteTooltipMessage?: string;
+  canEdit?: boolean;
+  editTooltipMessage?: string;
 }>(), {
-  canCreate: true,
-  canUpdate: true,
-  canDelete: true,
-  createTooltipMessage: undefined,
-  updateTooltipMessage: undefined,
-  deleteTooltipMessage: undefined,
+  canEdit: true,
+  editTooltipMessage: undefined,
 });
 const routingStore = useRoleRoutingStore();
 const listingStore = useRoleListingStore();
@@ -60,9 +52,9 @@ function onCreate() {
       <AntCrudTableFilter
         :full-width="routingStore.routing.isListingPage.value"
         :skeleton="listingStore.skeleton"
-        :can-create="canCreate"
+        :can-create="canEdit"
         :show-filter="false"
-        :create-tooltip-message="createTooltipMessage"
+        :create-tooltip-message="editTooltipMessage"
         @search="() => listingStore.refresh()"
         @create="onCreate"
       />
@@ -70,10 +62,8 @@ function onCreate() {
 
     <template #table-section>
       <RoleTable
-        :can-update="canUpdate"
-        :update-tooltip-message="updateTooltipMessage"
-        :can-delete="canDelete"
-        :delete-tooltip-message="deleteTooltipMessage"
+        :can-update="canEdit"
+        :update-tooltip-message="editTooltipMessage"
         :show-light-version="routingStore.routing.isDetailPage.value"
       />
     </template>

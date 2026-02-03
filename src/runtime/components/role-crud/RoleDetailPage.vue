@@ -20,19 +20,11 @@ import {
 } from '@antify/default-template';
 
 withDefaults(defineProps<{
-  canCreate?: boolean;
-  canUpdate?: boolean;
-  canDelete?: boolean;
-  createTooltipMessage?: string;
-  updateTooltipMessage?: string;
-  deleteTooltipMessage?: string;
+  canEdit?: boolean;
+  editTooltipMessage?: string;
 }>(), {
-  canCreate: true,
-  canUpdate: true,
-  canDelete: true,
-  createTooltipMessage: undefined,
-  updateTooltipMessage: undefined,
-  deleteTooltipMessage: undefined,
+  canEdit: true,
+  editTooltipMessage: undefined,
 });
 
 const routingStore = useRoleRoutingStore();
@@ -71,8 +63,8 @@ onMounted(() => {
         :get-entity-name="() => `${detailStore.entity.name}`"
         :delete-button-disabled="detailStore.formDisabled"
         :show-delete-button="!routingStore.routing.isCreatePage.value"
-        :can-delete="canDelete"
-        :delete-tooltip-message="deleteTooltipMessage"
+        :can-delete="canEdit"
+        :delete-tooltip-message="editTooltipMessage"
         @delete="() => deleteStore.execute(detailStore.entity._id as string)"
       />
     </template>
@@ -83,9 +75,9 @@ onMounted(() => {
       <AntCrudDetailActions
         :skeleton="detailStore.skeleton"
         :disabled="detailStore.formDisabled"
-        :can-save="canUpdate || canCreate"
-        :save-tooltip-message="!canCreate ? updateTooltipMessage : createTooltipMessage"
-        :save-and-new-tooltip-message="!canCreate ? updateTooltipMessage : createTooltipMessage"
+        :can-save="canEdit"
+        :save-tooltip-message="editTooltipMessage"
+        :save-and-new-tooltip-message="editTooltipMessage"
         @back="() => routingStore.routing.goToListingPage()"
         @save="() => detailStore.save()"
         @save-and-new="() => detailStore.saveAndNew()"
