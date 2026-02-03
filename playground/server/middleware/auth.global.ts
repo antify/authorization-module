@@ -32,20 +32,16 @@ const SECURITY_RULES: SecurityRule[] = [
   {
     pattern: /^\/api\/authorization-module\/stores\/role-crud$/,
     method: 'POST',
-    handler: async (event) => {
-      const body = await readBody(event);
-
-      event.context.body = body;
-
-      const permission = body?._id ? PermissionId.CAN_UPDATE_ROLE : PermissionId.CAN_CREATE_ROLE;
-
-      await isAuthorizedHandler(event, permission);
+    handler: async (event: H3Event) => {
+      await isAuthorizedHandler(event, PermissionId.CAN_EDIT_ROLE);
     },
   },
   {
     pattern: /^\/api\/authorization-module\/stores\/role-crud\/[a-zA-Z0-9_-]+$/,
     method: 'DELETE',
-    handler: async (event: H3Event) => isAuthorizedHandler(event, PermissionId.CAN_DELETE_ROLE),
+    handler: async (event: H3Event) => {
+      await isAuthorizedHandler(event, PermissionId.CAN_EDIT_ROLE);
+    },
   },
   {
     pattern: /^\/api\/authorization-module\/maybe-components\/ban-authorization-button\/change-ban-status$/,

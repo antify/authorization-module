@@ -10,10 +10,8 @@ export enum PermissionId {
   CAN_UNBAN_AUTHORIZATION = 'CAN_UNBAN_AUTHORIZATION',
 
   // Role management
-  CAN_UPDATE_ROLE = 'CAN_UPDATE_ROLE',
-  CAN_DELETE_ROLE = 'CAN_DELETE_ROLE',
-  CAN_CREATE_ROLE = 'CAN_CREATE_ROLE',
   CAN_READ_ROLE = 'CAN_READ_ROLE',
+  CAN_EDIT_ROLE = 'CAN_EDIT_ROLE',
 }
 
 export const permissions: Permission[] = [
@@ -42,23 +40,11 @@ export const permissions: Permission[] = [
     group: 'Role Management',
   },
   {
-    id: PermissionId.CAN_CREATE_ROLE,
-    name: 'Can create new roles',
-    group: 'Role Management',
-    dependsOn: PermissionId.CAN_READ_ROLE,
-  },
-  {
-    id: PermissionId.CAN_UPDATE_ROLE,
+    id: PermissionId.CAN_EDIT_ROLE,
     name: 'Can edit roles',
     group: 'Role Management',
     dependsOn: [
       PermissionId.CAN_READ_ROLE,
-      PermissionId.CAN_CREATE_ROLE,
     ] ,
-  },
-  {
-    id: PermissionId.CAN_DELETE_ROLE,
-    name: 'Can delete roles',
-    group: 'Role Management',
   },
 ];
