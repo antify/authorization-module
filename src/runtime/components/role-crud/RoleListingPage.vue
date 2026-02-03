@@ -62,8 +62,8 @@ function onCreate() {
 
     <template #table-section>
       <RoleTable
-        :can-update="canEdit"
-        :update-tooltip-message="editTooltipMessage"
+        :can-edit="canEdit"
+        :edit-tooltip-message="editTooltipMessage"
         :show-light-version="routingStore.routing.isDetailPage.value"
       />
     </template>

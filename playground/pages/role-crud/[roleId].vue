@@ -18,20 +18,14 @@ definePageMeta({
 });
 
 const guard = useGuard();
-const canCreate = computed(() => guard.hasPermissionTo(PermissionId.CAN_CREATE_ROLE));
-const canUpdate = computed(() => guard.hasPermissionTo(PermissionId.CAN_UPDATE_ROLE));
-const canDelete = computed(() => guard.hasPermissionTo(PermissionId.CAN_DELETE_ROLE));
+const canEdit = computed(() => guard.hasPermissionTo(PermissionId.CAN_EDIT_ROLE));
 
 </script>
 
 <template>
   <AuthorizationModuleRoleDetailPage
-    :can-create="canCreate"
-    :can-update="canUpdate"
-    :can-delete="canDelete"
-    :create-tooltip-message="'Insufficient permissions to Create'"
-    :update-tooltip-message="'Insufficient permissions to Update'"
-    :delete-tooltip-message="'Insufficient permissions to Delete'"
+    :can-edit="canEdit"
+    :edit-tooltip-message="'Insufficient permissions to Edit'"
   >
     <NuxtPage />
   </AuthorizationModuleRoleDetailPage>
