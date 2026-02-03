@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.3.6 (2026-02-03)
+
+
+### Bug Fixes
+
+* **CI:** Fix build problems in release ([a8899ad](https://github.com/antify/authorization-module/commit/a8899ad33eeaf89f664c6b985d5614de0d91df99))
+
 ### 3.3.5 (2026-01-26)
 
 ### 3.3.4 (2026-01-15)
