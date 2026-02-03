@@ -32,15 +32,11 @@ import {
 
 const props = withDefaults(defineProps<{
   showLightVersion: boolean;
-  canUpdate?: boolean;
-  canDelete?: boolean;
-  updateTooltipMessage?: string;
-  deleteTooltipMessage?: string;
+  canEdit?: boolean;
+  editTooltipMessage?: string;
 }>(), {
-  canUpdate: true,
-  canDelete: true,
-  updateTooltipMessage: undefined,
-  deleteTooltipMessage: undefined,
+  canEdit: true,
+  editTooltipMessage: undefined,
 });
 
 const route = useRoute();
@@ -155,8 +151,8 @@ const handleEditClick = (entity: {
         <AntDeleteButton
           icon-variant
           :size="Size.xs"
-          :disabled="!canDelete"
-          :delete-tooltip-message="deleteTooltipMessage"
+          :disabled="!canEdit"
+          :delete-tooltip-message="editTooltipMessage"
           @click="() => openDeleteEntity(element)"
         />
       </div>

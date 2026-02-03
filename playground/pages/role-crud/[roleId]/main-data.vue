@@ -2,5 +2,7 @@
 </script>
 
 <template>
-  <AuthorizationModuleRoleDetailMainDataPage />
+  <AuthorizationModuleRoleDetailMainDataPage
+    leading-tooltip-message="To be able to select all permissions, you must activate the following permissions:"
+  />
 </template>

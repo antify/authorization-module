@@ -17,8 +17,10 @@ import {
 
 const props = withDefaults(defineProps<{
   unknownGroupLabel?: string;
+  dependencyTooltipMessage?: string;
 }>(), {
   unknownGroupLabel: 'Others',
+  dependencyTooltipMessage: 'To be able to select all permissions, you must activate the following permissions:',
 });
 
 const permissionDisableTooltip = 'Admin role has all permissions. Mark this role as non-admin to select permissions manually.';
@@ -68,7 +70,9 @@ function isGroupSelected(permissionsInGroup: ResponsePermissionType[]): boolean 
 
 function toggleGroup(permissionsInGroup: ResponsePermissionType[]) {
   const groupIds = permissionsInGroup.map(p => p.id);
-  const currentlySelected = roleDetailStore.entity.permissions;
+  const currentlySelected = [
+    ...roleDetailStore.entity.permissions,
+  ];
 
   if (isGroupSelected(permissionsInGroup)) {
     roleDetailStore.entity.permissions = currentlySelected.filter(id => !groupIds.includes(id));
@@ -76,16 +80,123 @@ function toggleGroup(permissionsInGroup: ResponsePermissionType[]) {
     const newSelection = [
       ...currentlySelected,
     ];
-
     groupIds.forEach(id => {
       if (!newSelection.includes(id)) {
         newSelection.push(id);
       }
     });
-
     roleDetailStore.entity.permissions = newSelection;
   }
 }
+
+function areDependenciesSatisfied(permission: ResponsePermissionType): boolean {
+  if (!permission.dependsOn) {
+    return true;
+  }
+
+  const deps = Array.isArray(permission.dependsOn)
+    ? permission.dependsOn
+    : [
+      permission.dependsOn,
+    ];
+
+  return deps.every(depId => roleDetailStore.entity.permissions.includes(depId));
+}
+
+function getMissingDependencies(permission: ResponsePermissionType): string[] {
+  if (!permission.dependsOn) {
+    return [];
+  }
+
+  const deps = Array.isArray(permission.dependsOn) ? permission.dependsOn : [
+    permission.dependsOn,
+  ];
+
+  return deps
+    .filter(depId => !roleDetailStore.entity.permissions.includes(depId))
+    .map(depId => {
+      const depLabel = roleDetailStore.allPermissions.find(p => p.id === depId);
+
+      return depLabel ? depLabel.name : depId;
+    });
+}
+
+const preparedGroups = computed(() => {
+  const result: Record<string, {
+    checkboxes: any[];
+    missingDependencies: string[];
+    isTooltipDisabled: boolean;
+  }> = {};
+
+  for (const [
+    groupName,
+    permissions,
+  ] of Object.entries(groupedPermissions.value)) {
+    const checkboxes = permissions.map(item => {
+      const missingDeps = getMissingDependencies(item);
+      const isDisabled = missingDeps.length > 0;
+
+      return {
+        value: item.id,
+        label: item.name,
+        disabled: isDisabled,
+        title: isDisabled ? `${props.dependencyTooltipMessage} ${missingDeps.join(', ')}` : '',
+      };
+    });
+
+    const allMissingInGroup = [
+      ...new Set(permissions.flatMap(p => getMissingDependencies(p))),
+    ];
+
+    const allSatisfied = permissions.every(p => areDependenciesSatisfied(p));
+
+    result[groupName] = {
+      checkboxes,
+      missingDependencies: allMissingInGroup,
+      isTooltipDisabled: roleDetailStore.entity.isAdmin || allSatisfied,
+    };
+  }
+
+  return result;
+});
+
+watch(() => roleDetailStore.entity.permissions, (newPermissions) => {
+  let permissionsToUpdate = [
+    ...newPermissions,
+  ];
+  let changed = true;
+  let totalChanged = false;
+
+  while (changed) {
+    changed = false;
+    const countBefore = permissionsToUpdate.length;
+
+    permissionsToUpdate = permissionsToUpdate.filter(id => {
+      const perm = roleDetailStore.allPermissions.find(p => p.id === id);
+
+      if (!perm || !perm.dependsOn) {
+        return true;
+      }
+
+      const deps = Array.isArray(perm.dependsOn) ? perm.dependsOn : [
+        perm.dependsOn,
+      ];
+
+      return deps.every(depId => permissionsToUpdate.includes(depId));
+    });
+
+    if (permissionsToUpdate.length !== countBefore) {
+      changed = true;
+      totalChanged = true;
+    }
+  }
+
+  if (totalChanged) {
+    roleDetailStore.entity.permissions = permissionsToUpdate;
+  }
+}, {
+  deep: true,
+});
 
 watch(nameInputRef, (val) => {
   if (!val) {
@@ -187,17 +298,29 @@ watch(nameInputRef, (val) => {
                   </span>
                 </AntCheckbox>
               </div>
-
               <div class="ml-6">
-                <AntCheckboxGroup
-                  v-model="roleDetailStore.entity.permissions"
-                  :skeleton="roleDetailStore.skeleton"
-                  :checkboxes="permissionsInGroup.map(item => ({
-                    value: item.id,
-                    label: item.name
-                  }))"
-                  :disabled="roleDetailStore.entity.isAdmin"
-                />
+                <AntTooltip :disabled="preparedGroups[groupName].isTooltipDisabled">
+                  <AntCheckboxGroup
+                    v-model="roleDetailStore.entity.permissions"
+                    :skeleton="roleDetailStore.skeleton"
+                    :disabled="roleDetailStore.entity.isAdmin"
+                    :checkboxes="preparedGroups[groupName].checkboxes"
+                  />
+
+                  <template #content>
+                    <div>
+                      {{ dependencyTooltipMessage }}
+                      <ul class="mt-1 list-disc pl-4 text-sm">
+                        <li
+                          v-for="missingName in preparedGroups[groupName].missingDependencies"
+                          :key="missingName"
+                        >
+                          {{ missingName }}
+                        </li>
+                      </ul>
+                    </div>
+                  </template>
+                </AntTooltip>
               </div>
             </div>
           </div>
