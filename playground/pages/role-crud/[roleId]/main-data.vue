@@ -3,6 +3,6 @@
 
 <template>
   <AuthorizationModuleRoleDetailMainDataPage
-    leading-tooltip-message="Um alle Rechte auswählen zu können, müssen Sie folgende Rechte aktivieren:"
+    leading-tooltip-message="To be able to select all permissions, you must activate the following permissions:"
   />
 </template>

@@ -20,7 +20,7 @@ const props = withDefaults(defineProps<{
   dependencyTooltipMessage?: string;
 }>(), {
   unknownGroupLabel: 'Others',
-  dependencyTooltipMessage: 'Um alle Rechte auswählen zu können, müssen Sie folgende Rechte aktivieren:',
+  dependencyTooltipMessage: 'To be able to select all permissions, you must activate the following permissions:',
 });
 
 const permissionDisableTooltip = 'Admin role has all permissions. Mark this role as non-admin to select permissions manually.';
@@ -90,7 +90,9 @@ function toggleGroup(permissionsInGroup: ResponsePermissionType[]) {
 }
 
 function areDependenciesSatisfied(permission: ResponsePermissionType): boolean {
-  if (!permission.dependsOn) return true;
+  if (!permission.dependsOn) {
+    return true;
+  }
 
   const deps = Array.isArray(permission.dependsOn)
     ? permission.dependsOn
@@ -102,7 +104,9 @@ function areDependenciesSatisfied(permission: ResponsePermissionType): boolean {
 }
 
 function getMissingDependencies(permission: ResponsePermissionType): string[] {
-  if (!permission.dependsOn) return [];
+  if (!permission.dependsOn) {
+    return [];
+  }
 
   const deps = Array.isArray(permission.dependsOn) ? permission.dependsOn : [
     permission.dependsOn,
@@ -117,6 +121,45 @@ function getMissingDependencies(permission: ResponsePermissionType): string[] {
     });
 }
 
+const preparedGroups = computed(() => {
+  const result: Record<string, {
+    checkboxes: any[];
+    missingDependencies: string[];
+    isTooltipDisabled: boolean;
+  }> = {};
+
+  for (const [
+    groupName,
+    permissions,
+  ] of Object.entries(groupedPermissions.value)) {
+    const checkboxes = permissions.map(item => {
+      const missingDeps = getMissingDependencies(item);
+      const isDisabled = missingDeps.length > 0;
+
+      return {
+        value: item.id,
+        label: item.name,
+        disabled: isDisabled,
+        title: isDisabled ? `${props.dependencyTooltipMessage} ${missingDeps.join(', ')}` : '',
+      };
+    });
+
+    const allMissingInGroup = [
+      ...new Set(permissions.flatMap(p => getMissingDependencies(p))),
+    ];
+
+    const allSatisfied = permissions.every(p => areDependenciesSatisfied(p));
+
+    result[groupName] = {
+      checkboxes,
+      missingDependencies: allMissingInGroup,
+      isTooltipDisabled: roleDetailStore.entity.isAdmin || allSatisfied,
+    };
+  }
+
+  return result;
+});
+
 watch(() => roleDetailStore.entity.permissions, (newPermissions) => {
   let permissionsToUpdate = [
     ...newPermissions,
@@ -130,7 +173,10 @@ watch(() => roleDetailStore.entity.permissions, (newPermissions) => {
 
     permissionsToUpdate = permissionsToUpdate.filter(id => {
       const perm = roleDetailStore.allPermissions.find(p => p.id === id);
-      if (!perm || !perm.dependsOn) return true;
+
+      if (!perm || !perm.dependsOn) {
+        return true;
+      }
 
       const deps = Array.isArray(perm.dependsOn) ? perm.dependsOn : [
         perm.dependsOn,
@@ -253,27 +299,12 @@ watch(nameInputRef, (val) => {
                 </AntCheckbox>
               </div>
               <div class="ml-6">
-                <AntTooltip
-                  :disabled="
-                    roleDetailStore.entity.isAdmin ||
-                      permissionsInGroup.every(p => areDependenciesSatisfied(p))
-                  "
-                >
+                <AntTooltip :disabled="preparedGroups[groupName].isTooltipDisabled">
                   <AntCheckboxGroup
                     v-model="roleDetailStore.entity.permissions"
                     :skeleton="roleDetailStore.skeleton"
                     :disabled="roleDetailStore.entity.isAdmin"
-                    :checkboxes="permissionsInGroup.map(item => {
-                      const missingDeps = getMissingDependencies(item);
-                      const isDisabled = missingDeps.length > 0;
-
-                      return {
-                        value: item.id,
-                        label: item.name,
-                        disabled: isDisabled,
-                        title: isDisabled ? `${props.dependencyTooltipMessage} ${missingDeps.join(', ')}` : ''
-                      };
-                    })"
+                    :checkboxes="preparedGroups[groupName].checkboxes"
                   />
 
                   <template #content>
@@ -281,9 +312,7 @@ watch(nameInputRef, (val) => {
                       {{ dependencyTooltipMessage }}
                       <ul class="mt-1 list-disc pl-4 text-sm">
                         <li
-                          v-for="missingName in [
-                            ...new Set(permissionsInGroup.flatMap(p => getMissingDependencies(p)))
-                          ]"
+                          v-for="missingName in preparedGroups[groupName].missingDependencies"
                           :key="missingName"
                         >
                           {{ missingName }}
