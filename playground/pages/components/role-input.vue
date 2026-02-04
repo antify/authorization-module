@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {
-  ref, useRouter,
+  ref,
 } from '#imports';
 
 const selectedRoles1 = ref([]);

@@ -8,18 +8,6 @@ import {
 import type {
   RouteParams,
 } from '#vue-router';
-import {
-  AntCrud,
-  AntCrudTableFilter,
-  AntCrudTableNav,
-  AntCreateButton,
-} from '@antify/default-template';
-import {
-  InputState, AntTooltip,
-} from '#ui-module';
-import {
-  State, AntButton,
-} from '@antify/ui';
 
 const props = withDefaults(defineProps<{
   detailRouteName: string;
@@ -47,9 +35,9 @@ function onCreate() {
 </script>
 
 <template>
-  <AntCrud :show-detail="routingStore.routing.isDetailPage.value">
+  <AntTemplateCrud :show-detail="routingStore.routing.isDetailPage.value">
     <template #search-section>
-      <AntCrudTableFilter
+      <AntTemplateCrudTableFilter
         :full-width="routingStore.routing.isListingPage.value"
         :skeleton="listingStore.skeleton"
         :can-create="canEdit"
@@ -69,7 +57,7 @@ function onCreate() {
     </template>
 
     <template #table-nav-section>
-      <AntCrudTableNav
+      <AntTemplateCrudTableNav
         :count="listingStore.data?.count || 0"
         :full-width="routingStore.routing.isListingPage.value"
         :skeleton="listingStore.skeleton"
@@ -79,5 +67,5 @@ function onCreate() {
     </template>
 
     <slot />
-  </AntCrud>
+  </AntTemplateCrud>
 </template>

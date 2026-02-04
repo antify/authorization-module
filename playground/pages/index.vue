@@ -10,10 +10,7 @@ import {
 } from '#imports';
 import {
   TagState, AntTagSize,
-} from '#ui-module';
-import {
-  AntActionButton,
-} from '@antify/default-template';
+} from '#template-module';
 
 const guard = ref(useGuard());
 const statusCode = ref<null | number>(null);
@@ -84,9 +81,9 @@ const {
           />
 
           <AntField label="Do a protected request">
-            <AntActionButton @click="() => execute()">
+            <AntTemplateActionButton @click="() => execute()">
               Submit request
-            </AntActionButton>
+            </AntTemplateActionButton>
           </AntField>
 
           <AntField

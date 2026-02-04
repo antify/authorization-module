@@ -13,7 +13,7 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    '@antify/ui-module',
+    '@antify/template-module',
     '@antify/database-module',
     '../src/module',
   ],

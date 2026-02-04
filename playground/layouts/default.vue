@@ -102,6 +102,6 @@ onMounted(() => guard.setTenantId(TEST_TENANT_ID));
       position="bottom-left"
     />
 
-    <AntToaster :toasts="$uiModule.toaster.getToasts()" />
+    <AntToaster :toasts="$templateModule.toaster.getToasts()" />
   </AntNavLeftLayout>
 </template>

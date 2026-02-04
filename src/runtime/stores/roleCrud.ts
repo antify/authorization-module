@@ -28,7 +28,7 @@ import {
 } from '../glue/components/role/roleTable';
 import type {
   CrudRoutingOptions, FormFieldType,
-} from '@antify/ui-module';
+} from '@antify/template-module';
 
 export const useRoleListingStore = defineStore('authorization-module-crud-role-listing', () => {
   const router = useRouter();
@@ -79,7 +79,7 @@ export const useDeleteRoleStore = defineStore('authorization-module-crud-role-de
         if (response.status === 200) {
           listingStore.refresh(false);
           routingStore.routing.goToListingPage();
-          nuxtApp.$uiModule.toaster.toastDeleted();
+          nuxtApp.$templateModule.toaster.toastDeleted();
         }
       },
     },
@@ -134,7 +134,7 @@ export const useRoleDetailStore = defineStore('authorization-module-crud-role-de
 
           entity.value = response._data;
           listingStore.refresh(false);
-          nuxtApp.$uiModule.toaster.toastUpdated();
+          nuxtApp.$templateModule.toaster.toastUpdated();
         }
       },
     },
@@ -219,7 +219,7 @@ export const useRoleDetailStore = defineStore('authorization-module-crud-role-de
 
       // Check if any field has errors
       if (Object.values(forms).some(form => form.some(field => field.errors.length > 0))) {
-        return nuxtApp.$uiModule.toaster.toastInfo('The form contains errors.\nPlease fix them before submitting.');
+        return nuxtApp.$templateModule.toaster.toastInfo('The form contains errors.\nPlease fix them before submitting.');
       }
 
       await executeSave();

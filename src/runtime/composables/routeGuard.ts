@@ -28,7 +28,7 @@ import {
  */
 export const useRouteGuard = (permissions?: string[] | string) => {
   const {
-    $uiModule,
+    $templateModule,
   } = useNuxtApp();
   const unauthorizedMessage = 'Unauthorized - Configure a loginPageRoute in app handler \nto automatically redirect unauthorized users to login page.';
   const jailMessage = 'Banned - Configure a jailPageRoute in app handler \nto automatically redirect banned users to jail page.';
@@ -47,7 +47,7 @@ export const useRouteGuard = (permissions?: string[] | string) => {
     }
 
     // On route change
-    $uiModule.toaster.toastError(unauthorizedMessage);
+    $templateModule.toaster.toastError(unauthorizedMessage);
 
     // On initial page load
     return abortNavigation({
@@ -67,7 +67,7 @@ export const useRouteGuard = (permissions?: string[] | string) => {
     }
 
     // On route change
-    $uiModule.toaster.toastError(jailMessage);
+    $templateModule.toaster.toastError(jailMessage);
 
     // On initial page load
     return abortNavigation({
@@ -79,7 +79,7 @@ export const useRouteGuard = (permissions?: string[] | string) => {
   // Check permissions if provided
   if (permissions && !guard.hasPermissionTo(permissions)) {
     // On route change
-    $uiModule.toaster.toastError(invalidPermissionsMessage);
+    $templateModule.toaster.toastError(invalidPermissionsMessage);
 
     // On initial page load
     return abortNavigation({

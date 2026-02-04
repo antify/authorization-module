@@ -15,7 +15,7 @@ import {
 } from '#imports';
 import {
   AntDateInputTypes,
-} from '#ui-module';
+} from '#template-module';
 
 const props = withDefaults(defineProps<{
   open: boolean;

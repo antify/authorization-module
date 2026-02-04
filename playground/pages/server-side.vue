@@ -9,14 +9,11 @@ import {
 } from '#imports';
 import {
   Grouped,
-} from '#ui-module';
-import {
-  AntActionButton,
-} from '@antify/default-template';
+} from '#template-module';
 
 const guard = useGuard();
 const {
-  $uiModule,
+  $templateModule,
 } = useNuxtApp();
 const {
   data: users,
@@ -51,7 +48,7 @@ const {
     response,
   }) {
     if (response.status === 200) {
-      $uiModule.toaster.toastSuccess('Logged in successfully');
+      $templateModule.toaster.toastSuccess('Logged in successfully');
 
       // Give all watchers, which have an eye on the cookie, the chance to react
       guard.refresh();
@@ -86,14 +83,14 @@ const skeleton = useUiClient().utils.createSkeleton(pendingGetUsers);
             :grouped="Grouped.left"
             :skeleton="skeleton"
           />
-          <AntActionButton
+          <AntTemplateActionButton
             :grouped="Grouped.right"
             :disabled="!selectedUserId || loginStatus === 'pending'"
             :skeleton="skeleton"
             @click="() => execute()"
           >
             Login
-          </AntActionButton>
+          </AntTemplateActionButton>
         </div>
       </AntInputLabel>
     </div>
