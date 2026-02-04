@@ -8,7 +8,7 @@ import {
   watch, useGuard,
 } from '#imports';
 import type {
-  Authorization,
+  JsonWebToken as Authorization,
 } from '../../../src/runtime/types';
 import {
   PermissionId,

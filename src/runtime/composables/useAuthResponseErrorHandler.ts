@@ -11,7 +11,7 @@ import {
 
 export const useAuthResponseErrorHandler = (response: FetchResponse<never>) => {
   const {
-    $uiModule,
+    $templateModule,
   } = useNuxtApp();
   const appHandler = appHandlerFactory(useGuard().getTenantId());
   const router = useRouter();
@@ -29,6 +29,6 @@ export const useAuthResponseErrorHandler = (response: FetchResponse<never>) => {
 
   if (response.status === 403) {
     // TODO:: Mai write which permission/permissions is/are missing
-    return $uiModule.toaster.toastError('You are not authorized to carry out this action. \nPlease contact your administrator.');
+    return $templateModule.toaster.toastError('You are not authorized to carry out this action. \nPlease contact your administrator.');
   }
 };

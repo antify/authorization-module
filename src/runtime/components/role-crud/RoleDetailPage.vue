@@ -10,14 +10,7 @@ import {
 } from '../../stores/roleCrud';
 import {
   TabItemState, InputState, AntTooltip,
-} from '#ui-module';
-import {
-  AntCrudDetail,
-  AntCrudDetailNav,
-  AntCrudDetailActions,
-  AntSaveButton,
-  AntSaveAndNewButton,
-} from '@antify/default-template';
+} from '#template-module';
 
 withDefaults(defineProps<{
   canEdit?: boolean;
@@ -55,9 +48,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <AntCrudDetail>
+  <AntTemplateCrudDetail>
     <template #header>
-      <AntCrudDetailNav
+      <AntTemplateCrudDetailNav
         :tab-items="tabItems"
         :skeleton="detailStore.skeleton"
         :get-entity-name="() => `${detailStore.entity.name}`"
@@ -72,7 +65,7 @@ onMounted(() => {
     <slot />
 
     <template #footer>
-      <AntCrudDetailActions
+      <AntTemplateCrudDetailActions
         :skeleton="detailStore.skeleton"
         :disabled="detailStore.formDisabled"
         :can-save="canEdit"
@@ -83,5 +76,5 @@ onMounted(() => {
         @save-and-new="() => detailStore.saveAndNew()"
       />
     </template>
-  </AntCrudDetail>
+  </AntTemplateCrudDetail>
 </template>

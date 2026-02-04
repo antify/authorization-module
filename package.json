@@ -28,8 +28,7 @@
     "test": "vitest run"
   },
   "peerDependencies": {
-    "@antify/ui-module": "^2.13.34",
-    "@antify/default-template": "^0.0.20"
+    "@antify/template-module": "0.0.2"
   },
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.7.2",

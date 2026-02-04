@@ -15,10 +15,7 @@ import type {
 } from '~/src/runtime/glue/maybe-components/ban-authorization-button/types';
 import {
   State,
-} from '#ui-module';
-import {
-  AntActionButton,
-} from '@antify/default-template';
+} from '#template-module';
 
 const emit = defineEmits([
   'update:modelValue',
@@ -54,7 +51,7 @@ const _modelValue = computed({
 const isBanDialogOpen = ref(false);
 const isUnbanDialogOpen = ref(false);
 const {
-  $uiModule,
+  $templateModule,
 } = useNuxtApp();
 const guard = useGuard();
 const body = computed<ChangeBanStatusRequestBody>(() => ({
@@ -76,11 +73,11 @@ const {
 
     if (response.status === 200) {
       if (response._data.notFound) {
-        return $uiModule.toaster.toastError(props.entityNotFoundToastMessage);
+        return $templateModule.toaster.toastError(props.entityNotFoundToastMessage);
       } else if (body.value.action === 'ban') {
-        $uiModule.toaster.toastSuccess(props.entityHasBeenBannedToastMessage);
+        $templateModule.toaster.toastSuccess(props.entityHasBeenBannedToastMessage);
       } else {
-        $uiModule.toaster.toastSuccess(props.entityUnbannedToastMessage);
+        $templateModule.toaster.toastSuccess(props.entityUnbannedToastMessage);
       }
 
       _modelValue.value.isBanned = response._data.isBanned;
@@ -119,7 +116,7 @@ const hasPermission = computed(() => {
     :description="description"
     :skeleton="props.skeleton"
   >
-    <AntActionButton
+    <AntTemplateActionButton
       :disabled="status === 'pending' || disabled"
       :skeleton="props.skeleton"
       :has-permission="hasPermission"
@@ -157,7 +154,7 @@ const hasPermission = computed(() => {
           {{ entityName }}s.
         </template>
       </template>
-    </AntActionButton>
+    </AntTemplateActionButton>
 
     <AntDialog
       v-model:open="isBanDialogOpen"

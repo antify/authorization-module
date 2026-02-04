@@ -16,19 +16,14 @@ import {
   watch,
 } from '#imports';
 import {
-  AntTableRowTypes, Size, InputState, AntTooltip, AntTable,
-} from '#ui-module';
+  AntTableRowTypes, Size, AntTable,
+} from '#template-module';
 import {
   type RoleClientType,
 } from '../../glue/stores/role-crud';
 import {
   type RoleListingData,
 } from '../../glue/components/role/roleTable';
-import {
-  AntDeleteDialog,
-  AntEditButton,
-  AntDeleteButton,
-} from '@antify/default-template';
 
 const props = withDefaults(defineProps<{
   showLightVersion: boolean;
@@ -142,13 +137,13 @@ const handleEditClick = (entity: {
         v-if="header.identifier === 'actions'"
         class="flex justify-end gap-2.5"
       >
-        <AntEditButton
+        <AntTemplateEditButton
           icon-variant
           :size="Size.xs"
           @click="handleEditClick(element)"
         />
 
-        <AntDeleteButton
+        <AntTemplateDeleteButton
           icon-variant
           :size="Size.xs"
           :disabled="!canEdit"
@@ -159,7 +154,7 @@ const handleEditClick = (entity: {
     </template>
   </AntTable>
 
-  <AntDeleteDialog
+  <AntTemplateDeleteDialog
     v-model:open="deleteDialogOpen"
     :entity="`${entityToDelete?.name}`"
     @confirm="deleteEntity"
