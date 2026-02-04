@@ -1,6 +1,6 @@
 {
   "name": "@antify/authorization-module",
-  "version": "3.3.7",
+  "version": "3.3.8",
   "license": "MIT",
   "type": "module",
   "exports": {
