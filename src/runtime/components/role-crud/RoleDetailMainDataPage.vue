@@ -18,8 +18,10 @@ import {
 const props = withDefaults(defineProps<{
   unknownGroupLabel?: string;
   dependencyTooltipMessage?: string;
+  nameOfPermissionList?: string;
 }>(), {
   unknownGroupLabel: 'Others',
+  nameOfPermissionList: 'Permissions',
   dependencyTooltipMessage: 'To be able to select all permissions, you must activate the following permissions:',
 });
 
@@ -237,7 +239,7 @@ watch(nameInputRef, (val) => {
 
         <div>
           <AntField
-            label="Permissions"
+            :label="props.nameOfPermissionList"
             :skeleton="roleDetailStore.skeleton"
           >
             <div class="mb-2 flex space-x-2.5">
