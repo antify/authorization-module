@@ -34,11 +34,12 @@ export class Guard {
       return false;
     }
 
+    const currentContext = this.tenantId || null;
+    const tokenContext = this.token.tenantId || null;
+
     // The users token comes from another tenant instance
-    if (!!this.token.tenantId) {
-      if (this.token.tenantId !== this.tenantId) {
-        return false;
-      }
+    if (currentContext !== tokenContext) {
+      return false;
     }
 
     return this.token.exp * 1000 > Date.now();
