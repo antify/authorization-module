@@ -42,7 +42,7 @@ function onCreate() {
         :skeleton="listingStore.skeleton"
         :can-create="canEdit"
         :show-filter="false"
-        :create-tooltip-message="editTooltipMessage"
+        :invalid-permission-tooltip-message="editTooltipMessage"
         @search="() => listingStore.refresh()"
         @create="onCreate"
       />
