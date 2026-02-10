@@ -146,8 +146,8 @@ const handleEditClick = (entity: {
         <AntTemplateDeleteButton
           icon-variant
           :size="Size.xs"
-          :disabled="!canEdit"
-          :delete-tooltip-message="editTooltipMessage"
+          :can-delete="canEdit"
+          :invalid-permission-tooltip-message="editTooltipMessage"
           @click="() => openDeleteEntity(element)"
         />
       </div>

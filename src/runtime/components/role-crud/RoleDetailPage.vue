@@ -57,7 +57,7 @@ onMounted(() => {
         :delete-button-disabled="detailStore.formDisabled"
         :show-delete-button="!routingStore.routing.isCreatePage.value"
         :can-delete="canEdit"
-        :delete-tooltip-message="editTooltipMessage"
+        :invalid-permission-tooltip-message="editTooltipMessage"
         @delete="() => deleteStore.execute(detailStore.entity._id as string)"
       />
     </template>
@@ -69,8 +69,7 @@ onMounted(() => {
         :skeleton="detailStore.skeleton"
         :disabled="detailStore.formDisabled"
         :can-save="canEdit"
-        :save-tooltip-message="editTooltipMessage"
-        :save-and-new-tooltip-message="editTooltipMessage"
+        :invalid-permission-tooltip-message="editTooltipMessage"
         @back="() => routingStore.routing.goToListingPage()"
         @save="() => detailStore.save()"
         @save-and-new="() => detailStore.saveAndNew()"
