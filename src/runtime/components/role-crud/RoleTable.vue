@@ -29,6 +29,7 @@ const props = withDefaults(defineProps<{
   showLightVersion: boolean;
   canEdit?: boolean;
   editTooltipMessage?: string;
+  deleteMessage?: string;
 }>(), {
   canEdit: true,
   editTooltipMessage: undefined,
@@ -158,5 +159,12 @@ const handleEditClick = (entity: {
     v-model:open="deleteDialogOpen"
     :entity="`${entityToDelete?.name}`"
     @confirm="deleteEntity"
-  />
+  >
+    <div
+      v-if="deleteMessage"
+      class="w-96"
+    >
+      {{ deleteMessage }}
+    </div>
+  </AntTemplateDeleteDialog>
 </template>

@@ -18,6 +18,7 @@ const props = withDefaults(defineProps<{
   createEntityIdentifier?: string;
   canEdit?: boolean;
   editTooltipMessage?: string;
+  deleteMessage?: string;
 }>(), {
   canEdit: true,
   editTooltipMessage: undefined,
@@ -53,6 +54,7 @@ function onCreate() {
         :can-edit="canEdit"
         :edit-tooltip-message="editTooltipMessage"
         :show-light-version="routingStore.routing.isDetailPage.value"
+        :delete-message="deleteMessage"
       />
     </template>
 

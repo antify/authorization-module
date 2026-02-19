@@ -9,12 +9,13 @@ import {
   useDeleteRoleStore,
 } from '../../stores/roleCrud';
 import {
-  TabItemState, InputState, AntTooltip,
+  TabItemState,
 } from '#template-module';
 
 withDefaults(defineProps<{
   canEdit?: boolean;
   editTooltipMessage?: string;
+  deleteMessage?: string;
 }>(), {
   canEdit: true,
   editTooltipMessage: undefined,
@@ -53,13 +54,22 @@ onMounted(() => {
       <AntTemplateCrudDetailNav
         :tab-items="tabItems"
         :skeleton="detailStore.skeleton"
-        :get-entity-name="() => `${detailStore.entity.name}`"
+        :entity-name="`${detailStore.entity.name}`"
         :delete-button-disabled="detailStore.formDisabled"
         :show-delete-button="!routingStore.routing.isCreatePage.value"
         :can-delete="canEdit"
         :invalid-permission-tooltip-message="editTooltipMessage"
         @delete="() => deleteStore.execute(detailStore.entity._id as string)"
-      />
+      >
+        <template #delete-message>
+          <div
+            v-if="deleteMessage"
+            class="w-96"
+          >
+            {{ deleteMessage }}
+          </div>
+        </template>
+      </AntTemplateCrudDetailNav>
     </template>
 
     <slot />
