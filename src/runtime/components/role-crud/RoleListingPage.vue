@@ -19,9 +19,11 @@ const props = withDefaults(defineProps<{
   canEdit?: boolean;
   editTooltipMessage?: string;
   deleteMessage?: string;
+  selectableRows?: boolean;
 }>(), {
   canEdit: true,
   editTooltipMessage: undefined,
+  selectableRows: true,
 });
 const routingStore = useRoleRoutingStore();
 const listingStore = useRoleListingStore();
@@ -55,6 +57,7 @@ function onCreate() {
         :edit-tooltip-message="editTooltipMessage"
         :show-light-version="routingStore.routing.isDetailPage.value"
         :delete-message="deleteMessage"
+        :selectable-rows="selectableRows"
       />
     </template>
 

@@ -30,9 +30,11 @@ const props = withDefaults(defineProps<{
   canEdit?: boolean;
   editTooltipMessage?: string;
   deleteMessage?: string;
+  selectableRows?: boolean;
 }>(), {
   canEdit: true,
   editTooltipMessage: undefined,
+  selectableRows: true,
 });
 
 const route = useRoute();
@@ -132,6 +134,7 @@ const handleEditClick = (entity: {
     :headers="tableHeaders"
     :loading="fetch.status.value === 'pending' || fetch.status.value === 'idle'"
     :show-light-version="showLightVersion"
+    :selectable-rows="selectableRows"
   >
     <template #cellContent="{header, element}">
       <div
