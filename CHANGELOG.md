@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.3.15 (2026-09-14)
+
+
+### Bug Fixes
+
+* add role input response schema and enhance role input store type safety ([1e621ca](https://github.com/antify/authorization-module/commit/1e621ca4e50d0d982a4075902b2afe791491497f))
+
 ### 3.3.14 (2026-09-14)
 
 ### 3.3.13 (2026-03-25)
