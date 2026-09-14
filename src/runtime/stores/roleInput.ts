@@ -7,6 +7,12 @@ import {
 import {
   defineStore,
 } from 'pinia';
+import type {
+  Ref,
+} from 'vue';
+import {
+  type ResponseType as GetRoleInputResponseType,
+} from '../glue/stores/role-input';
 
 export const useRoleInputStore = defineStore('authorization-module-role-input', () => {
   const {
@@ -14,7 +20,7 @@ export const useRoleInputStore = defineStore('authorization-module-role-input', 
     execute,
     status,
     error,
-  } = useFetch(
+  } = useFetch<GetRoleInputResponseType>(
     '/api/authorization-module/stores/role-input',
     {
       watch: false,
@@ -34,8 +40,10 @@ export const useRoleInputStore = defineStore('authorization-module-role-input', 
   watch(error, (e) => showError(e));
 
   return {
-    data,
-    execute,
+    data: data as Ref<GetRoleInputResponseType | undefined>,
+    execute: async (): Promise<void> => {
+      await execute();
+    },
     status,
   };
 });
