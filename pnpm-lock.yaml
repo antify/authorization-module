@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@antify/template-module':
-        specifier: 0.0.8
-        version: 0.0.8(@fortawesome/fontawesome-svg-core@6.7.2)(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(magicast@0.5.1)(tailwindcss@4.0.7)(typescript@5.8.2)(vite@6.2.1(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.0))(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))
+        specifier: 0.0.58
+        version: 0.0.58(@fortawesome/fontawesome-svg-core@6.7.2)(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(magicast@0.5.1)(tailwindcss@4.0.7)(typescript@5.8.2)(vite@6.2.1(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.0))(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))
       '@fortawesome/free-solid-svg-icons':
         specifier: ^6.7.2
         version: 6.7.2
@@ -34,11 +34,11 @@ importers:
         version: 1.6.1
     devDependencies:
       '@antify/database-cli':
-        specifier: 1.3.0
-        version: 1.3.0(@aws-sdk/credential-providers@3.758.0)(socks@2.8.4)
+        specifier: 2.0.3
+        version: 2.0.3(@aws-sdk/credential-provider-web-identity@3.758.0)(@aws-sdk/credential-providers@3.758.0)(socks@2.8.4)(ws@8.19.0)
       '@antify/database-module':
-        specifier: ^1.6.1
-        version: 1.6.1(@aws-sdk/credential-providers@3.758.0)(magicast@0.5.1)(socks@2.8.4)
+        specifier: 2.0.4
+        version: 2.0.4(@aws-sdk/credential-provider-web-identity@3.758.0)(@aws-sdk/credential-providers@3.758.0)(magicast@0.5.1)(socks@2.8.4)(ws@8.19.0)
       '@eslint/js':
         specifier: ^9.26.0
         version: 9.26.0
@@ -74,7 +74,7 @@ importers:
         version: 24.1.3
       nuxt:
         specifier: 3.16.2
-        version: 3.16.2(@parcel/watcher@2.5.1)(@types/node@22.13.10)(cac@6.7.14)(db0@0.3.4)(eslint@9.26.0(jiti@2.4.2))(ioredis@5.9.2)(lightningcss@1.29.2)(magicast@0.5.1)(optionator@0.9.4)(rollup@4.57.1)(terser@5.39.0)(typescript@5.8.2)(vite@6.2.1(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.0))(yaml@2.7.0)
+        version: 3.16.2(@parcel/watcher@2.5.1)(@types/node@22.13.10)(@vercel/functions@3.9.7(@aws-sdk/credential-provider-web-identity@3.758.0)(ws@8.19.0))(cac@6.7.14)(db0@0.3.4)(eslint@9.26.0(jiti@2.4.2))(ioredis@5.9.2)(lightningcss@1.29.2)(magicast@0.5.1)(optionator@0.9.4)(rollup@4.57.1)(terser@5.39.0)(typescript@5.8.2)(vite@6.2.1(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.0))(yaml@2.7.0)
       pathe:
         specifier: ^1.1.2
         version: 1.1.2
@@ -97,23 +97,24 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@antify/database-cli@1.3.0':
-    resolution: {integrity: sha512-CJ3EyAu7bRmgxqrBIHS6F6/x5O7qwQMmRwPBxjXlo3ixFdra9PzGB2KU/DTCj0pyevdRUDrlP3uL+1ue6aSmqQ==}
-    engines: {node: ^22.14.0, pnpm: '>=8'}
+  '@antify/database-cli@2.0.3':
+    resolution: {integrity: sha512-Gs4E5p7GD2NA20KGUokGf9jUbip6AV3gBfU0jnl0CkpP6NNV0JcKIWWUUAxY0NsDMH9vLWxX7hQkgt7G+5+dxA==}
+    engines: {node: ^22.14.0, pnpm: '>=10.10.0'}
     hasBin: true
 
-  '@antify/database-module@1.6.1':
-    resolution: {integrity: sha512-z7Ner8OHMyAtIBfwRi9/eZPKRjMR1SMJC1Vgnnra4tuufIOxAfn6TayM/alXWkfgUqt0H5w57tm4azsen/xvwA==}
+  '@antify/database-module@2.0.4':
+    resolution: {integrity: sha512-LrCiKLZtCvKGfxCY+OcWYyqDKDaTygP5+ZBhnNem+i4J2Xr+gpt1N2Q5iwYj5c/6s56RtcBpspYV1P3jVsjQKg==}
+    engines: {node: ^22.14.0, pnpm: '>=10.10.0'}
 
-  '@antify/database@2.0.0':
-    resolution: {integrity: sha512-gPnFiyk29/91SnS4bo3RNwhuW/8+qSZhITYt6GYG/mKZmZuX3qwcJ11QmlSbzeU9ggdBgEuCltlBcWvK5aOHFw==}
+  '@antify/database@4.0.2':
+    resolution: {integrity: sha512-GY2W9V2Ka+MgfnbyTYZ08g2MMUCZeqPFB8M8TYdc9LywKKpiUXTKoAHA+iO3ZdZpdcrvKwdQogyo/GGmstCb3w==}
     engines: {node: ^22.14.0, pnpm: '>=8'}
 
-  '@antify/template-module@0.0.8':
-    resolution: {integrity: sha512-XGjhhHxjMk1DBj8onvn6enu+yr3FAjOn4DF9leXjd2UxEVtLcB4b7d1G2Y0pt3s/tOKiMRetckgcvBlHZunCRg==}
+  '@antify/template-module@0.0.58':
+    resolution: {integrity: sha512-XDz+MYc68aFOyjK6RgZloTs1M/uAed7EHrxR09hHZlNqtd7MIKMN/8QPq5hpzFkKqO5xWBaqBps6F1n++BrPTw==}
 
-  '@antify/ui@4.1.26':
-    resolution: {integrity: sha512-CxstnapiRLfNfzp7HNFXvjNIsMjNSljsXrTvWG7ZnT/gOHB3uaSJlSV9KaLvdUBdxjENyu2HfJ7iNMrCeWa+jg==}
+  '@antify/ui@4.3.39':
+    resolution: {integrity: sha512-mZGA5hEomabGF36dwDxb9dvFz0bWaZXI8dSjdmKWv2czjspFur57UuAO0iIDvLCDIU0rDizi+jJpc0Xo2T7zHQ==}
     engines: {node: ^22.14.0, pnpm: '>=10.10.0'}
     peerDependencies:
       tailwindcss: 4.0.7
@@ -2544,10 +2545,33 @@ packages:
     peerDependencies:
       vue: '>=3.5.18'
 
+  '@vercel/cli-config@0.2.6':
+    resolution: {integrity: sha512-2AsKCf6gE/Eniq09ARm1RK9rQMV5pcAHU7BFcR9MISO+4/RsjjkaYbQN6G85/xi9pYZ5CJNXvYn4TI6p1jKBcg==}
+
+  '@vercel/cli-exec@1.0.1':
+    resolution: {integrity: sha512-g9XerViJ/paZujufXYcu5XYI2vU2rtB4sgdpjUHde5RnOkdmpu0ngH46LCFGHoPXO/C+qDPSczIHIRN+8Q2YKQ==}
+    engines: {node: '>= 18'}
+
+  '@vercel/functions@3.9.7':
+    resolution: {integrity: sha512-ICLzHbVZs10igkVMW/ovEMIXFa5ctpEjTa+VWRCOQbIqg9ALZcQcRjcfDuQZ/g2XtPS08EvHjzm538YJU9WsXA==}
+    engines: {node: '>= 20'}
+    peerDependencies:
+      '@aws-sdk/credential-provider-web-identity': '*'
+      ws: '>=8'
+    peerDependenciesMeta:
+      '@aws-sdk/credential-provider-web-identity':
+        optional: true
+      ws:
+        optional: true
+
   '@vercel/nft@1.3.0':
     resolution: {integrity: sha512-i4EYGkCsIjzu4vorDUbqglZc5eFtQI2syHb++9ZUDm6TU4edVywGpVnYDein35x9sevONOn9/UabfQXuNXtuzQ==}
     engines: {node: '>=20'}
     hasBin: true
+
+  '@vercel/oidc@3.8.7':
+    resolution: {integrity: sha512-fRu59npOu+1vsV570tiLKskfuRyOJ1MqceAkXbTIfWPnM+c9ve1tSK81oj4umKKirymlGUss3V60Lm5I38rKDw==}
+    engines: {node: '>= 20'}
 
   '@vitejs/plugin-vue-jsx@4.2.0':
     resolution: {integrity: sha512-DSTrmrdLp+0LDNF77fqrKfx7X0ErRbOcUAgJL/HbSesqQwoUvUQ4uYQqaex+rovqgGcoPqVk+AwUh3v9CuiYIw==}
@@ -3565,6 +3589,7 @@ packages:
   eslint@9.26.0:
     resolution: {integrity: sha512-Hx0MOjPh6uK9oq9nVsATZKE/Wlbai7KFjfCuw9UHaguDW3x+HF0O5nIi3ud39TWgrTjTO5nHxmL3R1eANinWHQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
     peerDependencies:
       jiti: '*'
@@ -3621,6 +3646,10 @@ packages:
   eventsource@3.0.6:
     resolution: {integrity: sha512-l19WpE2m9hSuyP06+FbuUUf1G+R0SFLrtQfbRb9PRr+oimOfxQhgGCbVaXg5IvZyyTThJsxh6L/srkMiCeBPDA==}
     engines: {node: '>=18.0.0'}
+
+  execa@5.1.1:
+    resolution: {integrity: sha512-8uSpZZocAZRBAPIEINJj3Lo9HyGitllczc27Eh5YYojjMFMn8yHMDMaUHE2Jqfq05D/wucwI4JGURyXt1vchyg==}
+    engines: {node: '>=10'}
 
   execa@8.0.1:
     resolution: {integrity: sha512-VyhnebXciFV2DESc+p6B+y0LjSm0krU4OgJN44qFAhBY0TJ+1V61tYD2+wHusZ6F9n5K+vl8k0sTy7PEfV4qpg==}
@@ -3727,6 +3756,9 @@ packages:
     resolution: {integrity: sha512-78/PXT1wlLLDgTzDs7sjq9hzz0vXD+zn+7wypEe4fXQxCmdmqfGsEPQxmiCSQI3ajFV91bVSsvNtrJRiW6nGng==}
     engines: {node: '>=10'}
 
+  flagpack@1.0.5:
+    resolution: {integrity: sha512-jrb3OEoVXPBXjmhwZq6C9DTH6Axarh+rfnT3kA5T4xQ2FD9MogwCasqNJnMvhHHkaEVryXwQf1MQvqVv8UsK3g==}
+
   flat-cache@4.0.1:
     resolution: {integrity: sha512-f7ccFPK3SXFHpx15UIGyRJ/FJQctuKZ0zVuN3frBo4HnK3cay9VEW0R6yPYFHC0AgqhukPzKjq22t5DmAyqGyw==}
     engines: {node: '>=16'}
@@ -3794,6 +3826,10 @@ packages:
   get-proto@1.0.1:
     resolution: {integrity: sha512-sTSfBjoXBp89JvIKIefqw7U2CCebsc74kiY6awiGogKtoSGbgjYE/G/+l9sF3MWFPNc9IcoOC4ODfKHfxFmp0g==}
     engines: {node: '>= 0.4'}
+
+  get-stream@6.0.1:
+    resolution: {integrity: sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg==}
+    engines: {node: '>=10'}
 
   get-stream@8.0.1:
     resolution: {integrity: sha512-VaUJspBffn/LMCJVoMvSAdmscJyS1auj5Zulnn5UoYcY531UWmdwhRWkcGKnGU93m5HSXP9LP2usOryrBtQowA==}
@@ -3960,6 +3996,10 @@ packages:
 
   httpxy@0.1.7:
     resolution: {integrity: sha512-pXNx8gnANKAndgga5ahefxc++tJvNL87CXoRwxn1cJE2ZkWEojF3tNfQIEhZX/vfpt+wzeAzpUI4qkediX1MLQ==}
+
+  human-signals@2.1.0:
+    resolution: {integrity: sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw==}
+    engines: {node: '>=10.17.0'}
 
   human-signals@5.0.0:
     resolution: {integrity: sha512-AXcZb6vzzrFAUE61HnN4mpLqd/cSIwNQjtNWR0euPm6y0iqx3G4gOXaIDdtdDwZmhwe82LA6+zinmW4UBWVePQ==}
@@ -4489,6 +4529,10 @@ packages:
     engines: {node: '>=16'}
     hasBin: true
 
+  mimic-fn@2.1.0:
+    resolution: {integrity: sha512-OqbOk5oEQeAZ8WXWydlu9HJjz9WVdEIvamMCcXmuqUYjTknH/sqsWvhQ3vgwKFRR1HpjvNBKQ37nbJgYzGqGcg==}
+    engines: {node: '>=6'}
+
   mimic-fn@4.0.0:
     resolution: {integrity: sha512-vqiC06CuhBTUdZH+RYl8sFrL096vA45Ok5ISO6sE/Mr1jRbGH4Csnhi8f3wKVl7x8mO4Au7Ir9D3Oyv1VYMFJw==}
     engines: {node: '>=12'}
@@ -4700,6 +4744,10 @@ packages:
     resolution: {integrity: sha512-bdok/XvKII3nUpklnV6P2hxtMNrCboOjAcyBuQnWEhO665FwrSNRxU+AqpsyvO6LgGYPspN+lu5CLtw4jPRKNA==}
     engines: {node: '>=0.10.0'}
 
+  npm-run-path@4.0.1:
+    resolution: {integrity: sha512-S48WzZW777zhNIrn7gxOlISNAqi9ZC/uQFnRdbeIHhZhCA6UqpkOT8T1G7BvfdgP4Er8gF4sUbaS0i7QvIfCWw==}
+    engines: {node: '>=8'}
+
   npm-run-path@5.3.0:
     resolution: {integrity: sha512-ppwTtiJZq0O/ai0z7yfudtBpWIoxM8yE6nHi1X47eFR2EWORqfbu6CnPlNsjeN683eT0qG6H/Pyf9fCcvjnnnQ==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
@@ -4770,6 +4818,10 @@ packages:
   once@1.4.0:
     resolution: {integrity: sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==}
 
+  onetime@5.1.2:
+    resolution: {integrity: sha512-kbpaSSGJTWdAY5KPVeMOKXSrPtr8C8C7wodJbcsd51jRnmD+GZu8Y0VoU6Dm5Z4vWr0Ig/1NKuWRKf7j5aaYSg==}
+    engines: {node: '>=6'}
+
   onetime@6.0.0:
     resolution: {integrity: sha512-1FlR+gjXK7X+AsAHso35MnyN5KqGwJRi/31ft6x0M194ht7S+rWAvd7PHss9xSKMzE0asv1pyIHaJYq+BbacAQ==}
     engines: {node: '>=12'}
@@ -4788,6 +4840,10 @@ packages:
 
   orderedmap@2.1.1:
     resolution: {integrity: sha512-TvAWxi0nDe1j/rtMcWcIj94+Ffe6n7zhow33h40SKxmsmozs6dz/e+EajymfoFcHd7sxNn8yHM8839uixMOV6g==}
+
+  os-paths@4.4.0:
+    resolution: {integrity: sha512-wrAwOeXp1RRMFfQY8Sy7VaGVmPocaLwSFOYCGKSyo8qmJ+/yaafCl5BCA1IQZWqFSRBrKDYFeR9d/VyQzfH/jg==}
+    engines: {node: '>= 6.0'}
 
   oxc-parser@0.56.5:
     resolution: {integrity: sha512-MNT32sqiTFeSbQZP2WZIRQ/mlIpNNq4sua+/4hBG4qT5aef2iQe+1/BjezZURPlvucZeSfN1Y6b60l7OgBdyUA==}
@@ -5536,6 +5592,9 @@ packages:
   siginfo@2.0.0:
     resolution: {integrity: sha512-ybx0WO1/8bSBLEWXZvEd7gMW3Sn3JFlW3TvX1nREbDLRNQNaeNN8WK0meBwPdAaOI7TtRRRJn/Es1zhrrCHu7g==}
 
+  signal-exit@3.0.7:
+    resolution: {integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==}
+
   signal-exit@4.1.0:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
@@ -5674,6 +5733,10 @@ packages:
   strip-bom@3.0.0:
     resolution: {integrity: sha512-vavAMRXOgBVNF6nyEEmL3DBK19iRpDcoIwW+swQ+CbGiu7lju6t+JklA1MHweoWtadgt4ISVUsXLyDq34ddcwA==}
     engines: {node: '>=4'}
+
+  strip-final-newline@2.0.0:
+    resolution: {integrity: sha512-BrpvfNAE3dcvq7ll3xVumzjKjZQ5tI1sEUIKr3Uoks0XUl45St3FlatVqef9prk4jRDzhW6WZg+3bk93y6pLjA==}
+    engines: {node: '>=6'}
 
   strip-final-newline@3.0.0:
     resolution: {integrity: sha512-dOESqjYr96iWYylGObzd39EuNTa5VJxyvVAEm5Jnh7KGo75V43Hk1odPQkNDyXNmUR6k+gEiDVXnjB8HJ3crXw==}
@@ -6170,6 +6233,7 @@ packages:
 
   uuid@9.0.1:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
+    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
   validate-npm-package-license@3.0.4:
@@ -6494,6 +6558,14 @@ packages:
     resolution: {integrity: sha512-h3Fbisa2nKGPxCpm89Hk33lBLsnaGBvctQopaBSOW/uIs6FTe1ATyAnKFJrzVs9vpGdsTe73WF3V4lIsk4Gacw==}
     engines: {node: '>=18'}
 
+  xdg-app-paths@5.5.1:
+    resolution: {integrity: sha512-hI3flOB4PLZIy5prbtTpirobtPE2ZtZ52szO+2mM9Efp6ErM398La+C1lIpNWDfNoQk+6Lsi6nMcCwVB7pxeMQ==}
+    engines: {node: '>= 6.0'}
+
+  xdg-portable@7.3.0:
+    resolution: {integrity: sha512-sqMMuL1rc0FmMBOzCpd0yuy9trqF2yTTVe+E9ogwCSWQCdDEtQUwrZPT6AxqtsFGRNxycgncbP/xmOOSPw5ZUw==}
+    engines: {node: '>= 6.0'}
+
   xml-name-validator@4.0.0:
     resolution: {integrity: sha512-ICP2e+jsHvAj2E2lIHxa5tjXRlKDJo4IdvPvCXbXQGdzSfmSpNVyIKMvoZHjDY9DP0zV17iI85o90vRFXNccRw==}
     engines: {node: '>=12'}
@@ -6569,6 +6641,9 @@ packages:
   zod@3.24.4:
     resolution: {integrity: sha512-OdqJE9UDRPwWsrHjLN2F8bPxvwJBK22EHLWtanu0LSYr5YqzsaaW3RMgmjwr8Rypg5k+meEJdSPXJZXE/yqOMg==}
 
+  zod@4.1.11:
+    resolution: {integrity: sha512-WPsqwxITS2tzx1bzhIKsEs19ABD5vmCVa4xBo2tq/SrV4RNZtfws1EnCWQXM6yh8bD08a1idvkB5MZSBiZsjwg==}
+
 snapshots:
 
   '@ampproject/remapping@2.3.0':
@@ -6576,12 +6651,13 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.8
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@antify/database-cli@1.3.0(@aws-sdk/credential-providers@3.758.0)(socks@2.8.4)':
+  '@antify/database-cli@2.0.3(@aws-sdk/credential-provider-web-identity@3.758.0)(@aws-sdk/credential-providers@3.758.0)(socks@2.8.4)(ws@8.19.0)':
     dependencies:
-      '@antify/database': 2.0.0(@aws-sdk/credential-providers@3.758.0)(socks@2.8.4)
+      '@antify/database': 4.0.2(@aws-sdk/credential-provider-web-identity@3.758.0)(@aws-sdk/credential-providers@3.758.0)(socks@2.8.4)(ws@8.19.0)
       dotenv: 16.4.7
       scule: 1.3.0
     transitivePeerDependencies:
+      - '@aws-sdk/credential-provider-web-identity'
       - '@aws-sdk/credential-providers'
       - '@mongodb-js/zstd'
       - gcp-metadata
@@ -6590,13 +6666,15 @@ snapshots:
       - snappy
       - socks
       - supports-color
+      - ws
 
-  '@antify/database-module@1.6.1(@aws-sdk/credential-providers@3.758.0)(magicast@0.5.1)(socks@2.8.4)':
+  '@antify/database-module@2.0.4(@aws-sdk/credential-provider-web-identity@3.758.0)(@aws-sdk/credential-providers@3.758.0)(magicast@0.5.1)(socks@2.8.4)(ws@8.19.0)':
     dependencies:
-      '@antify/database': 2.0.0(@aws-sdk/credential-providers@3.758.0)(socks@2.8.4)
+      '@antify/database': 4.0.2(@aws-sdk/credential-provider-web-identity@3.758.0)(@aws-sdk/credential-providers@3.758.0)(socks@2.8.4)(ws@8.19.0)
       '@nuxt/kit': 3.16.2(magicast@0.5.1)
       defu: 6.1.4
     transitivePeerDependencies:
+      - '@aws-sdk/credential-provider-web-identity'
       - '@aws-sdk/credential-providers'
       - '@mongodb-js/zstd'
       - gcp-metadata
@@ -6606,16 +6684,19 @@ snapshots:
       - snappy
       - socks
       - supports-color
+      - ws
 
-  '@antify/database@2.0.0(@aws-sdk/credential-providers@3.758.0)(socks@2.8.4)':
+  '@antify/database@4.0.2(@aws-sdk/credential-provider-web-identity@3.758.0)(@aws-sdk/credential-providers@3.758.0)(socks@2.8.4)(ws@8.19.0)':
     dependencies:
-      h3: 1.15.1
+      '@vercel/functions': 3.9.7(@aws-sdk/credential-provider-web-identity@3.758.0)(ws@8.19.0)
+      h3: 1.15.5
       jiti: 1.21.7
       mongoose: 8.12.1(@aws-sdk/credential-providers@3.758.0)(socks@2.8.4)
       pathe: 1.1.2
     optionalDependencies:
       fsevents: 2.3.3
     transitivePeerDependencies:
+      - '@aws-sdk/credential-provider-web-identity'
       - '@aws-sdk/credential-providers'
       - '@mongodb-js/zstd'
       - gcp-metadata
@@ -6624,10 +6705,11 @@ snapshots:
       - snappy
       - socks
       - supports-color
+      - ws
 
-  '@antify/template-module@0.0.8(@fortawesome/fontawesome-svg-core@6.7.2)(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(magicast@0.5.1)(tailwindcss@4.0.7)(typescript@5.8.2)(vite@6.2.1(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.0))(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))':
+  '@antify/template-module@0.0.58(@fortawesome/fontawesome-svg-core@6.7.2)(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(magicast@0.5.1)(tailwindcss@4.0.7)(typescript@5.8.2)(vite@6.2.1(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.0))(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))':
     dependencies:
-      '@antify/ui': 4.1.26(@fortawesome/fontawesome-svg-core@6.7.2)(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(tailwindcss@4.0.7)(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))(vue@3.5.13(typescript@5.8.2))
+      '@antify/ui': 4.3.39(@fortawesome/fontawesome-svg-core@6.7.2)(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(tailwindcss@4.0.7)(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))(vue@3.5.13(typescript@5.8.2))
       '@fortawesome/free-solid-svg-icons': 6.7.2
       '@nuxt/kit': 3.16.2(magicast@0.5.1)
       '@tailwindcss/vite': 4.0.7(vite@6.2.1(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.0))
@@ -6644,7 +6726,7 @@ snapshots:
       - vite
       - vue-router
 
-  '@antify/ui@4.1.26(@fortawesome/fontawesome-svg-core@6.7.2)(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(tailwindcss@4.0.7)(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))(vue@3.5.13(typescript@5.8.2))':
+  '@antify/ui@4.3.39(@fortawesome/fontawesome-svg-core@6.7.2)(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(tailwindcss@4.0.7)(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))(vue@3.5.13(typescript@5.8.2))':
     dependencies:
       '@floating-ui/vue': 1.1.6(vue@3.5.13(typescript@5.8.2))
       '@fortawesome/free-regular-svg-icons': 6.7.2
@@ -6660,6 +6742,7 @@ snapshots:
       '@vueuse/core': 10.11.1(vue@3.5.13(typescript@5.8.2))
       '@vueuse/router': 10.11.1(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))(vue@3.5.13(typescript@5.8.2))
       big.js: 6.2.2
+      flagpack: 1.0.5
       tailwindcss: 4.0.7
       vue: 3.5.13(typescript@5.8.2)
     transitivePeerDependencies:
@@ -9364,6 +9447,22 @@ snapshots:
       unhead: 2.1.2
       vue: 3.5.13(typescript@5.8.2)
 
+  '@vercel/cli-config@0.2.6':
+    dependencies:
+      xdg-app-paths: 5.5.1
+      zod: 4.1.11
+
+  '@vercel/cli-exec@1.0.1':
+    dependencies:
+      execa: 5.1.1
+
+  '@vercel/functions@3.9.7(@aws-sdk/credential-provider-web-identity@3.758.0)(ws@8.19.0)':
+    dependencies:
+      '@vercel/oidc': 3.8.7
+    optionalDependencies:
+      '@aws-sdk/credential-provider-web-identity': 3.758.0
+      ws: 8.19.0
+
   '@vercel/nft@1.3.0(rollup@4.57.1)':
     dependencies:
       '@mapbox/node-pre-gyp': 2.0.0
@@ -9382,6 +9481,12 @@ snapshots:
       - encoding
       - rollup
       - supports-color
+
+  '@vercel/oidc@3.8.7':
+    dependencies:
+      '@vercel/cli-config': 0.2.6
+      '@vercel/cli-exec': 1.0.1
+      jose: 5.10.0
 
   '@vitejs/plugin-vue-jsx@4.2.0(vite@6.4.1(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.0))(vue@3.5.13(typescript@5.8.2))':
     dependencies:
@@ -10701,6 +10806,18 @@ snapshots:
     dependencies:
       eventsource-parser: 3.0.1
 
+  execa@5.1.1:
+    dependencies:
+      cross-spawn: 7.0.6
+      get-stream: 6.0.1
+      human-signals: 2.1.0
+      is-stream: 2.0.1
+      merge-stream: 2.0.0
+      npm-run-path: 4.0.1
+      onetime: 5.1.2
+      signal-exit: 3.0.7
+      strip-final-newline: 2.0.0
+
   execa@8.0.1:
     dependencies:
       cross-spawn: 7.0.6
@@ -10844,6 +10961,8 @@ snapshots:
       locate-path: 6.0.0
       path-exists: 4.0.0
 
+  flagpack@1.0.5: {}
+
   flat-cache@4.0.1:
     dependencies:
       flatted: 3.3.3
@@ -10910,6 +11029,8 @@ snapshots:
     dependencies:
       dunder-proto: 1.0.1
       es-object-atoms: 1.1.1
+
+  get-stream@6.0.1: {}
 
   get-stream@8.0.1: {}
 
@@ -11118,6 +11239,8 @@ snapshots:
       - supports-color
 
   httpxy@0.1.7: {}
+
+  human-signals@2.1.0: {}
 
   human-signals@5.0.0: {}
 
@@ -11610,6 +11733,8 @@ snapshots:
 
   mime@4.1.0: {}
 
+  mimic-fn@2.1.0: {}
+
   mimic-fn@4.0.0: {}
 
   min-indent@1.0.1: {}
@@ -11722,7 +11847,7 @@ snapshots:
 
   mquery@5.0.0:
     dependencies:
-      debug: 4.4.0
+      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
@@ -11742,7 +11867,7 @@ snapshots:
 
   neo-async@2.6.2: {}
 
-  nitropack@2.13.1:
+  nitropack@2.13.1(@vercel/functions@3.9.7(@aws-sdk/credential-provider-web-identity@3.758.0)(ws@8.19.0)):
     dependencies:
       '@cloudflare/kv-asset-handler': 0.4.2
       '@rollup/plugin-alias': 6.0.0(rollup@4.57.1)
@@ -11809,7 +11934,7 @@ snapshots:
       unenv: 2.0.0-rc.24
       unimport: 5.6.0
       unplugin-utils: 0.3.1
-      unstorage: 1.17.4(db0@0.3.4)(ioredis@5.9.2)
+      unstorage: 1.17.4(@vercel/functions@3.9.7(@aws-sdk/credential-provider-web-identity@3.758.0)(ws@8.19.0))(db0@0.3.4)(ioredis@5.9.2)
       untyped: 2.0.0
       unwasm: 0.5.3
       youch: 4.1.0-beta.13
@@ -11884,6 +12009,10 @@ snapshots:
 
   normalize-range@0.1.2: {}
 
+  npm-run-path@4.0.1:
+    dependencies:
+      path-key: 3.1.1
+
   npm-run-path@5.3.0:
     dependencies:
       path-key: 4.0.0
@@ -11899,7 +12028,7 @@ snapshots:
 
   nuxi@3.22.5: {}
 
-  nuxt@3.16.2(@parcel/watcher@2.5.1)(@types/node@22.13.10)(cac@6.7.14)(db0@0.3.4)(eslint@9.26.0(jiti@2.4.2))(ioredis@5.9.2)(lightningcss@1.29.2)(magicast@0.5.1)(optionator@0.9.4)(rollup@4.57.1)(terser@5.39.0)(typescript@5.8.2)(vite@6.2.1(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.0))(yaml@2.7.0):
+  nuxt@3.16.2(@parcel/watcher@2.5.1)(@types/node@22.13.10)(@vercel/functions@3.9.7(@aws-sdk/credential-provider-web-identity@3.758.0)(ws@8.19.0))(cac@6.7.14)(db0@0.3.4)(eslint@9.26.0(jiti@2.4.2))(ioredis@5.9.2)(lightningcss@1.29.2)(magicast@0.5.1)(optionator@0.9.4)(rollup@4.57.1)(terser@5.39.0)(typescript@5.8.2)(vite@6.2.1(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.0))(yaml@2.7.0):
     dependencies:
       '@nuxt/cli': 3.32.0(cac@6.7.14)(magicast@0.5.1)
       '@nuxt/devalue': 2.0.2
@@ -11936,7 +12065,7 @@ snapshots:
       mlly: 1.7.4
       mocked-exports: 0.1.1
       nanotar: 0.2.0
-      nitropack: 2.13.1
+      nitropack: 2.13.1(@vercel/functions@3.9.7(@aws-sdk/credential-provider-web-identity@3.758.0)(ws@8.19.0))
       nypm: 0.6.0
       ofetch: 1.4.1
       ohash: 2.0.11
@@ -12067,6 +12196,10 @@ snapshots:
     dependencies:
       wrappy: 1.0.2
 
+  onetime@5.1.2:
+    dependencies:
+      mimic-fn: 2.1.0
+
   onetime@6.0.0:
     dependencies:
       mimic-fn: 4.0.0
@@ -12094,6 +12227,8 @@ snapshots:
       word-wrap: 1.2.5
 
   orderedmap@2.1.1: {}
+
+  os-paths@4.4.0: {}
 
   oxc-parser@0.56.5:
     dependencies:
@@ -12898,6 +13033,8 @@ snapshots:
 
   siginfo@2.0.0: {}
 
+  signal-exit@3.0.7: {}
+
   signal-exit@4.1.0: {}
 
   simple-git@3.30.0:
@@ -13042,6 +13179,8 @@ snapshots:
       ansi-regex: 6.1.0
 
   strip-bom@3.0.0: {}
+
+  strip-final-newline@2.0.0: {}
 
   strip-final-newline@3.0.0: {}
 
@@ -13431,7 +13570,7 @@ snapshots:
       db0: 0.3.4
       ioredis: 5.9.2
 
-  unstorage@1.17.4(db0@0.3.4)(ioredis@5.9.2):
+  unstorage@1.17.4(@vercel/functions@3.9.7(@aws-sdk/credential-provider-web-identity@3.758.0)(ws@8.19.0))(db0@0.3.4)(ioredis@5.9.2):
     dependencies:
       anymatch: 3.1.3
       chokidar: 5.0.0
@@ -13442,6 +13581,7 @@ snapshots:
       ofetch: 1.5.1
       ufo: 1.6.3
     optionalDependencies:
+      '@vercel/functions': 3.9.7(@aws-sdk/credential-provider-web-identity@3.758.0)(ws@8.19.0)
       db0: 0.3.4
       ioredis: 5.9.2
 
@@ -13785,6 +13925,15 @@ snapshots:
     dependencies:
       is-wsl: 3.1.0
 
+  xdg-app-paths@5.5.1:
+    dependencies:
+      os-paths: 4.4.0
+      xdg-portable: 7.3.0
+
+  xdg-portable@7.3.0:
+    dependencies:
+      os-paths: 4.4.0
+
   xml-name-validator@4.0.0: {}
 
   xml-name-validator@5.0.0: {}
@@ -13860,3 +14009,5 @@ snapshots:
       zod: 3.24.4
 
   zod@3.24.4: {}
+
+  zod@4.1.11: {}

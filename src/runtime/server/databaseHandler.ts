@@ -1,14 +1,14 @@
 import type {
-  Authorization,
-} from '../types';
+  H3Event,
+} from 'h3';
 import type {
-  Role,
+  Authorization, Role,
 } from './types';
 
 export type DatabaseHandler = {
   findOneAuthorization(id: string, tenantId: string | null): Promise<Authorization | null>;
   updateAuthorization(authorization: Authorization, tenantId: string | null): Promise<void>;
-  deleteRoleById(id: string, tenantId: string | null): Promise<void>;
+  deleteRoleById(id: string, tenantId: string | null, event: H3Event): Promise<void>;
   saveRole(role: Role, tenantId: string | null): Promise<void>;
   findRoleById(id: string, tenantId: string | null): Promise<Role | null>;
   findRoles(

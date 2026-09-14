@@ -16,10 +16,12 @@ const props = withDefaults(
     tenantId?: string;
     disabled?: boolean;
     skeleton?: boolean;
+    placeholder?: string;
   }>(),
   {
     disabled: false,
     skeleton: false,
+    placeholder: 'Add role',
   },
 );
 const roleStore = useRoleInputStore();
@@ -40,6 +42,6 @@ onMounted(() => roleStore.execute());
     :skeleton="['pending', 'idle'].includes(roleStore.status.value) || props.skeleton"
     :options="roleStore.data || []"
     :disabled="props.disabled"
-    placeholder="Add role"
+    :placeholder="placeholder"
   />
 </template>

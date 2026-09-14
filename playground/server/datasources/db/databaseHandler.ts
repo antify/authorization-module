@@ -10,6 +10,9 @@ import {
 import type {
   FilterQuery,
 } from 'mongoose';
+import type {
+  H3Event,
+} from 'h3';
 import {
   defineRoleSchema,
 } from '~/server/datasources/db/schemas/role';
@@ -56,7 +59,7 @@ export default defineDatabaseHandler({
 
     await user.save();
   },
-  async deleteRoleById(id: string, tenantId: string | null): Promise<void> {
+  async deleteRoleById(id: string, tenantId: string | null, event: H3Event): Promise<void> {
     const client = await this.getDatabaseClient(tenantId);
     const RoleModel = client.getModel(defineRoleSchema);
 
