@@ -18,6 +18,10 @@ export default defineNuxtConfig({
     '../src/module',
   ],
 
+  templateModule: {
+    tailwindCSSPath: './assets/tailwind.css',
+  },
+
   authorizationModule: {
     jwtSecret: '#a!SuperSecret123',
     databaseHandler: './server/datasources/db/databaseHandler',

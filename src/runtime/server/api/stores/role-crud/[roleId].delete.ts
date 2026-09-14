@@ -11,7 +11,7 @@ import {
 
 export default defineEventHandler(async (event) => {
   await (defineDatabaseHandler as DatabaseHandler)
-    .deleteRoleById(event.context.params!.roleId, useEventReader().getTenantId(event));
+    .deleteRoleById(event.context.params!.roleId, useEventReader().getTenantId(event), event);
 
   return {
     success: true,
